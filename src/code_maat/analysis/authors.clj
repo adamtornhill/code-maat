@@ -1,4 +1,5 @@
 (ns code-maat.analysis.authors
+  (:require [code-maat.analysis.entities :as entities])
   (:use incanter.core))
 
 ;;; Todo: fix single author case!
@@ -7,12 +8,7 @@
 ;;;User=> (authors-of-module "A" svnd)
 ;;;#{"apt" "jt"}
 
-(defn all-entities [ds]
-  (set ($ :entity ds)))
-;;;user=> (all-entities svnd)
-;;;#{"A" "B"}
-
-(defn all-authors [ds]
+(defn all [ds]
   (set ($ :author ds)))
 ;;;user=> (all-authors svnd)
 ;;;#{"xy" "apt" "jt"}
@@ -30,7 +26,7 @@
   "Deduces the authors of each module in the dataset (ds).
    Returns a seq of tuples where each tuple:
    [entity seq-of-its-authors]."
-  (for [e (all-entities ds)
+  (for [e (entities/all ds)
         :let [authors [e (authors-of-module e ds)]]]
     authors))
 ;;;user=> (by-authors svnd)
@@ -43,4 +39,4 @@
      ($order :n-authors order-fn 
              (dataset [:entity :n-authors]
                       (map (partial entity-with-author-count ds)
-                           (all-entities ds))))))
+                           (entities/all ds))))))
