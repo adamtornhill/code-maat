@@ -2,7 +2,7 @@
   (:require [code-maat.parsers.svn :as svn]
             [code-maat.parsers.xml :as xml-parser]
             [clojure.data.zip.xml :as zip])
-  (:use clojure.test))
+  (:use clojure.test incanter.core))
 
 ;;; A sample from a svn log file, served as test data to the unit tests.
 (def svn-log (xml-parser/string->zip "<?xml version='1.0'?>
@@ -48,31 +48,30 @@
   (is (= (count log-entries)
          2)))
 
-(deftest builds-modification-set
-  (let [{:keys [author entities date revision]}
-        (svn/as-modification-set first-entry)]
-    (is (= author "APT"))
-    (is (= (count entities) 2))
-    (is (= date "2013-02-08T11:46:13.844538Z"))
-    (is (= revision "2"))))
-
-(deftest ignores-directory-entries
-  (let [modifications (svn/as-modification-set first-entry)
-        {:keys [entities]} modifications
-        all-entities (zip/xml-> first-entry :paths :path)]
-    (is (= (count entities) 2))
-    (is (= (count all-entities) 3))))
+(deftest one-modified-entity-per-row
+  (let [[row1 row2] (svn/as-rows first-entry)]
+    (is (= row1
+           {:entity "/Infrastrucure/Network/Connection.cs "
+            :date "2013-02-08T11:46:13.844538Z"
+            :author "APT"
+            :rev "2"}))
+    (is (= row2
+           {:entity "/Presentation/Status/ClientPresenter.cs "
+            :date "2013-02-08T11:46:13.844538Z"
+            :author "APT"
+            :rev "2"}))))
 
 (deftest builds-complete-modification-history-from-log
   "We know from the test above that details are OK => just
    check the quantities."
   (let [modifications (svn/zip->modification-sets svn-log)]
     (testing "parses all items"
-      (is (= (count modifications)
-             2)))
-    (testing "parses the authors"
-      (is (= (map :author modifications)
-             ["APT" "XYZ"])))
-    (testing "extracts all modifications"
-      (is (= (count (flatten (map :entities modifications)))
-             3)))))
+      (is (= (nrow modifications)
+             3)))
+    (testing "parses the log info into each row"
+      (is (= ($ :author modifications)
+             ["APT" "APT" "XYZ"]))
+      (is (= ($ :entity modifications)
+             ["/Infrastrucure/Network/Connection.cs "
+              "/Presentation/Status/ClientPresenter.cs "
+              "/Infrastrucure/Network/Connection.cs "])))))

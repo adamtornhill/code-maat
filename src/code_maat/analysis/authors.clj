@@ -2,41 +2,48 @@
   (:require [code-maat.analysis.entities :as entities])
   (:use incanter.core))
 
+;;; This module contains analysis methods related to the authors of the VCS commits.
+;;; Research shows that these metrics (e.g. number of authors of a module) are
+;;; related to the number of quality problems that module exhibits.
+;;;
+;;; Format:
+;;; All analysis expect an Incanter dataset with the following columns:
+;;; :author :entity :rev
+
 ;;; Todo: fix single author case!
-(defn authors-of-module [m ds]
-  (set ($ :author ($where {:entity m} ds))))
-;;;User=> (authors-of-module "A" svnd)
-;;;#{"apt" "jt"}
+(defn- fix-single-return-value-bug
+  "Workaround for what seems to be a flaw in Incanter.
+   When returning a single value, that value is returned,
+   not a seq."
+  [r]
+  (if (seq? r) r [r]))
 
-(defn all [ds]
+(defn of-module [m ds]
+  (set
+   (fix-single-return-value-bug
+    ($ :author ($where {:entity m} ds)))))
+
+(defn all
+  "Returns a set with the name of all authors."
+  [ds]
   (set ($ :author ds)))
-;;;user=> (all-authors svnd)
-;;;#{"xy" "apt" "jt"}
 
-(defn entity-with-author-count [ds m]
-  [m (count (authors-of-module m ds))])
+(defn entity-with-author-count
+  "Calculates the number of different authors for the given module, m.
+   Returns a tuple of [entity-name number-of-distinct-authors]."
+  [m ds]
+  [m (count (of-module m ds))])
 
-;;; API
-;;; The intended use is to ask for modules by-author-count.
-;;; If we want to analyze which authors, we typically use
-;;; authors-of-module.
-
-;;; TODO: remove this one - not necessary!
-(defn by-authors [ds]
-  "Deduces the authors of each module in the dataset (ds).
-   Returns a seq of tuples where each tuple:
-   [entity seq-of-its-authors]."
-  (for [e (entities/all ds)
-        :let [authors [e (authors-of-module e ds)]]]
-    authors))
-;;;user=> (by-authors svnd)
-;;;(["A" #{"apt" "jt"}] ["B" #{\a \p \t}])
-
-(defn by-author-count
+(defn by-count
+  "Groups all entities by there total number of authors.
+   By default, the entities are sorted in descending order.
+   You can provide an extra, optional argument specifying
+   a custom criterion.
+   Returns a dataset with the columns :entity :n-authors."
   ([ds]
-     (by-author-count ds :desc))
+     (by-count ds :desc))
   ([ds order-fn]
      ($order :n-authors order-fn 
              (dataset [:entity :n-authors]
-                      (map (partial entity-with-author-count ds)
+                      (map #(entity-with-author-count % ds)
                            (entities/all ds))))))

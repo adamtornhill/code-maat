@@ -1,0 +1,34 @@
+<?xml version='1.0'?>
+<log>
+ <logentry
+   revision='2'>
+  <author>APT</author>
+  <date>2013-02-08T11:46:13.844538Z</date>
+  <paths>
+    <path
+      kind='file'
+      action='M'>/Infrastrucure/Network/Connection.cs
+    </path>
+   <path
+     kind='file'
+     action='M'>/Presentation/Status/ClientPresenter.cs
+   </path>
+   <path
+      kind='dir'
+      action='M'>/Presentation/Status</path>
+  </paths>
+  <msg>[bug] Fixed the connection status </msg>
+ </logentry>
+ <logentry
+   revision='1'>
+  <author>XYZ</author>
+  <date>2013-02-07T11:46:13.844538Z</date>
+  <paths>
+    <path
+      kind='file'
+      action='M'>/Infrastrucure/Network/Connection.cs
+    </path>
+  </paths>
+  <msg>[feature] Report connection status</msg>
+ </logentry>
+</log>

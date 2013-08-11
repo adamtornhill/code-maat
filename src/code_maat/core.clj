@@ -1,6 +1,5 @@
-(ns code-maat.core)
+(ns code-maat.core
+  (:require [code-maat.app.app :as app]))
 
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
+(defn -main [logfile-name]
+  (app/run logfile-name))
