@@ -35,7 +35,10 @@
 (defn- group->entity-with-author-count
   [[entity-group changes]]
   [(:entity entity-group)
-   (count (set ($ :author changes)))])
+   (count
+    (set
+     (fix-single-return-value-bug
+      ($ :author changes))))])
 
 (defn by-count
   "Groups all entities by there total number of authors.
