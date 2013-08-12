@@ -32,9 +32,7 @@
   "Extracts all modified files from the given logentry."
   (let [paths (xml-> logentry :paths :path)
         files (filter #(= "file" (attr % :kind)) paths)]
-        ;;;modified-files (filter #(= "M" (attr % :action)) files)] ;TODO: extract C too and tag!
         (map group-file-with-action files)))
-    ;;;(map text files-with-action)))
 
 (defn as-rows [svn-logentry]
   "Transforms the given svn logentry to a seq of rows containing
