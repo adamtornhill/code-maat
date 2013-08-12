@@ -16,12 +16,25 @@
 (defn- make-extractor [logentry]
   (partial xml1-> logentry))
 
+(def ^:const svn-action->interpretable-action
+  {"A" :created
+   "M" :modified
+   "D" :deleted
+   "R" :moved})
+
+(defn- group-file-with-action [entry]
+  (let [entity-name (text entry)
+        svn-action (attr entry :action)
+        action (get svn-action->interpretable-action svn-action)]
+    [entity-name action]))
+
 (defn- extract-modified-files [logentry]
   "Extracts all modified files from the given logentry."
   (let [paths (xml-> logentry :paths :path)
-        files (filter #(= "file" (attr % :kind)) paths)
-        modified-files (filter #(= "M" (attr % :action)) files)] ;TODO: extract C too and tag!
-    (map text modified-files)))
+        files (filter #(= "file" (attr % :kind)) paths)]
+        ;;;modified-files (filter #(= "M" (attr % :action)) files)] ;TODO: extract C too and tag!
+        (map group-file-with-action files)))
+    ;;;(map text files-with-action)))
 
 (defn as-rows [svn-logentry]
   "Transforms the given svn logentry to a seq of rows containing
@@ -31,8 +44,8 @@
         date (extractor :date text)
         author (extractor :author text)
         revision (extractor (attr :revision))]
-    (for [e entities
-          :let [row {:entity e :date date :author author :rev revision}]]
+    (for [[e action] entities
+          :let [row {:entity e :action action :date date :author author :rev revision}]]
       row)))
 
 (def ^:const default-parse-options
@@ -42,7 +55,7 @@
   "Transforms the given zipped svn log into an Incanter
    dataset of modification data.
    The dataset contains the following rows:
-   :entity :date :author :rev"
+   :entity :action :date :author :rev"
   ([zipped]
      (zip->modification-sets zipped default-parse-options))
   ([zipped parse-options]

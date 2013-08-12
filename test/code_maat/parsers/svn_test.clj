@@ -33,7 +33,7 @@
   <paths>
     <path
       kind='file'
-      action='M'>/Infrastrucure/Network/Connection.cs
+      action='A'>/Infrastrucure/Network/Connection.cs
     </path>
   </paths>
   <msg>[feature] Report connection status</msg>
@@ -43,6 +43,7 @@
 
 (def log-entries (svn/zip->log-entries svn-log))
 (def first-entry (first log-entries))
+(def second-entry (second log-entries))
 
 (deftest retrieves-all-entries-from-the-given-log
   (is (= (count log-entries)
@@ -54,12 +55,23 @@
            {:entity "/Infrastrucure/Network/Connection.cs "
             :date "2013-02-08T11:46:13.844538Z"
             :author "APT"
+            :action :modified
             :rev "2"}))
     (is (= row2
            {:entity "/Presentation/Status/ClientPresenter.cs "
             :date "2013-02-08T11:46:13.844538Z"
             :author "APT"
+            :action :modified
             :rev "2"}))))
+
+(deftest created-entities-are-marked
+  (let [[row-with-created-entity] (svn/as-rows second-entry)]
+    (is (= row-with-created-entity
+           {:entity "/Infrastrucure/Network/Connection.cs "
+            :date "2013-02-07T11:46:13.844538Z"
+            :author "XYZ"
+            :action :created
+            :rev "1"}))))
 
 (deftest builds-complete-modification-history-from-log
   "We know from the test above that details are OK => just
