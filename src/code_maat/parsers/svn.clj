@@ -4,6 +4,12 @@
             [clojure.xml :as xml]
             [clojure.zip :as zip]))
 
+;;; This module contains functionality for parsing a generated SVN log
+;;; into an Incanter dataset suitable for the supported analysis.
+;;;
+;;; Input: A SVN log on XML format.
+;;; TODO: document the required SVN log content!
+
 (defn zip->log-entries [zipped]
   (xml-> zipped :logentry))
 
@@ -34,7 +40,9 @@
 
 (defn zip->modification-sets
   "Transforms the given zipped svn log into an Incanter
-   dataset of modification data."
+   dataset of modification data.
+   The dataset contains the following rows:
+   :entity :date :author :rev"
   ([zipped]
      (zip->modification-sets zipped default-parse-options))
   ([zipped parse-options]

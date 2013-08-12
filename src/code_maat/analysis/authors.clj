@@ -1,4 +1,5 @@
 (ns code-maat.analysis.authors
+  (:require [code-maat.analysis.workarounds :as workarounds])
   (:use incanter.core))
 
 ;;; This module contains analysis methods related to the authors of the VCS commits.
@@ -9,16 +10,9 @@
 ;;; All analysis expect an Incanter dataset with the following columns:
 ;;; :author :entity :rev
 
-(defn- fix-single-return-value-bug
-  "Workaround for what seems to be a flaw in Incanter.
-   When returning a single value, that value is returned,
-   not a seq."
-  [r]
-  (if (seq? r) r [r]))
-
 (defn of-module [m ds]
   (set
-   (fix-single-return-value-bug
+   (workarounds/fix-single-return-value-bug
     ($ :author ($where {:entity m} ds)))))
 
 (defn all
@@ -37,7 +31,7 @@
   [(:entity entity-group)
    (count
     (set
-     (fix-single-return-value-bug
+     (workarounds/fix-single-return-value-bug
       ($ :author changes))))])
 
 (defn by-count

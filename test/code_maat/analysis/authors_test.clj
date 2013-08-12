@@ -14,18 +14,13 @@
   (is (= (authors/of-module "B" test-data/vcsd)
          #{"apt"})))
 
-(defn- content-of [ds]
-  (:rows (incanter/sel
-          ds
-          :rows :all)))
-
 (deftest sorts-entities-on-max-number-of-authors
-  (is (= (content-of (authors/by-count test-data/vcsd))
+  (is (= (test-data/content-of (authors/by-count test-data/vcsd))
          [{:n-authors 2 :entity "A"}
           {:n-authors 1, :entity "B"}])))
 
 (deftest sorts-order-is-optional
-  (is (= (content-of (authors/by-count test-data/vcsd :asc))
+  (is (= (test-data/content-of (authors/by-count test-data/vcsd :asc))
          [{:n-authors 1 :entity "B"}
           {:n-authors 2, :entity "A"}])))
          
