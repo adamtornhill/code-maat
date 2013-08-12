@@ -1,5 +1,4 @@
 (ns code-maat.analysis.authors
-  (:require [code-maat.analysis.entities :as entities])
   (:use incanter.core))
 
 ;;; This module contains analysis methods related to the authors of the VCS commits.
@@ -10,7 +9,6 @@
 ;;; All analysis expect an Incanter dataset with the following columns:
 ;;; :author :entity :rev
 
-;;; Todo: fix single author case!
 (defn- fix-single-return-value-bug
   "Workaround for what seems to be a flaw in Incanter.
    When returning a single value, that value is returned,
@@ -34,6 +32,11 @@
   [m ds]
   [m (count (of-module m ds))])
 
+(defn- group->entity-with-author-count
+  [[entity-group changes]]
+  [(:entity entity-group)
+   (count (set ($ :author changes)))])
+
 (defn by-count
   "Groups all entities by there total number of authors.
    By default, the entities are sorted in descending order.
@@ -43,7 +46,7 @@
   ([ds]
      (by-count ds :desc))
   ([ds order-fn]
-     ($order :n-authors order-fn 
-             (dataset [:entity :n-authors]
-                      (map #(entity-with-author-count % ds)
-                           (entities/all ds))))))
+     (let [g ($group-by :entity ds)]
+       ($order :n-authors order-fn
+               (dataset [:entity :n-authors]
+                        (map group->entity-with-author-count g))))))

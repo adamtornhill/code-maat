@@ -29,9 +29,17 @@
           :let [row {:entity e :date date :author author :rev revision}]]
       row)))
 
-(defn zip->modification-sets [zipped]
+(def ^:const default-parse-options
+  {:max-entries 200})
+
+(defn zip->modification-sets
   "Transforms the given zipped svn log into an Incanter
    dataset of modification data."
-  (incanter/to-dataset
-   (flatten
-    (map as-rows (zip->log-entries zipped)))))
+  ([zipped]
+     (zip->modification-sets zipped default-parse-options))
+  ([zipped parse-options]
+     (incanter/to-dataset
+      (flatten
+       (map as-rows
+            (take (:max-entries parse-options)
+                  (zip->log-entries zipped)))))))
