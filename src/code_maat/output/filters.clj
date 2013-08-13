@@ -2,4 +2,5 @@
   (:require [incanter.core :as incanter]))
 
 (defn n-rows [ds n]
-  (incanter/sel ds :rows (range n)))
+  (let [safe-n (min n (incanter/nrow ds))]
+    (incanter/sel ds :rows (range safe-n))))

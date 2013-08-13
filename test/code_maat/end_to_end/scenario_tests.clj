@@ -10,11 +10,15 @@
 
 (def ^:const svn-log-file "./test/code_maat/end_to_end/simple.xml")
 
-(def ^:const svn-csv-options
-  {:module "svn"
-   :output "csv"
-   :rows 1}) ; TODO - make sure it works with a larger number too!!
+(defn- svn-csv-options
+  ([]
+     (svn-csv-options 1))
+  ([rows]
+     {:module "svn"
+      :output "csv"
+      :rows rows}))
 
 ;; TODO: test when we have real csv!
 (deftest generates-csv-summary-from-svn-log-file
-  (app/run svn-log-file svn-csv-options))
+  (app/run svn-log-file (svn-csv-options))
+  (app/run svn-log-file (svn-csv-options 10)))

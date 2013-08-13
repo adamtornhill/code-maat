@@ -7,5 +7,6 @@
                  [org.clojure/data.zip "0.1.0"]
 		 [incanter "1.4.1"]
                  [org.clojure/tools.cli "0.2.4"]
-                 [org.clojure/data.csv "0.1.2"]]
+                 [org.clojure/data.csv "0.1.2"]
+                 [org.clojure/math.combinatorics "0.0.4"]]
   :main code-maat.core)
