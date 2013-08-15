@@ -26,3 +26,15 @@
   [criterion ds]
   (workarounds/fix-single-return-value-bug
    (incanter/$ criterion ds)))
+
+(defn -where
+  [criterion ds]
+  (incanter/$where criterion ds)) ; TODO: single value?
+
+(defn -order-by
+  [criterion order-fn ds]
+  (incanter/$order criterion order-fn ds))
+
+(defn -dataset
+  [columns data]
+  (incanter/dataset columns data))

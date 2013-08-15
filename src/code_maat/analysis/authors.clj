@@ -1,7 +1,6 @@
 (ns code-maat.analysis.authors
-  (:require [code-maat.analysis.workarounds :as workarounds]
-            [code-maat.analysis.entities :as entities])
-  (:use incanter.core))
+  (:require [code-maat.dataset.dataset :as ds]
+            [code-maat.analysis.entities :as entities]))
 
 ;;; This module contains analysis methods related to the authors of the VCS commits.
 ;;; Research shows that these metrics (e.g. number of authors of a module) are
@@ -13,13 +12,14 @@
 
 (defn of-module [m ds]
   (set
-   (workarounds/fix-single-return-value-bug
-    ($ :author ($where {:entity m} ds)))))
+   (ds/-select-by
+    :author
+    (ds/-where {:entity m} ds))))
 
 (defn all
   "Returns a set with the name of all authors."
   [ds]
-  (set ($ :author ds)))
+  (set (ds/-select-by :author ds)))
 
 (defn entity-with-author-count
   "Calculates the number of different authors for the given module, m.
@@ -33,8 +33,7 @@
     [entity
      (count
       (set
-       (workarounds/fix-single-return-value-bug
-        ($ :author changes))))
+       (ds/-select-by :author changes)))
      (entities/revisions-of entity ds)]))
 
 (defn by-count
@@ -46,9 +45,9 @@
   ([ds]
      (by-count ds :desc))
   ([ds order-fn]
-     (let [g ($group-by :entity ds)
+     (let [g (ds/-group-by :entity ds)
            by-rev (entities/as-dataset-by-revision ds)]
-       ($order :n-authors order-fn
-               (dataset [:entity :n-authors :n-revs]
-                        (map
-                         #(group->entity-with-author-count % by-rev) g))))))
+       (ds/-order-by :n-authors order-fn
+                     (ds/-dataset [:entity :n-authors :n-revs]
+                                  (map
+                                   #(group->entity-with-author-count % by-rev) g))))))
