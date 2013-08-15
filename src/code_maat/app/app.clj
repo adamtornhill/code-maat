@@ -10,13 +10,9 @@
 ;;;   change the project structure a lot...).
 ;;; - Introduce a temporal period.
 
-(def ^:const vcs-parse-options
-  {:max-entries 500})
-
-(defn- xml->modifications [logfile-name]
+(defn- xml->modifications [logfile-name options]
   (svn/zip->modification-sets
-   (xml/file->zip logfile-name)
-   vcs-parse-options))
+   (xml/file->zip logfile-name)))
 
 ;;; TODO: do not hardcode csv!
 (defn- make-output [options]
@@ -29,7 +25,7 @@
     :output - the type of result output to generate
     :analysis - the type of analysis to run
     :rows - the max number of results to include"
-  (let [changes (xml->modifications logfile-name)
+  (let [changes (xml->modifications logfile-name options)
         ;;;coupling (coupling/by-degree changes) - Too slow! Optimize
         most-authors (authors/by-count changes)
         most-revisions (entities/by-revision changes)

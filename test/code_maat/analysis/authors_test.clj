@@ -16,12 +16,12 @@
 
 (deftest sorts-entities-on-max-number-of-authors
   (is (= (test-data/content-of (authors/by-count test-data/vcsd))
-         [{:n-authors 2 :entity "A"}
-          {:n-authors 1, :entity "B"}])))
+         [{:n-authors 2 :entity "A" :n-revs 3}
+          {:n-authors 1 :entity "B" :n-revs 1}])))
 
 (deftest sorts-order-is-optional
   (is (= (test-data/content-of (authors/by-count test-data/vcsd :asc))
-         [{:n-authors 1 :entity "B"}
-          {:n-authors 2, :entity "A"}])))
+         [{:n-authors 1 :entity "B" :n-revs 1}
+          {:n-authors 2 :entity "A" :n-revs 3}])))
          
          
