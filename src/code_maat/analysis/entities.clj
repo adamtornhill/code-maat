@@ -12,14 +12,26 @@
     (workarounds/fix-single-return-value-bug
      ($ :rev changes)))])
 
+(defn as-dataset-by-revision
+  [ds]
+  (let [g ($group-by :entity ds)]
+    (dataset [:entity :n-revs]
+             (map group->entity-with-rev-count g))))
+
+(defn revisions-of
+  "Returns the total number of revisions for the given
+   entity in the dataset ds, which must be grouped
+   by revisions."
+  [entity by-revision-ds]
+  ($ :n-revs
+     ($where {:entity entity} by-revision-ds)))
+
 (defn by-revision
   "Sorts all entities in the dataset ds by
    their number of revisions."
   ([ds]
      (by-revision ds :desc))
   ([ds order-fn]
-     (let [g ($group-by :entity ds)]
-       ($order :n-revs order-fn
-               (dataset [:entity :n-revs]
-                        (map group->entity-with-rev-count g))))))
+     ($order :n-revs order-fn
+             (as-dataset-by-revision ds))))
   

@@ -11,3 +11,10 @@
   (is (= (test-data/content-of (entities/by-revision test-data/vcsd))
          [{:n-revs 3 :entity "A"}
           {:n-revs 1, :entity "B"}])))
+
+(deftest calculates-revisions-of-specific-entites
+  (let [rg (entities/by-revision test-data/vcsd)]
+    (is (= (entities/revisions-of "A" rg)
+           3))
+    (is (= (entities/revisions-of "B" rg)
+           1))))

@@ -5,9 +5,20 @@
   (:use clojure.test))
 
 (def ^:const one-revision
-  [{:author "apt" :entity "A" :rev 1}
-   {:author "apt" :entity "B" :rev 1}
-   {:author "apt" :entity "C" :rev 1}])
+  [{:entity "A" :rev 1}
+   {:entity "B" :rev 1}
+   {:entity "C" :rev 1}])
+
+(def ^:const revd (incanter/to-dataset one-revision))
+
+(def ^:const coupled
+  [{:entity "A" :rev 1}
+   {:entity "B" :rev 1}
+   {:entity "C" :rev 1}
+   {:entity "A" :rev 2}
+   {:entity "B" :rev 2}])
+
+(def ^:const coupledd (incanter/to-dataset coupled))
 
 (def ^:const revd (incanter/to-dataset one-revision))
 
@@ -19,3 +30,12 @@
                {:entity "B" :coupled "C"}
                {:entity "C" :coupled "A"}
                {:entity "C" :coupled "B"}]))))
+
+(deftest calculates-commit-stats-for-each-couple
+  (is (= (coupling/coupled-entities coupledd)
+         [{:entity "A" :coupled "B" :shared-revs 2 :average-revs 2}
+          {:entity "A" :coupled "C" :shared-revs 2 :average-revs 3/2}
+          {:entity "B" :coupled "A" :shared-revs 2 :average-revs 2}
+          {:entity "B" :coupled "C" :shared-revs 2 :average-revs 3/2}
+          {:entity "C" :coupled "A" :shared-revs 2 :average-revs 3/2}
+          {:entity "C" :coupled "B" :shared-revs 2 :average-revs 3/2}])))
