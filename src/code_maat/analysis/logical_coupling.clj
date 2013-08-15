@@ -1,6 +1,7 @@
 (ns code-maat.analysis.logical-coupling
   (:require [clojure.math.combinatorics :as combo]
-            [code-maat.analysis.entities :as entities])
+            [code-maat.analysis.entities :as entities]
+            [code-maat.analysis.workarounds :as workarounds])
   (:use incanter.core))
 
 ;;; This module calculates the logical coupling of all modules.
@@ -29,7 +30,8 @@
    the given dataset for one revision.
    The returned vector contains maps of :entity and :coupled."
   [rev-ds]
-  (let [entities-changed ($ :entity rev-ds)]
+  (let [entities-changed (workarounds/fix-single-return-value-bug
+                          ($ :entity rev-ds))]
     (map (fn [[f s]] {:entity f :coupled s})
          (as-coupling-permutations entities-changed))))
 
@@ -38,7 +40,9 @@
   (nrow
    ($where {:coupled coupled} entity-coupling-ds)))
 
-(defn- average [x y] (/ (+ x y) 2))
+(defn- average
+  [x y]
+  (/ (+ x y) 2))
 
 (defn commit-stats
   [entity coupled entities-by-rev entity-coupling-ds]
@@ -53,7 +57,8 @@
    :entity :coupled :shared-revs :average-revs"
   [[e eds] entities-by-rev]
   (let [entity (:entity e)
-        coupled (set ($ :coupled eds))
+        coupled (set
+                 (workarounds/fix-single-return-value-bug ($ :coupled eds)))
         commit-stats-fn #(commit-stats entity % entities-by-rev eds)]
     (for [c coupled
           :let [{:keys [average-revs shared-revs]} (commit-stats-fn c)
@@ -63,11 +68,22 @@
                        :average-revs average-revs}]]
       stats)))
 
+;;; Incanter layer - extensions
+(defn empty-ds?
+  [ds]
+  (= 0 (nrow ds)))
+
+(defn group-by-when-exists
+  [group-criterion ds]
+  (if (empty-ds? ds)
+    []
+    ($group-by group-criterion ds)))
+
 (defn- coupling-statistics
   "Applies the coupling statistics to each entity in the
    given dataset."
   [all-coupled entity-by-rev]
-  (let [cg ($group-by :entity all-coupled)]
+  (let [cg (group-by-when-exists :entity all-coupled)]
     (flatten
      (map #(coupling-statistics-for-entity % entity-by-rev) cg))))
 
@@ -90,8 +106,6 @@
         by-rev (entities/as-dataset-by-revision ds)
         by-entity-coupling (coupling-by-entity g)]
     (coupling-statistics by-entity-coupling by-rev)))
-
-;;; TODO next: group-by entity and calculate the coupling!
 
 (defn coupled-entities-with-rev-stats-as-ds
   [ds]

@@ -6,7 +6,7 @@
   (cli/cli args
            ["-m" "--module" "Input vcs module type: supports svn or git"]
            ["-o" "--output" "Output format: supports csv or graphs" :default "csv"]
-           ["-a" "--analysis" "The analysis to run" :default :all]
+           ["-a" "--analysis" "The analysis to run (authors, revisions, coupling)" :default :all]
            ["-r" "--rows"   "Max rows in output" :default 10 :parse-fn #(Integer. %)]))
 
 (defn- print-banner []
@@ -15,7 +15,6 @@
 
 ;;;TODO: validate mandatory args, else throw!
 (defn- input-file-from [args]
-  (println "a = " args)
   (first args))
 
 ;;;TODO: introduce main catch block here - recovery point: print-banner

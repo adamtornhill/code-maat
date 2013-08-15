@@ -3,14 +3,15 @@
              [code-maat.parsers.xml :as xml]
              [code-maat.output.csv :as csv-output]
              [code-maat.analysis.authors :as authors]
-             [code-maat.analysis.entities :as entities]))
+             [code-maat.analysis.entities :as entities]
+             [code-maat.analysis.logical-coupling :as coupling]))
 ;;; TODO:
 ;;; - Parameterize the parse in order to shrink the paths (we move the files and
 ;;;   change the project structure a lot...).
 ;;; - Introduce a temporal period.
 
 (def ^:const vcs-parse-options
-  {:max-entries 800})
+  {:max-entries 500})
 
 (defn- xml->modifications [logfile-name]
   (svn/zip->modification-sets
@@ -29,6 +30,7 @@
     :analysis - the type of analysis to run
     :rows - the max number of results to include"
   (let [changes (xml->modifications logfile-name)
+        ;;;coupling (coupling/by-degree changes) - Too slow! Optimize
         most-authors (authors/by-count changes)
         most-revisions (entities/by-revision changes)
         output (make-output options)]
