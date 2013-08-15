@@ -1,7 +1,7 @@
 (ns code-maat.analysis.logical-coupling
   (:require [clojure.math.combinatorics :as combo]
             [code-maat.analysis.entities :as entities]
-            [code-maat.analysis.workarounds :as workarounds])
+            [code-maat.dataset.dataset :as ds])
   (:use incanter.core))
 
 ;;; This module calculates the logical coupling of all modules.
@@ -30,8 +30,7 @@
    the given dataset for one revision.
    The returned vector contains maps of :entity and :coupled."
   [rev-ds]
-  (let [entities-changed (workarounds/fix-single-return-value-bug
-                          ($ :entity rev-ds))]
+  (let [entities-changed (ds/-select-by :entity rev-ds)]
     (map (fn [[f s]] {:entity f :coupled s})
          (as-coupling-permutations entities-changed))))
 
@@ -57,8 +56,7 @@
    :entity :coupled :shared-revs :average-revs"
   [[e eds] entities-by-rev]
   (let [entity (:entity e)
-        coupled (set
-                 (workarounds/fix-single-return-value-bug ($ :coupled eds)))
+        coupled (set (ds/-select-by :coupled eds))
         commit-stats-fn #(commit-stats entity % entities-by-rev eds)]
     (for [c coupled
           :let [{:keys [average-revs shared-revs]} (commit-stats-fn c)
@@ -68,22 +66,11 @@
                        :average-revs average-revs}]]
       stats)))
 
-;;; Incanter layer - extensions
-(defn empty-ds?
-  [ds]
-  (= 0 (nrow ds)))
-
-(defn group-by-when-exists
-  [group-criterion ds]
-  (if (empty-ds? ds)
-    []
-    ($group-by group-criterion ds)))
-
 (defn- coupling-statistics
   "Applies the coupling statistics to each entity in the
    given dataset."
   [all-coupled entity-by-rev]
-  (let [cg (group-by-when-exists :entity all-coupled)]
+  (let [cg (ds/-group-by :entity all-coupled)]
     (flatten
      (map #(coupling-statistics-for-entity % entity-by-rev) cg))))
 
