@@ -34,17 +34,17 @@
 (deftest calculates-commit-stats-for-each-couple
   (is (= (coupling/coupled-entities-with-rev-stats coupledd)
          [{:entity "A" :coupled "B" :shared-revs 2 :average-revs 2}
-          {:entity "A" :coupled "C" :shared-revs 2 :average-revs 3/2}
+          {:entity "A" :coupled "C" :shared-revs 1 :average-revs 3/2}
           {:entity "B" :coupled "A" :shared-revs 2 :average-revs 2}
-          {:entity "B" :coupled "C" :shared-revs 2 :average-revs 3/2}
-          {:entity "C" :coupled "A" :shared-revs 2 :average-revs 3/2}
-          {:entity "C" :coupled "B" :shared-revs 2 :average-revs 3/2}])))
+          {:entity "B" :coupled "C" :shared-revs 1 :average-revs 3/2}
+          {:entity "C" :coupled "A" :shared-revs 1 :average-revs 3/2}
+          {:entity "C" :coupled "B" :shared-revs 1 :average-revs 3/2}])))
 
 (deftest calculates-coupling-by-its-degree
   (is (= (incanter/to-list (coupling/by-degree coupledd))
-         [["A" "C" 400/3]
-          ["B" "C" 400/3]
-          ["C" "A" 400/3] ; -> something's wrong!!
-          ["C" "B" 400/3]
-          ["A" "B" 100]
-          ["B" "A" 100]])))
+         [["A" "B" 100]
+          ["B" "A" 100]
+          ["A" "C" 200/3]
+          ["B" "C" 200/3]
+          ["C" "A" 200/3]
+          ["C" "B" 200/3]])))

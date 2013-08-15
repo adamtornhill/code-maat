@@ -35,7 +35,7 @@
 
 (defn- shared-commits
   [coupled entity-coupling-ds]
-  (count
+  (nrow
    ($where {:coupled coupled} entity-coupling-ds)))
 
 (defn- average [x y] (/ (+ x y) 2))
