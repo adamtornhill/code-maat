@@ -81,9 +81,9 @@
            (in-same-revision r-changes))
          by-rev-ds))))
 
-(defn coupled-entities
+(defn coupled-entities-with-rev-stats
   "Returns a seq with the columns
-   :entity :coupled :shared-revs :average-revs.
+   :entity :coupled :shared-revs :average-revs
   This information forms the basis for the coupling calculations."
   [ds]
   (let [g ($group-by :rev (as-entity-with-revision ds))
@@ -92,3 +92,34 @@
     (coupling-statistics by-entity-coupling by-rev)))
 
 ;;; TODO next: group-by entity and calculate the coupling!
+
+(defn coupled-entities-with-rev-stats-as-ds
+  [ds]
+  (to-dataset
+   (coupled-entities-with-rev-stats ds)))
+
+(defn- as-percentage [v] (* v 100))
+
+(defn- as-logical-coupling
+  [entity coupled shared-revs average-revs]
+  "Future: consider weighting the total number of revisions into
+   the calculation to avoiding skewed data."
+  (let [coupling (as-percentage (/ shared-revs average-revs))]
+    {:entity entity :coupled coupled :degree coupling}))
+
+(defn by-degree
+  "Calculates the degree of logical coupling. Returns a seq
+   sorted in descending order (default) or an optional, custom sorting criterion.
+   The calulcation is  based on the given coupling statistics.
+   The coupling is calculated as a percentage value based on
+   the number of shared commits between coupled entities divided
+   by the average number of total commits for the coupled entities."
+  ([ds]
+     (by-degree ds :desc))
+  ([ds order-fn]
+     (let [coupled-with-rev (coupled-entities-with-rev-stats-as-ds ds)]
+       ($order :degree order-fn
+               (to-dataset
+                ($map as-logical-coupling
+                      [:entity :coupled :shared-revs :average-revs]
+                      coupled-with-rev))))))
