@@ -10,15 +10,8 @@
 ;;; It's information that's recorded in our version-control systems (VCS).
 ;;;
 ;;; Format:
-;;; All analysis expect an Incanter dataset with the following columns:
+;;; All analysis expect an Incanter dataset with (at least) the following columns:
 ;;; ::entity :rev
-
-(defn- as-entity-with-revision
-  "Extracts the columns of interest to the coupling analysis.
-   The intent is to shrink the dataset received in the API to
-   the minimum amount of needed data."
-  [ds]
-  ($ [:entity :rev] ds))
 
 (defn- as-coupling-permutations
   [entities]
@@ -30,9 +23,11 @@
    the given dataset for one revision.
    The returned vector contains maps of :entity and :coupled."
   [rev-ds]
-  (let [entities-changed (ds/-select-by :entity rev-ds)]
-    (map (fn [[f s]] {:entity f :coupled s})
-         (as-coupling-permutations entities-changed))))
+  (->>
+   rev-ds
+   (ds/-select-by :entity)
+   as-coupling-permutations
+   (map (fn [[f s]] {:entity f :coupled s}))))
 
 (defn- shared-commits
   [coupled entity-coupling-ds]
@@ -70,34 +65,44 @@
   "Applies the coupling statistics to each entity in the
    given dataset."
   [all-coupled entity-by-rev]
-  (let [cg (ds/-group-by :entity all-coupled)]
-    (flatten
-     (map #(coupling-statistics-for-entity % entity-by-rev) cg))))
+  (->>
+   all-coupled
+   (ds/-group-by :entity)
+   (map #(coupling-statistics-for-entity % entity-by-rev))
+   flatten))
 
 (defn- coupling-by-entity
   "Returns a dataset with the columns :entity :coupled
    aggregated over all revisions in the given ds."
   [by-rev-ds]
-  (to-dataset
-   (flatten
-    (map (fn [[_ r-changes]]
-           (in-same-revision r-changes))
-         by-rev-ds))))
+  (->>
+   by-rev-ds
+   (map (fn [[_ r-changes]] (in-same-revision r-changes)))
+   flatten
+   to-dataset))
+
+(defn- grouped-by-rev
+  [ds]
+  (->>
+   ds
+   ($group-by :rev)))
 
 (defn coupled-entities-with-rev-stats
   "Returns a seq with the columns
    :entity :coupled :shared-revs :average-revs
   This information forms the basis for the coupling calculations."
   [ds]
-  (let [g ($group-by :rev (as-entity-with-revision ds))
+  (let [g (grouped-by-rev ds)
         by-rev (entities/as-dataset-by-revision ds)
         by-entity-coupling (coupling-by-entity g)]
     (coupling-statistics by-entity-coupling by-rev)))
 
 (defn coupled-entities-with-rev-stats-as-ds
   [ds]
-  (to-dataset
-   (coupled-entities-with-rev-stats ds)))
+  (->
+   ds
+   coupled-entities-with-rev-stats
+  to-dataset))
 
 (defn- as-percentage [v] (* v 100))
 
@@ -119,8 +124,8 @@
      (by-degree ds :desc))
   ([ds order-fn]
      (let [coupled-with-rev (coupled-entities-with-rev-stats-as-ds ds)]
-       ($order :degree order-fn
-               (to-dataset
-                ($map as-logical-coupling
-                      [:entity :coupled :shared-revs :average-revs]
-                      coupled-with-rev))))))
+       (->>
+        coupled-with-rev
+        ($map as-logical-coupling [:entity :coupled :shared-revs :average-revs])
+        to-dataset
+       ($order :degree order-fn)))))
