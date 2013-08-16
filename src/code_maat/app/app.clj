@@ -15,7 +15,7 @@
 (def ^:const supported-analysis
   {"authors" authors/by-count
    "revisions" entities/by-revision
-   "coupling" coupling/by-degree})
+   "coupling" coupling/by-degree1})
 
 (defn- make-analysis
   [options]
