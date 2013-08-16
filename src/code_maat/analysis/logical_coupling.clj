@@ -199,6 +199,11 @@
               coupling (as-percentage (/ shared-revs average-revs))]]
      {:entity entity :coupled coupled :degree coupling}))
 
+(defn as-logical-coupling-of-all
+  [all-dependencies]
+  (map #(as-logical-coupling all-dependencies %)
+       all-dependencies))
+
 (defn by-degree1
   "Calculates the degree of logical coupling. Returns a seq
    sorted in descending order (default) or an optional, custom sorting criterion.
@@ -208,12 +213,13 @@
    by the average number of total commits for the coupled entities."
   ([ds] (by-degree1 ds :desc))
   ([ds order-fn]
-     (let [all-dependencies (calc-dependencies ds)]
-       ($order :degree order-fn
-               (to-dataset
-                (flatten
-                 (map #(as-logical-coupling all-dependencies %)
-                      all-dependencies)))))))
+     (->>
+      ds
+      calc-dependencies
+      as-logical-coupling-of-all
+      flatten
+      to-dataset
+      ($order :degree order-fn))))
 
 ;;; End new
 
