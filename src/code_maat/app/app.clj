@@ -10,9 +10,23 @@
 ;;;   change the project structure a lot...).
 ;;; - Introduce a temporal period.
 
+;;; TODO: consider making this dynamic in order to support new
+;;;       analysis methods as plug-ins.
+(def ^:const supported-analysis
+  {"authors" authors/by-count
+   "revisions" entities/by-revision
+   "coupling" coupling/by-degree})
+
+(defn- make-analysis
+  [options]
+  (if-let [analysis (supported-analysis (options :analysis))]
+    [analysis]
+    (vals supported-analysis))) ; :all
+
 (defn- xml->modifications [logfile-name options]
   (svn/zip->modification-sets
-   (xml/file->zip logfile-name)))
+   (xml/file->zip logfile-name)
+   options))
 
 ;;; TODO: do not hardcode csv!
 (defn- make-output [options]
@@ -26,10 +40,8 @@
     :analysis - the type of analysis to run
     :rows - the max number of results to include"
   (let [changes (xml->modifications logfile-name options)
-        ;;;coupling (coupling/by-degree changes) - Too slow! Optimize
-        most-authors (authors/by-count changes)
-        most-revisions (entities/by-revision changes)
+        analysis (make-analysis options)
         output (make-output options)]
-    (output most-authors)
-    (output most-revisions)))
+    (doseq [an-analysis analysis]
+      (output (an-analysis changes)))))
   
