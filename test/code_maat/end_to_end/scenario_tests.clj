@@ -16,7 +16,8 @@
   ([rows]
      {:module "svn"
       :output "csv"
-      :rows rows}))
+      :rows rows
+      :max-entries 10}))
 
 ;; TODO: test when we have real csv!
 (deftest generates-csv-summary-from-svn-log-file

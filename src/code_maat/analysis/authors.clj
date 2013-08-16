@@ -27,13 +27,19 @@
   [m ds]
   [m (count (of-module m ds))])
 
+(defn- authors-of-entity
+  [entity-group]
+  (->>
+   entity-group
+   (ds/-select-by :author)
+   set
+   count))
+
 (defn- group->entity-with-author-count
-  [[entity-group changes] ds]
+  [[entity-group entity-changes] ds]
   (let [entity (:entity entity-group)]
     [entity
-     (count
-      (set
-       (ds/-select-by :author changes)))
+     (authors-of-entity entity-changes)
      (entities/revisions-of entity ds)]))
 
 (defn by-count
@@ -47,7 +53,8 @@
   ([ds order-fn]
      (let [g (ds/-group-by :entity ds)
            by-rev (entities/as-dataset-by-revision ds)]
-       (ds/-order-by :n-authors order-fn
-                     (ds/-dataset [:entity :n-authors :n-revs]
-                                  (map
-                                   #(group->entity-with-author-count % by-rev) g))))))
+       (->>
+        g
+        (map #(group->entity-with-author-count % by-rev))
+         (ds/-dataset [:entity :n-authors :n-revs])
+         (ds/-order-by :n-authors order-fn)))))
