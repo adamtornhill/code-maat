@@ -13,9 +13,11 @@
 
 (defn as-dataset-by-revision
   [ds]
-  (let [g (ds/-group-by :entity ds)]
-    (ds/-dataset [:entity :n-revs]
-                 (map group->entity-with-rev-count g))))
+  (->>
+   ds
+   (ds/-group-by :entity)
+   (map group->entity-with-rev-count)
+   (ds/-dataset [:entity :n-revs])))
 
 (defn revisions-of
   "Returns the total number of revisions for the given

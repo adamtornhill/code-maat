@@ -25,6 +25,44 @@
 
 (def ^:const revd (incanter/to-dataset one-revision))
 
+;;; New
+
+(deftest updates-entity-revision
+  (testing "Creates stats the first time"
+    (is (= (coupling/update-entity-rev-in {} "Entity")
+           {"Entity" {:revs 1 :coupled {}}})))
+  (testing "Increases existing revision count"
+    (is (= (coupling/update-entity-rev-in {"Entity" {:revs 1 :coupled {}}}
+                                          "Entity")
+           {"Entity" {:revs 2 :coupled {}}})))
+  (testing "Leaves other entities unaffected"
+    (is (= (coupling/update-entity-rev-in {"Entity" {:revs 1 :coupled {}}
+                                           "Other"  {:revs 3 :coupled {"C1" 1}}}
+                                          "Entity")
+           {"Entity" {:revs 2 :coupled {}}
+            "Other"  {:revs 3 :coupled {"C1" 1}}}))))
+
+(deftest updates-coupled-entities
+  (let [stat-acc {"Entity" {:revs 2 :coupled {}}
+                  "Other"  {:revs 3 :coupled {"C1" 1}}}]
+    (is (= (coupling/update-coupling-in stat-acc {:entity "Entity" :coupled "C2"})
+           {"Entity" {:revs 2 :coupled {"C2" 1}}
+            "Other"  {:revs 3 :coupled {"C1" 1}}}))
+     (is (= (coupling/update-coupling-in stat-acc {:entity "Other" :coupled "C2"})
+           {"Entity" {:revs 2 :coupled {}}
+            "Other"  {:revs 3 :coupled {"C1" 1 "C2" 1}}}))))
+
+(deftest calculates-change-dependencies
+  (is (= (coupling/calc-dependencies coupledd)
+         {"C"
+          {:revs 1 :coupled {"B" 1, "A" 1}}
+          "B"
+          {:revs 2 :coupled {"C" 1, "A" 2}}
+          "A"
+          {:revs 2 :coupled {"C" 1, "B" 2}}})))
+
+;;; End new
+
 (deftest deduces-coupled-entities-in-the-same-revision
   (is (= (set (coupling/in-same-revision revd))
          (set [{:entity "A" :coupled "B"}

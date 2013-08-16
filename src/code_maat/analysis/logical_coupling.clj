@@ -18,6 +18,18 @@
   (remove (fn [[f s]] (= f s))
           (combo/selections entities 2)))
 
+(defn- entities-in-rev
+  [rev-ds]
+  (ds/-select-by :entity rev-ds))
+
+(defn- make-entity<->coupled-pair
+  [[entity coupled]]
+  {:entity entity :coupled coupled})
+
+(defn- make-entity<->coupled-pair-NEW
+  [[entity coupled]]
+  [entity coupled])
+
 (defn in-same-revision
   "Calculates a vector of all entities coupled in
    the given dataset for one revision.
@@ -25,9 +37,9 @@
   [rev-ds]
   (->>
    rev-ds
-   (ds/-select-by :entity)
+   entities-in-rev
    as-coupling-permutations
-   (map (fn [[f s]] {:entity f :coupled s}))))
+   (map make-entity<->coupled-pair)))
 
 (defn- shared-commits
   [coupled entity-coupling-ds]
@@ -86,6 +98,89 @@
   (->>
    ds
    ($group-by :rev)))
+
+;;; New
+
+;;; New implementation:
+;;; This is all we need:
+;;;{"Entity" {:revs n :coupled {"C1" 2  "C2" 1}}
+;;; We can quickly look-up total revs for all entities and
+;;; their dependencies and shared commits.
+
+;;; CURRENT: changing coupled from vec to map!
+
+(defn- make-entity-stats [] {:revs 0 :coupled {}})
+
+(defn- ensure-entity
+  [entity stats]
+  {:post  [(% entity)]}
+  (update-in stats [entity]
+             (fnil identity
+                   (make-entity-stats))))
+
+(defn- inc-revs
+  [entity entity-stats]
+  {:pre  [(entity-stats entity)]}
+  (update-in entity-stats [entity]
+             #(update-in % [:revs] inc)))
+
+(defn update-entity-rev-in
+  [stats entity]
+  (inc-revs entity (ensure-entity entity stats)))
+
+;;; TODO: ensure seems to be a macro candidate!
+(defn- ensure-coupling
+  [entity coupling-stats]
+  {:post [(% entity)]}
+  (update-in coupling-stats [entity]
+             (fnil identity 0)))
+
+(defn- inc-coupling
+  [coupled coupled-stats]
+  {:pre  [(coupled-stats coupled)]}
+  (update-in coupled-stats [coupled] inc))
+
+(defn- add-coupling
+  [entity coupled entity-spec]
+  (update-in entity-spec
+             [:coupled]
+             #(inc-coupling coupled
+                            (ensure-coupling coupled %))))
+
+(defn update-coupling-in
+  [stats {:keys [entity coupled]}]
+  {:pre  [(stats entity)]}
+  (update-in stats
+             [entity]
+             #(add-coupling entity coupled %)))
+
+(defn- as-dependents-in-one-rev
+  [stats changes-in-rev]
+  (let [entities (entities-in-rev changes-in-rev) ; TODO: abstract better! macro?
+        stats-with-updated-revs (reduce update-entity-rev-in
+                                        stats
+                                        entities)]
+    (reduce update-coupling-in
+            stats-with-updated-revs
+            (in-same-revision changes-in-rev))))
+            
+
+(defn as-dependent-entities
+  [changes-grouped-by-rev]
+  (reduce as-dependents-in-one-rev
+          {}
+          (map second
+               changes-grouped-by-rev)))
+   ;(map (fn [[_ r-changes]] (in-same-revision r-changes))
+
+(defn calc-dependencies
+  [ds]
+  (->
+   ds
+   grouped-by-rev
+   as-dependent-entities))
+
+;;; End new
 
 (defn coupled-entities-with-rev-stats
   "Returns a seq with the columns
