@@ -52,14 +52,39 @@
            {"Entity" {:revs 2 :coupled {}}
             "Other"  {:revs 3 :coupled {"C1" 1 "C2" 1}}}))))
 
+(def ^:const all-dependencies
+  {"C"
+   {:revs 1 :coupled {"B" 1, "A" 1}}
+   "B"
+   {:revs 2 :coupled {"C" 1, "A" 2}}
+   "A"
+   {:revs 2 :coupled {"C" 1, "B" 2}}})
+
 (deftest calculates-change-dependencies
   (is (= (coupling/calc-dependencies coupledd)
-         {"C"
-          {:revs 1 :coupled {"B" 1, "A" 1}}
-          "B"
-          {:revs 2 :coupled {"C" 1, "A" 2}}
-          "A"
-          {:revs 2 :coupled {"C" 1, "B" 2}}})))
+        all-dependencies)))
+
+(deftest calculates-logical-coupling-per-change
+  (is (= (coupling/as-logical-coupling
+          all-dependencies
+          ["A"
+           {:revs 2 :coupled {"C" 1, "B" 2}}])
+         [{:entity "A" :coupled "B" :degree 100}
+          {:entity "A" :coupled "C" :degree 200/3}])))
+
+(deftest calculates-coupling-by-its-degree
+  (testing "With coupled entities"
+    (is (= (incanter/to-list (coupling/by-degree1 coupledd))
+           [["B" "A" 100]
+            ["A" "B" 100]
+            ["C" "B" 200/3]
+            ["C" "A" 200/3]
+            ["B" "C" 200/3]
+            ["A" "C" 200/3]])))
+  (testing "A single change set with a single entity (boundary case)"
+    (is (= (incanter/to-list (coupling/by-degree1
+                              (incanter/to-dataset single-entity-commit)))
+           []))))
 
 ;;; End new
 
@@ -84,7 +109,7 @@
           {:entity "C" :coupled "A" :shared-revs 1 :average-revs 3/2}
           {:entity "C" :coupled "B" :shared-revs 1 :average-revs 3/2}])))
 
-(deftest calculates-coupling-by-its-degree
+(deftest calculates-coupling-by-its-degree1
   (testing "With coupled entities"
     (is (= (incanter/to-list (coupling/by-degree coupledd))
            [["A" "B" 100]

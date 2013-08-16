@@ -46,9 +46,9 @@
   (nrow
    ($where {:coupled coupled} entity-coupling-ds)))
 
-(defn- average
-  [x y]
-  (/ (+ x y) 2))
+(defn- average [x y] (/ (+ x y) 2))
+
+(defn- as-percentage [v] (* v 100))
 
 (defn commit-stats
   [entity coupled entities-by-rev entity-coupling-ds]
@@ -171,7 +171,6 @@
           {}
           (map second
                changes-grouped-by-rev)))
-   ;(map (fn [[_ r-changes]] (in-same-revision r-changes))
 
 (defn calc-dependencies
   [ds]
@@ -179,6 +178,42 @@
    ds
    grouped-by-rev
    as-dependent-entities))
+
+(defn- n-entity-revs
+  [entity dependencies]
+  {:pre [(dependencies entity)]}
+  (:revs (dependencies entity)))
+
+(defn as-logical-coupling
+  [all-dependencies [entity {:keys [revs coupled]}]]
+   "This is where the actual action is - we receive a
+   map for each entity with its total number of revisions and
+   another map of its coupled entities. Based on that information
+   we calculate the degree of coupling between the entity and
+   each of its coupled counterparts.
+   Future: consider weighting the total number of revisions into
+   the calculation to avoiding skewed data."
+   (for [[coupled shared-revs] coupled
+        :let [coupled-revs (n-entity-revs coupled all-dependencies)
+              average-revs (average revs coupled-revs)
+              coupling (as-percentage (/ shared-revs average-revs))]]
+     {:entity entity :coupled coupled :degree coupling}))
+
+(defn by-degree1
+  "Calculates the degree of logical coupling. Returns a seq
+   sorted in descending order (default) or an optional, custom sorting criterion.
+   The calulcation is  based on the given coupling statistics.
+   The coupling is calculated as a percentage value based on
+   the number of shared commits between coupled entities divided
+   by the average number of total commits for the coupled entities."
+  ([ds] (by-degree1 ds :desc))
+  ([ds order-fn]
+     (let [all-dependencies (calc-dependencies ds)]
+       ($order :degree order-fn
+               (to-dataset
+                (flatten
+                 (map #(as-logical-coupling all-dependencies %)
+                      all-dependencies)))))))
 
 ;;; End new
 
@@ -199,9 +234,7 @@
    coupled-entities-with-rev-stats
   to-dataset))
 
-(defn- as-percentage [v] (* v 100))
-
-(defn- as-logical-coupling
+(defn- as-logical-coupling1
   [entity coupled shared-revs average-revs]
   "Future: consider weighting the total number of revisions into
    the calculation to avoiding skewed data."
@@ -221,6 +254,6 @@
      (let [coupled-with-rev (coupled-entities-with-rev-stats-as-ds ds)]
        (->>
         coupled-with-rev
-        ($map as-logical-coupling [:entity :coupled :shared-revs :average-revs])
+        ($map as-logical-coupling1 [:entity :coupled :shared-revs :average-revs])
         to-dataset
        ($order :degree order-fn)))))
