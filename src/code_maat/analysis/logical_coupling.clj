@@ -83,31 +83,11 @@
    (map #(coupling-statistics-for-entity % entity-by-rev))
    flatten))
 
-(defn- coupling-by-entity
-  "Returns a dataset with the columns :entity :coupled
-   aggregated over all revisions in the given ds."
-  [by-rev-ds]
-  (->>
-   by-rev-ds
-   (map (fn [[_ r-changes]] (in-same-revision r-changes)))
-   flatten
-   to-dataset))
-
 (defn- grouped-by-rev
   [ds]
   (->>
    ds
    ($group-by :rev)))
-
-;;; New
-
-;;; New implementation:
-;;; This is all we need:
-;;;{"Entity" {:revs n :coupled {"C1" 2  "C2" 1}}
-;;; We can quickly look-up total revs for all entities and
-;;; their dependencies and shared commits.
-
-;;; CURRENT: changing coupled from vec to map!
 
 (defn- make-entity-stats [] {:revs 0 :coupled {}})
 
@@ -230,46 +210,3 @@
       flatten
       to-dataset
       ($order [:degree :average-revs] order-fn))))
-
-;;; End new
-
-(defn coupled-entities-with-rev-stats
-  "Returns a seq with the columns
-   :entity :coupled :shared-revs :average-revs
-  This information forms the basis for the coupling calculations."
-  [ds]
-  (let [g (grouped-by-rev ds)
-        by-rev (entities/as-dataset-by-revision ds)
-        by-entity-coupling (coupling-by-entity g)]
-    (coupling-statistics by-entity-coupling by-rev)))
-
-(defn coupled-entities-with-rev-stats-as-ds
-  [ds]
-  (->
-   ds
-   coupled-entities-with-rev-stats
-  to-dataset))
-
-(defn- as-logical-coupling1
-  [entity coupled shared-revs average-revs]
-  "Future: consider weighting the total number of revisions into
-   the calculation to avoiding skewed data."
-  (let [coupling (as-percentage (/ shared-revs average-revs))]
-    {:entity entity :coupled coupled :degree coupling}))
-
-(defn by-degree
-  "Calculates the degree of logical coupling. Returns a seq
-   sorted in descending order (default) or an optional, custom sorting criterion.
-   The calulcation is  based on the given coupling statistics.
-   The coupling is calculated as a percentage value based on
-   the number of shared commits between coupled entities divided
-   by the average number of total commits for the coupled entities."
-  ([ds]
-     (by-degree ds :desc))
-  ([ds order-fn]
-     (let [coupled-with-rev (coupled-entities-with-rev-stats-as-ds ds)]
-       (->>
-        coupled-with-rev
-        ($map as-logical-coupling1 [:entity :coupled :shared-revs :average-revs])
-        to-dataset
-       ($order :degree order-fn)))))

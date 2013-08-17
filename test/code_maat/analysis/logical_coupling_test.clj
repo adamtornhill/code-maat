@@ -25,7 +25,17 @@
 
 (def ^:const revd (incanter/to-dataset one-revision))
 
-;;; New
+(deftest deduces-coupled-entities-in-the-same-revision
+  (is (= (set (coupling/in-same-revision revd))
+         (set [{:entity "A" :coupled "B"}
+               {:entity "A" :coupled "C"}
+               {:entity "B" :coupled "A"}
+               {:entity "B" :coupled "C"}
+               {:entity "C" :coupled "A"}
+               {:entity "C" :coupled "B"}])))
+  (testing "Workaround for Incanter's single value return instead of seq of one element."
+    (is (= (coupling/in-same-revision (incanter/to-dataset single-entity-commit))
+           []))))
 
 (deftest updates-entity-revision
   (testing "Creates stats the first time"
@@ -91,41 +101,4 @@
     (is (= (incanter/to-list (coupling/by-degree1
                               (incanter/to-dataset single-entity-commit)
                               test-data/options-with-low-thresholds))
-           []))))
-
-;;; End new
-
-(deftest deduces-coupled-entities-in-the-same-revision
-  (is (= (set (coupling/in-same-revision revd))
-         (set [{:entity "A" :coupled "B"}
-               {:entity "A" :coupled "C"}
-               {:entity "B" :coupled "A"}
-               {:entity "B" :coupled "C"}
-               {:entity "C" :coupled "A"}
-               {:entity "C" :coupled "B"}])))
-  (testing "Workaround for Incanter's single value return instead of seq of one element."
-    (is (= (coupling/in-same-revision (incanter/to-dataset single-entity-commit))
-           []))))
-
-(deftest calculates-commit-stats-for-each-couple
-  (is (= (coupling/coupled-entities-with-rev-stats coupledd)
-         [{:entity "A" :coupled "B" :shared-revs 2 :average-revs 2}
-          {:entity "A" :coupled "C" :shared-revs 1 :average-revs 3/2}
-          {:entity "B" :coupled "A" :shared-revs 2 :average-revs 2}
-          {:entity "B" :coupled "C" :shared-revs 1 :average-revs 3/2}
-          {:entity "C" :coupled "A" :shared-revs 1 :average-revs 3/2}
-          {:entity "C" :coupled "B" :shared-revs 1 :average-revs 3/2}])))
-
-(deftest calculates-coupling-by-its-degree1
-  (testing "With coupled entities"
-    (is (= (incanter/to-list (coupling/by-degree coupledd))
-           [["A" "B" 100]
-            ["B" "A" 100]
-            ["A" "C" 200/3]
-            ["B" "C" 200/3]
-            ["C" "A" 200/3]
-            ["C" "B" 200/3]])))
-  (testing "A single change set with a single entity (boundary case)"
-    (is (= (incanter/to-list (coupling/by-degree
-                              (incanter/to-dataset single-entity-commit)))
            []))))
