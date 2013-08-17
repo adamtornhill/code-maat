@@ -18,10 +18,13 @@
    "coupling" coupling/by-degree1})
 
 (defn- make-analysis
+  "Returns a seq of analysis methods closing over the options.
+   Each analysis method takes a single data set as argument."
   [options]
   (if-let [analysis (supported-analysis (options :analysis))]
-    [analysis]
-    (vals supported-analysis))) ; :all
+    [#(analysis % options)]
+    (map (fn [a] #(a % options))
+         (vals supported-analysis)))) ; :all
 
 (defn- xml->modifications [logfile-name options]
   (svn/zip->modification-sets

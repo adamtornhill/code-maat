@@ -184,8 +184,15 @@
   {:pre [(dependencies entity)]}
   (:revs (dependencies entity)))
 
+(defn- within-threshold?
+  [thresholds revs shared-revs coupling]
+  (and
+   (>= revs (thresholds :min-revs))
+   (>= shared-revs (thresholds :min-shared-revs))
+   (>= coupling (thresholds :min-coupling))))
+
 (defn as-logical-coupling
-  [all-dependencies [entity {:keys [revs coupled]}]]
+  [all-dependencies within-threshold-fn? [entity {:keys [revs coupled]}]]
    "This is where the actual action is - we receive a
    map for each entity with its total number of revisions and
    another map of its coupled entities. Based on that information
@@ -196,13 +203,16 @@
    (for [[coupled shared-revs] coupled
         :let [coupled-revs (n-entity-revs coupled all-dependencies)
               average-revs (average revs coupled-revs)
-              coupling (as-percentage (/ shared-revs average-revs))]]
-     {:entity entity :coupled coupled :degree coupling}))
+              coupling (as-percentage (/ shared-revs average-revs))]
+        :when (within-threshold-fn? average-revs shared-revs coupling)]
+     {:entity entity :coupled coupled :degree coupling :average-revs average-revs}))
 
 (defn as-logical-coupling-of-all
-  [all-dependencies]
-  (map #(as-logical-coupling all-dependencies %)
-       all-dependencies))
+  [thresholds all-dependencies]
+  (let [within-threshold-fn? (partial within-threshold? thresholds)]
+    (map
+     #(as-logical-coupling all-dependencies within-threshold-fn? %)
+     all-dependencies)))
 
 (defn by-degree1
   "Calculates the degree of logical coupling. Returns a seq
@@ -211,12 +221,12 @@
    The coupling is calculated as a percentage value based on
    the number of shared commits between coupled entities divided
    by the average number of total commits for the coupled entities."
-  ([ds] (by-degree1 ds :desc))
-  ([ds order-fn]
+  ([ds options] (by-degree1 ds options :desc))
+  ([ds options order-fn]
      (->>
       ds
       calc-dependencies
-      as-logical-coupling-of-all
+      (as-logical-coupling-of-all options)
       flatten
       to-dataset
       ($order :degree order-fn))))

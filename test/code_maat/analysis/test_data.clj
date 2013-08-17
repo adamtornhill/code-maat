@@ -17,3 +17,9 @@
   (:rows (incanter/sel
           ds
           :rows :all)))
+
+(def ^:const options-with-low-thresholds
+  "Typically given as cmd line args"
+  {:min-revs 1
+   :min-shared-revs 1
+   :min-coupling 50})

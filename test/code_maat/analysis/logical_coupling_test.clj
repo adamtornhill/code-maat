@@ -64,26 +64,33 @@
   (is (= (coupling/calc-dependencies coupledd)
         all-dependencies)))
 
+(defn- no-threshold [& _] true)
+
 (deftest calculates-logical-coupling-per-change
   (is (= (coupling/as-logical-coupling
           all-dependencies
+          no-threshold
           ["A"
            {:revs 2 :coupled {"C" 1, "B" 2}}])
-         [{:entity "A" :coupled "B" :degree 100}
-          {:entity "A" :coupled "C" :degree 200/3}])))
+         [{:entity "A" :coupled "B" :degree 100 :average-revs 2}
+          {:entity "A" :coupled "C" :degree 200/3 :average-revs 3/2}])))
 
 (deftest calculates-coupling-by-its-degree
   (testing "With coupled entities"
-    (is (= (incanter/to-list (coupling/by-degree1 coupledd))
-           [["B" "A" 100]
-            ["A" "B" 100]
-            ["C" "B" 200/3]
-            ["C" "A" 200/3]
-            ["B" "C" 200/3]
-            ["A" "C" 200/3]])))
+    (is (= (incanter/to-list (coupling/by-degree1
+                              coupledd
+                              test-data/options-with-low-thresholds))
+           ;; :entity :coupled :degree :average-revs
+           [["B"      "A"       100     2]
+            ["A"      "B"       100     2]
+            ["C"      "B"       200/3   3/2]
+            ["C"      "A"       200/3   3/2]
+            ["B"      "C"       200/3   3/2]
+            ["A"      "C"       200/3   3/2]])))
   (testing "A single change set with a single entity (boundary case)"
     (is (= (incanter/to-list (coupling/by-degree1
-                              (incanter/to-dataset single-entity-commit)))
+                              (incanter/to-dataset single-entity-commit)
+                              test-data/options-with-low-thresholds))
            []))))
 
 ;;; End new

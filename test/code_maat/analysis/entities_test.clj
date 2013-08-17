@@ -8,12 +8,16 @@
      #{"apt" "jt" "xy"}))
 
 (deftest sorts-entities-on-number-of-revisions
-  (is (= (test-data/content-of (entities/by-revision test-data/vcsd))
+  (is (= (test-data/content-of (entities/by-revision
+                                test-data/vcsd
+                                test-data/options-with-low-thresholds))
          [{:n-revs 3 :entity "A"}
           {:n-revs 1, :entity "B"}])))
 
 (deftest calculates-revisions-of-specific-entites
-  (let [rg (entities/by-revision test-data/vcsd)]
+  (let [rg (entities/by-revision
+            test-data/vcsd
+            test-data/options-with-low-thresholds)]
     (is (= (entities/revisions-of "A" rg)
            3))
     (is (= (entities/revisions-of "B" rg)

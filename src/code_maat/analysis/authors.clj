@@ -48,9 +48,9 @@
    You can provide an extra, optional argument specifying
    a custom criterion.
    Returns a dataset with the columns :entity :n-authors."
-  ([ds]
-     (by-count ds :desc))
-  ([ds order-fn]
+  ([ds options]
+     (by-count ds options :desc))
+  ([ds options order-fn]
      (let [g (ds/-group-by :entity ds)
            by-rev (entities/as-dataset-by-revision ds)]
        (->>

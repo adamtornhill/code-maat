@@ -1,5 +1,6 @@
 (ns code-maat.end-to-end.scenario-tests
-  (:require [code-maat.app.app :as app])
+  (:require [code-maat.app.app :as app]
+            [code-maat.analysis.test-data :as test-data])
   (:use clojure.test))
 
 ;;; Test: write a scenario for each supported:
@@ -14,10 +15,12 @@
   ([]
      (svn-csv-options 1))
   ([rows]
-     {:module "svn"
-      :output "csv"
-      :rows rows
-      :max-entries 10}))
+     (merge
+      test-data/options-with-low-thresholds
+      {:module "svn"
+       :output "csv"
+       :rows rows
+       :max-entries 10})))
 
 ;; TODO: test when we have real csv!
 (deftest generates-csv-summary-from-svn-log-file

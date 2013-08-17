@@ -10,7 +10,13 @@
             :default "authors"]
            ["-r" "--rows"   "Max rows in output" :default 10 :parse-fn #(Integer. %)]
            ["-e" "--max-entries" "Max entries to parse in the input log file"
-            :default 500 :parse-fn #(Integer. %)]))
+            :default 500 :parse-fn #(Integer. %)]
+           ["--min-revs" "Minimum number of revisions to include an entity in the analysis"
+            :default 5 :parse-fn #(Integer. %)]
+           ["--min-shared-revs" "Minimum number of shared revisions to include an entity in the analysis"
+            :default 5 :parse-fn #(Integer. %)]
+           ["--min-coupling" "Minimum degree of coupling (in percentage) to consider"
+            :default 50 :parse-fn #(Integer. %)]))
 
 (defn- print-banner []
   (let [[options args banner] (as-app-options [])]
