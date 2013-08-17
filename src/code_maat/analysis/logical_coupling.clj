@@ -229,7 +229,7 @@
       (as-logical-coupling-of-all options)
       flatten
       to-dataset
-      ($order :degree order-fn))))
+      ($order [:degree :average-revs] order-fn))))
 
 ;;; End new
 
