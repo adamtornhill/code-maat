@@ -91,13 +91,14 @@
 
 (defn- make-entity-stats [] {:revs 0 :coupled {}})
 
-(defn- ensure-entity
-  [entity stats]
-  {:post  [(% entity)]}
-  (update-in stats [entity]
+(defmacro ensure-exists
+  "Ensures that the entity exists in the given stat(istics).
+   When not, the entity is added and bound to the value
+   returned from evaluating the default form."
+  [entity stats default]
+  `(update-in ~stats [~entity]
              (fnil identity
-                   (make-entity-stats))))
-
+                   ~default)))
 (defn- inc-revs
   [entity entity-stats]
   {:pre  [(entity-stats entity)]}
@@ -106,14 +107,10 @@
 
 (defn update-entity-rev-in
   [stats entity]
-  (inc-revs entity (ensure-entity entity stats)))
-
-;;; TODO: ensure seems to be a macro candidate!
-(defn- ensure-coupling
-  [entity coupling-stats]
-  {:post [(% entity)]}
-  (update-in coupling-stats [entity]
-             (fnil identity 0)))
+  (inc-revs entity
+            (ensure-exists entity
+                           stats
+                           (make-entity-stats))))
 
 (defn- inc-coupling
   [coupled coupled-stats]
@@ -125,7 +122,7 @@
   (update-in entity-spec
              [:coupled]
              #(inc-coupling coupled
-                            (ensure-coupling coupled %))))
+                            (ensure-exists coupled % 0))))
 
 (defn update-coupling-in
   [stats {:keys [entity coupled]}]
@@ -134,12 +131,16 @@
              [entity]
              #(add-coupling entity coupled %)))
 
+(defn- as-updated-revisions
+  [entities stats]
+  (reduce update-entity-rev-in
+          stats
+          entities))
+
 (defn- as-dependents-in-one-rev
   [stats changes-in-rev]
-  (let [entities (entities-in-rev changes-in-rev) ; TODO: abstract better! macro?
-        stats-with-updated-revs (reduce update-entity-rev-in
-                                        stats
-                                        entities)]
+  (let [entities (entities-in-rev changes-in-rev)
+        stats-with-updated-revs (as-updated-revisions entities stats)]
     (reduce update-coupling-in
             stats-with-updated-revs
             (in-same-revision changes-in-rev))))
