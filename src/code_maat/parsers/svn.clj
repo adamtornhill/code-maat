@@ -36,7 +36,7 @@
         files (filter #(= "file" (attr % :kind)) paths)]
         (map group-file-with-action files)))
 
-(defn as-rows [svn-logentry]
+(defn as-rows [coll svn-logentry]
   "Transforms the given svn logentry to a seq of rows containing
    the modification data for each entity."
   (let [extractor (make-extractor svn-logentry)
@@ -44,9 +44,11 @@
         date (extractor :date text)
         author (extractor :author text)
         revision (extractor (attr :revision))]
-    (for [[e action] entities
-          :let [row {:entity e :action action :date date :author author :rev revision}]]
-      row)))
+    (reduce conj
+            coll
+            (for [[e action] entities
+                  :let [row {:entity e :action action :date date :author author :rev revision}]]
+              row))))
 
 (def ^:const default-parse-options
   {:max-entries 200})
@@ -93,6 +95,7 @@
       zipped
       zip->log-entries
       (log-entries-to-include parse-options)
-      (map as-rows)
-      flatten
+      ;(map as-rows)
+      (reduce as-rows [])
+      ;flatten
       incanter/to-dataset)))

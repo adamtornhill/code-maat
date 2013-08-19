@@ -50,7 +50,7 @@
          2)))
 
 (deftest one-modified-entity-per-row
-  (let [[row1 row2] (svn/as-rows first-entry)]
+  (let [[row1 row2] (svn/as-rows [] first-entry)]
     (is (= row1
            {:entity "/Infrastrucure/Network/Connection.cs "
             :date "2013-02-08T11:46:13.844538Z"
@@ -65,7 +65,7 @@
             :rev "2"}))))
 
 (deftest created-entities-are-marked
-  (let [[row-with-created-entity] (svn/as-rows second-entry)]
+  (let [[row-with-created-entity] (svn/as-rows [] second-entry)]
     (is (= row-with-created-entity
            {:entity "/Infrastrucure/Network/Connection.cs "
             :date "2013-02-07T11:46:13.844538Z"
