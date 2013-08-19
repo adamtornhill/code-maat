@@ -1,7 +1,7 @@
 (ns code-maat.core
   (:require [code-maat.app.app :as app]
             [clojure.tools.cli :as cli]
-            [clj-time.core :as clj-time]))
+            [clj-time.format :as time-format]))
 
 (defn- as-app-options [args]
   (cli/cli args
@@ -12,7 +12,8 @@
            ["-r" "--rows"   "Max rows in output" :default 10 :parse-fn #(Integer. %)]
            ["-e" "--max-entries" "Max entries to parse in the input log file"
             :default 500 :parse-fn #(Integer. %)]
-           ["-d" "--date" "The end date to consider in the logs, given as yyyyMMdd"]
+           ["-d" "--date" "The start date to consider in the logs, given as yyyyMMdd"
+            :parse-fn #(time-format/parse (time-format/formatter "yyyyMMdd") %)]
            ["--min-revs" "Minimum number of revisions to include an entity in the analysis"
             :default 5 :parse-fn #(Integer. %)]
            ["--min-shared-revs" "Minimum number of shared revisions to include an entity in the analysis"
