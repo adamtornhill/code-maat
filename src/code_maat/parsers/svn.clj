@@ -50,11 +50,10 @@
                   :let [row {:entity e :action action :date date :author author :rev revision}]]
               row))))
 
-(def ^:const default-parse-options
-  {:max-entries 200})
-
 (defn- make-entries-limited-seq [parse-options s]
-  (take (or (:max-entries parse-options) 200) s))
+  (if-let [n (:max-entries parse-options)]
+    (take n s)
+    s))
 
 (def svn-date-formatter (time-format/formatters :date-time))
 
@@ -89,13 +88,11 @@
    The dataset contains the following rows:
    :entity :action :date :author :rev"
   ([zipped]
-     (zip->modification-sets zipped default-parse-options))
+     (zip->modification-sets zipped {}))
   ([zipped parse-options]
      (->>
       zipped
       zip->log-entries
       (log-entries-to-include parse-options)
-      ;(map as-rows)
       (reduce as-rows [])
-      ;flatten
       incanter/to-dataset)))

@@ -11,7 +11,7 @@
             :default "authors"]
            ["-r" "--rows"   "Max rows in output" :default 10 :parse-fn #(Integer. %)]
            ["-e" "--max-entries" "Max entries to parse in the input log file"
-            :default 500 :parse-fn #(Integer. %)]
+            :parse-fn #(Integer. %)]
            ["-d" "--date" "The start date to consider in the logs, given as yyyyMMdd"
             :parse-fn #(time-format/parse (time-format/formatter "yyyyMMdd") %)]
            ["--min-revs" "Minimum number of revisions to include an entity in the analysis"
