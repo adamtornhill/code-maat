@@ -82,6 +82,15 @@
                   make-entries-limited-seq)]
   (limitter parse-options s)))
 
+(defn- parse
+  [zipped parse-options]
+  (->>
+   zipped
+   zip->log-entries
+   (log-entries-to-include parse-options)
+   (reduce as-rows [])
+   incanter/to-dataset))
+
 (defn zip->modification-sets
   "Transforms the given zipped svn log into an Incanter
    dataset of modification data.
@@ -90,9 +99,4 @@
   ([zipped]
      (zip->modification-sets zipped {}))
   ([zipped parse-options]
-     (->>
-      zipped
-      zip->log-entries
-      (log-entries-to-include parse-options)
-      (reduce as-rows [])
-      incanter/to-dataset)))
+     (parse zipped parse-options)))

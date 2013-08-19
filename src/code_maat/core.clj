@@ -11,7 +11,7 @@
             :default "authors"]
            ["-r" "--rows"   "Max rows in output" :default 10 :parse-fn #(Integer. %)]
            ["-e" "--max-entries" "Max entries to parse in the input log file"
-            :parse-fn #(Integer. %)]
+            :default 1000 :parse-fn #(Integer. %)]
            ["-d" "--date" "The start date to consider in the logs, given as yyyyMMdd"
             :parse-fn #(time-format/parse (time-format/formatter "yyyyMMdd") %)]
            ["--min-revs" "Minimum number of revisions to include an entity in the analysis"
@@ -29,11 +29,14 @@
 (defn- input-file-from [args]
   (first args))
 
-;;;TODO: introduce main catch block here - recovery point: print-banner
 (defn -main
   ([]
      (print-banner))
   ([& args]
-     (let [[options free-args banner]
-           (as-app-options args)]
-       (app/run (input-file-from free-args) options))))
+     (try
+       (let [[options free-args banner]
+             (as-app-options args)]
+         (app/run (input-file-from free-args) options))
+       (catch Exception e ; this is our main recovery point, errors propagate transparently to here
+         (println "Error: " (.getMessage e))
+         (print-banner)))))

@@ -23,9 +23,12 @@
          (vals supported-analysis)))) ; :all
 
 (defn- xml->modifications [logfile-name options]
-  (svn/zip->modification-sets
-   (xml/file->zip logfile-name)
-   options))
+  (try
+    (svn/zip->modification-sets
+     (xml/file->zip logfile-name)
+     options)
+    (catch Exception _
+      (throw (IllegalArgumentException. "Failed to parse the given file - is it a valid svn logfile?")))))
 
 ;;; TODO: do not hardcode csv!
 (defn- make-output [options]
