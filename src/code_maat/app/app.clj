@@ -5,10 +5,6 @@
              [code-maat.analysis.authors :as authors]
              [code-maat.analysis.entities :as entities]
              [code-maat.analysis.logical-coupling :as coupling]))
-;;; TODO:
-;;; - Parameterize the parse in order to shrink the paths (we move the files and
-;;;   change the project structure a lot...).
-;;; - Introduce a temporal period.
 
 ;;; TODO: consider making this dynamic in order to support new
 ;;;       analysis methods as plug-ins.
