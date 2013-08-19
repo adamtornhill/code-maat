@@ -32,9 +32,8 @@
 
 (defn- extract-modified-files [logentry]
   "Extracts all modified files from the given logentry."
-  (let [paths (xml-> logentry :paths :path)
-        files (filter #(= "file" (attr % :kind)) paths)]
-        (map group-file-with-action files)))
+  (let [paths (xml-> logentry :paths :path)]
+    (map group-file-with-action paths)))
 
 (defn as-rows [coll svn-logentry]
   "Transforms the given svn logentry to a seq of rows containing

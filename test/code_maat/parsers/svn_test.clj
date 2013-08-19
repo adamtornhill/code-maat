@@ -20,9 +20,6 @@
      kind='file'
      action='M'>/Presentation/Status/ClientPresenter.cs
    </path>
-   <path
-      kind='dir'
-      action='M'>/Presentation/Status</path>
   </paths>
   <msg>[bug] Fixed the connection status </msg>
  </logentry>
