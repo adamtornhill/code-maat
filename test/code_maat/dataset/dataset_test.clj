@@ -23,3 +23,7 @@
   (testing "No rows"
     (is (= (ds/-select-by :entity test-data/empty-vcsd)
            []))))
+
+(deftest counts-rows
+  (is (= (ds/-nrows test-data/vcsd)
+         4)))

@@ -9,10 +9,10 @@
          #{"apt" "jt"})))
 
 (deftest gives-all-authors-of-specified-module
-  (is (= (authors/of-module "A" test-data/vcsd)
-         #{"apt" "jt"}))
-  (is (= (authors/of-module "B" test-data/vcsd)
-         #{"apt"})))
+  (is (= (incanter/to-list (authors/of-module "A" test-data/vcsd))
+         [["apt"] ["jt"]]))
+  (is (= (incanter/to-list (authors/of-module "B" test-data/vcsd))
+         [["apt"]])))
 
 (deftest sorts-entities-on-max-number-of-authors
   (is (= (test-data/content-of (authors/by-count

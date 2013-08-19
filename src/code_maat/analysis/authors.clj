@@ -11,10 +11,11 @@
 ;;; :author :entity :rev
 
 (defn of-module [m ds]
-  (set
-   (ds/-select-by
-    :author
-    (ds/-where {:entity m} ds))))
+  (ds/-dataset [:author]
+               (set
+                (ds/-select-by
+                 :author
+                 (ds/-where {:entity m} ds)))))
 
 (defn all
   "Returns a set with the name of all authors."
@@ -25,7 +26,7 @@
   "Calculates the number of different authors for the given module, m.
    Returns a tuple of [entity-name number-of-distinct-authors]."
   [m ds]
-  [m (count (of-module m ds))])
+  [m (ds/-nrows (of-module m ds))])
 
 (defn- authors-of-entity
   [entity-group]

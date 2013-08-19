@@ -38,3 +38,7 @@
 (defn -dataset
   [columns data]
   (incanter/dataset columns data))
+
+(defn -nrows
+  [ds]
+  (incanter/nrow ds))
