@@ -7,22 +7,30 @@
 ;;;  - vcs
 ;;;  - text-based output
 ;;; Ensure that all combinations are run!
-;;; Make the test data-driven!
+;;; TODO; Make the test data-driven!
 
 (def ^:const svn-log-file "./test/code_maat/end_to_end/simple.xml")
 
 (defn- svn-csv-options
-  ([]
-     (svn-csv-options 1))
-  ([rows]
+  ([rows analysis]
      (merge
       test-data/options-with-low-thresholds
       {:module "svn"
        :output "csv"
        :rows rows
+       :analysis analysis
        :max-entries 10})))
 
-;; TODO: test when we have real csv!
+(defn- run-with-str-output [options]
+  (with-out-str
+    (app/run svn-log-file options)))
+
+;;; Could really benefit from being data-driven!
 (deftest generates-csv-summary-from-svn-log-file
-  (app/run svn-log-file (svn-csv-options))
-  (app/run svn-log-file (svn-csv-options 10)))
+  (is (= (run-with-str-output (svn-csv-options 10 "authors"))
+         "entity,n-authors,n-revs\n/Infrastrucure/Network/Connection.cs ,2,2\n/Presentation/Status/ClientPresenter.cs ,1,1\n"))
+  (is (= (run-with-str-output (svn-csv-options 10 "revisions"))
+         "entity,n-revs\n/Infrastrucure/Network/Connection.cs ,2\n/Presentation/Status/ClientPresenter.cs ,1\n"))
+  (is (= (run-with-str-output (svn-csv-options 10 "coupling"))
+         "entity,coupled,degree,average-revs\n/Presentation/Status/ClientPresenter.cs ,/Infrastrucure/Network/Connection.cs ,200/3,3/2\n/Infrastrucure/Network/Connection.cs ,/Presentation/Status/ClientPresenter.cs ,200/3,3/2\n")))
+    

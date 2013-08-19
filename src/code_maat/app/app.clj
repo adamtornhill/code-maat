@@ -42,9 +42,9 @@
     :output - the type of result output to generate
     :analysis - the type of analysis to run
     :rows - the max number of results to include"
-  (let [changes (time (xml->modifications logfile-name options))
+  (let [changes (xml->modifications logfile-name options)
         analysis (make-analysis options)
         output (make-output options)]
     (doseq [an-analysis analysis]
-      (output (time (an-analysis changes))))))
+      (output (an-analysis changes)))))
   
