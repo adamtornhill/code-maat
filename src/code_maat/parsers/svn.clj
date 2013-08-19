@@ -49,6 +49,11 @@
 (def ^:const default-parse-options
   {:max-entries 200})
 
+(defn- log-entries-to-include
+  [zipped parse-options]
+  (take (:max-entries parse-options)
+        (zip->log-entries zipped)))
+
 (defn zip->modification-sets
   "Transforms the given zipped svn log into an Incanter
    dataset of modification data.
@@ -57,8 +62,8 @@
   ([zipped]
      (zip->modification-sets zipped default-parse-options))
   ([zipped parse-options]
-     (incanter/to-dataset
-      (flatten
-       (map as-rows
-            (take (:max-entries parse-options)
-                  (zip->log-entries zipped)))))))
+     (->>
+      (log-entries-to-include zipped parse-options)
+      (map as-rows)
+      flatten
+      incanter/to-dataset)))
