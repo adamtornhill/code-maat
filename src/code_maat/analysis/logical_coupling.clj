@@ -1,7 +1,8 @@
 (ns code-maat.analysis.logical-coupling
   (:require [clojure.math.combinatorics :as combo]
             [code-maat.analysis.entities :as entities]
-            [code-maat.dataset.dataset :as ds])
+            [code-maat.dataset.dataset :as ds]
+            [code-maat.analysis.math :as m])
   (:use incanter.core))
 
 ;;; This module calculates the logical coupling of all modules.
@@ -26,10 +27,6 @@
   [[entity coupled]]
   {:entity entity :coupled coupled})
 
-(defn- make-entity<->coupled-pair-NEW
-  [[entity coupled]]
-  [entity coupled])
-
 (defn in-same-revision
   "Calculates a vector of all entities coupled in
    the given dataset for one revision.
@@ -40,52 +37,6 @@
    entities-in-rev
    as-coupling-permutations
    (map make-entity<->coupled-pair)))
-
-(defn- shared-commits
-  [coupled entity-coupling-ds]
-  (nrow
-   ($where {:coupled coupled} entity-coupling-ds)))
-
-(defn- average [x y] (/ (+ x y) 2))
-
-(defn- as-percentage [v] (* v 100))
-
-(defn commit-stats
-  [entity coupled entities-by-rev entity-coupling-ds]
-  (let [entity-revs (entities/revisions-of entity entities-by-rev)
-        coupled-revs (entities/revisions-of coupled entities-by-rev)]
-    {:average-revs (average entity-revs coupled-revs)
-     :shared-revs (shared-commits coupled entity-coupling-ds)}))
-
-(defn- coupling-statistics-for-entity
-  "Calculates the coupling statistics for the given entity.
-   Returns a map with the following keys:
-   :entity :coupled :shared-revs :average-revs"
-  [coll [e eds] entities-by-rev]
-  (let [entity (:entity e)
-        coupled (set (ds/-select-by :coupled eds))
-        commit-stats-fn #(commit-stats entity % entities-by-rev eds)]
-    (reduce conj
-            coll
-            (for [c coupled
-                  :let [{:keys [average-revs shared-revs]} (commit-stats-fn c)
-                        stats {:entity entity
-                               :coupled c
-                               :shared-revs shared-revs
-                               :average-revs average-revs}]]
-              stats))))
-
-(defn- coupling-statistics
-  "Applies the coupling statistics to each entity in the
-   given dataset."
-  [all-coupled entity-by-rev]
-  (->>
-   all-coupled
-   (ds/-group-by :entity)
-   (reduce
-    (fn [coll entity]
-      (coupling-statistics-for-entity coll entity entity-by-rev))
-    [])))
 
 (defn- grouped-by-rev
   [flat-data]
@@ -101,8 +52,8 @@
    returned from evaluating the default form."
   [entity stats default]
   `(update-in ~stats [~entity]
-             (fnil identity
-                   ~default)))
+              (fnil identity
+                    ~default)))
 (defn- inc-revs
   [entity entity-stats]
   {:pre  [(entity-stats entity)]}
@@ -149,7 +100,6 @@
             stats-with-updated-revs
             (in-same-revision changes-in-rev))))
             
-
 (defn as-dependent-entities
   [changes-grouped-by-rev]
   (reduce as-dependents-in-one-rev
@@ -191,19 +141,19 @@
            coll
            (for [[coupled shared-revs] coupled
                  :let [coupled-revs (n-entity-revs coupled all-dependencies)
-                       average-revs (average revs coupled-revs)
-                       coupling (as-percentage (/ shared-revs average-revs))]
+                       average-revs (m/average revs coupled-revs)
+                       coupling (m/as-percentage (/ shared-revs average-revs))]
                  :when (within-threshold-fn? average-revs shared-revs coupling)]
              {:entity entity :coupled coupled :degree coupling :average-revs average-revs})))
 
 (defn as-logical-coupling-of-all
   [thresholds all-dependencies]
-  (let [within-threshold-fn? (partial within-threshold? thresholds)]
-    (reduce
-     (fn [coll coupling]
-       (as-logical-coupling all-dependencies within-threshold-fn? coll coupling))
-     []
-     all-dependencies)))
+  (let [as-coupling-in-commit #(as-logical-coupling all-dependencies
+                                                    (partial within-threshold? thresholds)
+                                                    %1 %2)]
+    (reduce as-coupling-in-commit
+            []
+            all-dependencies)))
 
 (defn by-degree1
   "Calculates the degree of logical coupling. Returns a seq
