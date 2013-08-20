@@ -56,6 +56,14 @@
 
 (def svn-date-formatter (time-format/formatters :date-time))
 
+(defn- make-date-filter
+  [filter-fn log-entry]
+  (let [extractor (make-extractor log-entry)
+        entry-date (time-format/parse
+                    svn-date-formatter
+                    (extractor :date text))]
+    (filter-fn entry-date)))
+
 (defn- after-start-date?
   "A predicate that returns true if the given log-entry contains
    a time span after the start-time.
@@ -63,12 +71,12 @@
    Over time, design issues get fixed and we don't want old
    data to interfere with our analysis results."
   [start-date log-entry]
-  (let [extractor (make-extractor log-entry)
-        entry-date (time-format/parse
-                    svn-date-formatter
-                    (extractor :date text))]
-    (clj-time/after? entry-date start-date)))
-    
+  (make-date-filter #(clj-time/after? % start-date) log-entry))
+
+(defn- before-end-date?
+  [end-date log-entry]
+  (make-date-filter #(clj-time/before? % end-date) log-entry))
+
 (defn- make-date-span-limited-seq [parse-options s]
   (if-let [d (:date parse-options)]
     (take-while (partial after-start-date? d) s)
