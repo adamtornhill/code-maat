@@ -27,7 +27,7 @@
     (svn/zip->modification-sets
      (xml/file->zip logfile-name)
      options)
-    (catch Exception _
+    (catch Exception e
       (throw (IllegalArgumentException. "Failed to parse the given file - is it a valid svn logfile?")))))
 
 ;;; TODO: do not hardcode csv!
