@@ -11,3 +11,4 @@ pom.xml
 *~
 mytodo.txt
 *.txt#
+*.csv

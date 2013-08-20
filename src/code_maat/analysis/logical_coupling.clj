@@ -128,6 +128,9 @@
    (>= shared-revs min-shared-revs)
    (>= coupling min-coupling)))
 
+(defn- my-round [v] ; TODO: replace with math.contrib!
+  (int (+ v 1/2)))
+
 (defn as-logical-coupling
   [all-dependencies within-threshold-fn? coll [entity {:keys [revs coupled]}]]
    "This is where the actual action is - we receive a
@@ -144,7 +147,8 @@
                        average-revs (m/average revs coupled-revs)
                        coupling (m/as-percentage (/ shared-revs average-revs))]
                  :when (within-threshold-fn? average-revs shared-revs coupling)]
-             {:entity entity :coupled coupled :degree coupling :average-revs average-revs})))
+             {:entity entity :coupled coupled
+              :degree (int coupling) :average-revs (my-round average-revs)})))
 
 (defn as-logical-coupling-of-all
   [thresholds all-dependencies]

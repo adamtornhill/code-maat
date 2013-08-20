@@ -40,7 +40,7 @@
   (is (= (run-with-str-output svn-log-file (svn-csv-options 10 "revisions"))
          "entity,n-revs\n/Infrastrucure/Network/Connection.cs ,2\n/Presentation/Status/ClientPresenter.cs ,1\n"))
   (is (= (run-with-str-output svn-log-file (svn-csv-options 10 "coupling"))
-         "entity,coupled,degree,average-revs\n/Presentation/Status/ClientPresenter.cs ,/Infrastrucure/Network/Connection.cs ,200/3,3/2\n/Infrastrucure/Network/Connection.cs ,/Presentation/Status/ClientPresenter.cs ,200/3,3/2\n")))
+         "entity,coupled,degree,average-revs\n/Presentation/Status/ClientPresenter.cs ,/Infrastrucure/Network/Connection.cs ,66,2\n/Infrastrucure/Network/Connection.cs ,/Presentation/Status/ClientPresenter.cs ,66,2\n")))
 
 (deftest parses-live-data
   (testing "StatSvn: this file has a different format (no kind-attribute on the paths)"
