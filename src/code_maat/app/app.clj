@@ -32,7 +32,9 @@
 
 ;;; TODO: do not hardcode csv!
 (defn- make-output [options]
-  #(csv-output/write-to :stream % (:rows options)))
+  (if-let [n-out-rows (:rows options)]
+    #(csv-output/write-to :stream % n-out-rows)
+    #(csv-output/write-to :stream %)))
 
 (defn run [logfile-name options]
   "Runs the application using the given options.
@@ -43,7 +45,7 @@
     :rows - the max number of results to include"
   (let [changes (xml->modifications logfile-name options)
         analysis (make-analysis options)
-        output (make-output options)]
+        output! (make-output options)]
     (doseq [an-analysis analysis]
-      (output (an-analysis changes)))))
+      (output! (an-analysis changes)))))
   

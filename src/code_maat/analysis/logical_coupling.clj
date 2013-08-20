@@ -84,10 +84,10 @@
    flatten))
 
 (defn- grouped-by-rev
-  [ds]
+  [flat-data]
   (->>
-   ds
-   ($group-by :rev)))
+   flat-data
+   (ds/-group-by :rev)))
 
 (defn- make-entity-stats [] {:revs 0 :coupled {}})
 

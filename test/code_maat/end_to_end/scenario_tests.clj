@@ -12,6 +12,8 @@
 
 (def ^:const svn-log-file "./test/code_maat/end_to_end/simple.xml")
 
+(def ^:const empty-log-file "./test/code_maat/end_to_end/empty.xml")
+
 (def ^:const statsvn-log-file "./test/code_maat/end_to_end/statsvn.log")
 
 (defn- svn-csv-options
@@ -55,4 +57,13 @@
 (deftest reports-invalid-arguments
   (testing "Non-existent input file"
     (is (thrown? IllegalArgumentException (app/run "I/do/not/exist")))))
+
+(deftest boundary-cases
+  (testing "Empty input gives empty analysis results"
+    (is (= (run-with-str-output empty-log-file {:analysis "authors"})
+           "entity,n-authors,n-revs\n"))
+     (is (= (run-with-str-output empty-log-file {:analysis "revisions"})
+            "entity,n-revs\n"))
+      (is (= (run-with-str-output empty-log-file {:analysis "coupling"})
+           "col-0\n")))) ; not perfect, but perhaps good enough for now...
     
