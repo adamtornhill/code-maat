@@ -61,17 +61,19 @@
   "Calculates the coupling statistics for the given entity.
    Returns a map with the following keys:
    :entity :coupled :shared-revs :average-revs"
-  [[e eds] entities-by-rev]
+  [coll [e eds] entities-by-rev]
   (let [entity (:entity e)
         coupled (set (ds/-select-by :coupled eds))
         commit-stats-fn #(commit-stats entity % entities-by-rev eds)]
-    (for [c coupled
-          :let [{:keys [average-revs shared-revs]} (commit-stats-fn c)
-                stats {:entity entity
-                       :coupled c
-                       :shared-revs shared-revs
-                       :average-revs average-revs}]]
-      stats)))
+    (reduce conj
+            coll
+            (for [c coupled
+                  :let [{:keys [average-revs shared-revs]} (commit-stats-fn c)
+                        stats {:entity entity
+                               :coupled c
+                               :shared-revs shared-revs
+                               :average-revs average-revs}]]
+              stats))))
 
 (defn- coupling-statistics
   "Applies the coupling statistics to each entity in the
@@ -80,8 +82,10 @@
   (->>
    all-coupled
    (ds/-group-by :entity)
-   (map #(coupling-statistics-for-entity % entity-by-rev))
-   flatten))
+   (reduce
+    (fn [coll entity]
+      (coupling-statistics-for-entity coll entity entity-by-rev))
+    [])))
 
 (defn- grouped-by-rev
   [flat-data]
@@ -166,11 +170,12 @@
   (:revs (dependencies entity)))
 
 (defn- within-threshold?
-  [thresholds revs shared-revs coupling]
+  [{:keys [min-revs min-shared-revs min-coupling]}
+   revs shared-revs coupling]
   (and
-   (>= revs (thresholds :min-revs))
-   (>= shared-revs (thresholds :min-shared-revs))
-   (>= coupling (thresholds :min-coupling))))
+   (>= revs min-revs)
+   (>= shared-revs min-shared-revs)
+   (>= coupling min-coupling)))
 
 (defn as-logical-coupling
   [all-dependencies within-threshold-fn? coll [entity {:keys [revs coupled]}]]
