@@ -36,6 +36,20 @@
     #(csv-output/write-to :stream % n-out-rows)
     #(csv-output/write-to :stream %)))
 
+(defn- throw-internal-error [e]
+  (throw (IllegalArgumentException.
+          (str "Internal error - please report it. Details = "
+               (.getMessage e)))))
+
+(defn- run-with-recovery-point
+  [analysis-fn changes output-fn!]
+  (try
+    (output-fn! (analysis-fn changes))
+    (catch AssertionError e ; typically a pre- or post-condition
+      (throw-internal-error e))
+    (catch Exception e
+      (throw-internal-error e))))
+
 (defn run [logfile-name options]
   "Runs the application using the given options.
    The options are a map with the following elements:
@@ -47,5 +61,5 @@
         analysis (make-analysis options)
         output! (make-output options)]
     (doseq [an-analysis analysis]
-      (output! (an-analysis changes)))))
+      (run-with-recovery-point an-analysis changes output!))))
   

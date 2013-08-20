@@ -56,7 +56,9 @@
 
 (deftest reports-invalid-arguments
   (testing "Non-existent input file"
-    (is (thrown? IllegalArgumentException (app/run "I/do/not/exist")))))
+    (is (thrown? IllegalArgumentException (app/run "I/do/not/exist"))))
+  (testing "Missing mandatory options (normally added by the front)"
+    (is (thrown? IllegalArgumentException (app/run svn-log-file {:analysis "coupling"})))))
 
 (deftest boundary-cases
   (testing "Empty input gives empty analysis results"

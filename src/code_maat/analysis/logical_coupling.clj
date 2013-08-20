@@ -172,6 +172,7 @@
 (defn- within-threshold?
   [{:keys [min-revs min-shared-revs min-coupling]}
    revs shared-revs coupling]
+  {:pre [(and min-revs min-shared-revs min-coupling)]}
   (and
    (>= revs min-revs)
    (>= shared-revs min-shared-revs)
