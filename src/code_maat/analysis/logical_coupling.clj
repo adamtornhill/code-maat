@@ -173,7 +173,7 @@
    (>= coupling (thresholds :min-coupling))))
 
 (defn as-logical-coupling
-  [all-dependencies within-threshold-fn? [entity {:keys [revs coupled]}]]
+  [all-dependencies within-threshold-fn? coll [entity {:keys [revs coupled]}]]
    "This is where the actual action is - we receive a
    map for each entity with its total number of revisions and
    another map of its coupled entities. Based on that information
@@ -181,18 +181,22 @@
    each of its coupled counterparts.
    Future: consider weighting the total number of revisions into
    the calculation to avoiding skewed data."
-   (for [[coupled shared-revs] coupled
-        :let [coupled-revs (n-entity-revs coupled all-dependencies)
-              average-revs (average revs coupled-revs)
-              coupling (as-percentage (/ shared-revs average-revs))]
-        :when (within-threshold-fn? average-revs shared-revs coupling)]
-     {:entity entity :coupled coupled :degree coupling :average-revs average-revs}))
+   (reduce conj
+           coll
+           (for [[coupled shared-revs] coupled
+                 :let [coupled-revs (n-entity-revs coupled all-dependencies)
+                       average-revs (average revs coupled-revs)
+                       coupling (as-percentage (/ shared-revs average-revs))]
+                 :when (within-threshold-fn? average-revs shared-revs coupling)]
+             {:entity entity :coupled coupled :degree coupling :average-revs average-revs})))
 
 (defn as-logical-coupling-of-all
   [thresholds all-dependencies]
   (let [within-threshold-fn? (partial within-threshold? thresholds)]
-    (map
-     #(as-logical-coupling all-dependencies within-threshold-fn? %)
+    (reduce
+     (fn [coll coupling]
+       (as-logical-coupling all-dependencies within-threshold-fn? coll coupling))
+     []
      all-dependencies)))
 
 (defn by-degree1
@@ -208,6 +212,5 @@
       ds
       calc-dependencies
       (as-logical-coupling-of-all options)
-      flatten
       to-dataset
       ($order [:degree :average-revs] order-fn))))
