@@ -2,7 +2,8 @@
   (:require [clojure.math.combinatorics :as combo]
             [code-maat.analysis.entities :as entities]
             [code-maat.dataset.dataset :as ds]
-            [code-maat.analysis.math :as m])
+            [code-maat.analysis.math :as m]
+            [clojure.math.numeric-tower :as math])
   (:use incanter.core))
 
 ;;; This module calculates the logical coupling of all modules.
@@ -145,7 +146,7 @@
                        coupling (m/as-percentage (/ shared-revs average-revs))]
                  :when (within-threshold-fn? average-revs shared-revs coupling)]
              {:entity entity :coupled coupled
-              :degree (int coupling) :average-revs (m/ceil average-revs)})))
+              :degree (int coupling) :average-revs (math/ceil average-revs)})))
 
 (defn as-logical-coupling-of-all
   [thresholds all-dependencies]

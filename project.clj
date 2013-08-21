@@ -9,5 +9,6 @@
                  [org.clojure/tools.cli "0.2.4"]
                  [org.clojure/data.csv "0.1.2"]
                  [clj-time "0.5.1"]
+                 [org.clojure/math.numeric-tower "0.0.2"]
                  [org.clojure/math.combinatorics "0.0.4"]]
   :main code-maat.core)

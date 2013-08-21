@@ -5,6 +5,3 @@
 
 (defn as-percentage [v]
   (* v 100))
-
-(defn ceil [v] ; TODO: replace with math.contrib!
-  (int (+ v 1/2)))
