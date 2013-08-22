@@ -25,9 +25,9 @@ Code Maat operates on logfiles from version-control systems.
 
 #### Analyzing Subversion data
 
-* Generate a Subversion logfile using the following command:
+#### Generate a Subversion logfile using the following command:
 
-  	   svn log -v --xml > logfile.log
+          svn log -v --xml > logfile.log
 
 #### Analyzing git data
 
@@ -76,7 +76,7 @@ In example above, the first column gives us the name of module, the second the t
 
 Logical coupling refers to modules that tend to change together. Modules that are logically coupled have a hidden, implicit dependency between them such that a change to one of them leads to a predictable change in the coupled module. To analyze the logical coupling in a system, invoke Code Maat with the following arguments:
 
-   	   java -jar code-maat-0.1.0.jar logfile.log -a coupling
+              java -jar code-maat-0.1.0.jar logfile.log -a coupling
 
 The resulting output is on CSV format:
 
