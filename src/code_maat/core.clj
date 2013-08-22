@@ -26,7 +26,6 @@
   (let [[options args banner] (as-app-options [])]
     (println banner)))
 
-;;;TODO: validate mandatory args, else throw!
 (defn- input-file-from [args]
   (first args))
 
@@ -38,6 +37,7 @@
        (let [[options free-args banner]
              (as-app-options args)]
          (app/run (input-file-from free-args) options))
+       (flush)
        (catch Exception e ; this is our main recovery point, errors propagate transparently to here
          (println "Error: " (.getMessage e))
          (print-banner)))))

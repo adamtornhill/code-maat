@@ -10,8 +10,7 @@ The command above will create a standalone jar containing all the dependencies.
 
 To understand large-scale software systems we need to look at their evolution. The history of our system provides us with data we cannot derive from a single snapshot of the source code. Instead VCS data blends technical, social and organizational information along a temporal axis that let us map out our interaction patterns in the code. Analyzing these patterns gives us early warnings on potential design issues and development bottlenecks, as well as suggesting new modularities based on actual interactions with the code. Addressing these issues saves costs, simplifies maintenance and let us evolve our systems in the direction of how we actually work with the code.
 
-Code Maat was developed to accompany the discussions in my book [Code as a Crime Scene](https://...).
-![Code as a Crime Scene](https://...cover photo).
+Code Maat was developed to accompany the discussions in my book [Code as a Crime Scene](http://https://leanpub.com/crimescene).
 
 ### About the name
 
@@ -102,6 +101,6 @@ In future versions of Code Maat I plan to support `git`. I'll also probably add 
 
 ## License
 
-Copyright © 2013 FIXME
+Copyright © 2013 Adam Tornhill
 
 Distributed under the Eclipse Public License, the same as Clojure.
