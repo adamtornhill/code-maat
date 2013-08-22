@@ -96,6 +96,10 @@ Future versions of Code Maat are likely to include direct visualization support.
 
 Code Maat uses the Incanter library. By default, Incanter will create an `awt frame`. You can surpress the frame by providing the following option to your `java` command: `-Djava.awt.headless=true`.
 
+## Future directions
+
+In future versions of Code Maat I plan to support `git`. I'll also probably add more analysis methods such as code churn and developer patterns.
+
 ## License
 
 Copyright © 2013 FIXME
