@@ -11,4 +11,6 @@
                  [clj-time "0.5.1"]
                  [org.clojure/math.numeric-tower "0.0.2"]
                  [org.clojure/math.combinatorics "0.0.4"]]
-  :main code-maat.core)
+  :main code-maat.core
+  :aot [code-maat.core]
+  :jvm-opts ["-Djava.awt.headless=true"])

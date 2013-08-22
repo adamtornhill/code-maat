@@ -1,12 +1,13 @@
 (ns code-maat.core
+  (:gen-class)
   (:require [code-maat.app.app :as app]
             [clojure.tools.cli :as cli]
             [clj-time.format :as time-format]))
 
 (defn- as-app-options [args]
   (cli/cli args
-           ["-m" "--module" "Input vcs module type: supports svn or git"]
-           ["-o" "--output" "Output format: supports csv or graphs" :default "csv"]
+           ;["-m" "--module" "Input vcs module type: supports svn or git"]
+           ;["-o" "--output" "Output format: supports csv or graphs" :default "csv"]
            ["-a" "--analysis" "The analysis to run (authors, revisions, coupling, :all)"
             :default "authors"]
            ["-r" "--rows"   "Max rows in output" :default 10 :parse-fn #(Integer. %)]
