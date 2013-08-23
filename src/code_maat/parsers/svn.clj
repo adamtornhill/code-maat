@@ -1,3 +1,8 @@
+;;; Copyright (C) 2013 Adam Tornhill
+;;;
+;;; Distributed under the GNU General Public License v3.0,
+;;; see http://www.gnu.org/licenses/gpl.html
+
 (ns code-maat.parsers.svn
   (:use [clojure.data.zip.xml :only (attr text xml-> xml1->)]) ; dep: see below
   (:require [incanter.core :as incanter]

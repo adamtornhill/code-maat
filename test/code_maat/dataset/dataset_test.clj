@@ -1,3 +1,8 @@
+;;; Copyright (C) 2013 Adam Tornhill
+;;;
+;;; Distributed under the GNU General Public License v3.0,
+;;; see http://www.gnu.org/licenses/gpl.html
+
 (ns code-maat.dataset.dataset-test
   (:require [code-maat.dataset.dataset :as ds]
             [incanter.core :as incanter]

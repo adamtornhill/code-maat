@@ -1,3 +1,8 @@
+;;; Copyright (C) 2013 Adam Tornhill
+;;;
+;;; Distributed under the GNU General Public License v3.0,
+;;; see http://www.gnu.org/licenses/gpl.html
+
 (ns code-maat.analysis.logical-coupling-test
   (:require [code-maat.analysis.logical-coupling :as coupling]
             [code-maat.analysis.test-data :as test-data]
