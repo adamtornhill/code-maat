@@ -11,6 +11,14 @@
 ;;; Input: a log file generated with the following command:
 ;;;         git log --date=short --stat
 ;;;
+;;; Ouput: An incanter dataset with the following columns:
+;;;   :entity :date :author :rev
+;;; where
+;;;  :entity -> the changed entity as a string
+;;;  :date -> commit date as a string
+;;;  :author -> as a string
+;;;  :rev -> the hash used by git to identify the commit
+;;;
 ;;; In the current version we only extract basic info on
 ;;; authors and file modification patterns.
 ;;; As we add more analysis options (e.g. churn), it gets
@@ -23,15 +31,15 @@
 ;;; Here's the instaparse grammar for a git log-file:
 (def ^:const grammar
   "
-    <S> = ENTRIES
-    <ENTRIES> = (ENTRY <nl*>)* | ENTRY
-    ENTRY = <COMMIT> <nl> author <nl> date <nl> message <nl> changes
-    COMMIT = <'commit'> <ws> hash
+    <S> = entries
+    <entries> = (entry <nl*>)* | entry
+    entry = commit <nl> author <nl> date <nl> <message> <nl> changes
+    commit = <'commit'> <ws> hash
     author = <'Author:'> <ws> #'.+'
     date = <'Date:'> <ws> #'.+'
     message = <nl> <ws> #'.+' <nl>
     changes = change* <summary>
-    change = <ws*> file <ws> <'|'> <ws> <modification> <nl>
+    <change> = <ws*> file <ws> <'|'> <ws> <modification> <nl>
     file = #'[^\\s]+'
     modification = lines_modified <ws> modification_churn
     lines_modified = number

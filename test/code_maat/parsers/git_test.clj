@@ -54,43 +54,39 @@ Date:   2013-08-24
 
 (deftest parses-an-entry
   (is (= (git/parse entry)
-         [[:ENTRY
+         [[:entry
+           [:commit [:hash "9fa7e32c7457092dbf4b89169d1c24aaf77bb44a"]]
            [:author "Adam Petersen <adam@adampetersen.se>"]
            [:date "2013-01-30"]
-           [:message "Switched to MongoDB persistent sessions in order to scale on several web dynos"]
            [:changes
-            [:change
-             [:file "src/cogdrm_web/models/experiment_session.clj"]]
-            [:change
-             [:file "src/cogdrm_web/models/storage.clj"]]
-            [:change
-             [:file "src/cogdrm_web/server.clj"]]
-            [:change
-             [:file "test/cogdrm_web/models/storage_test.clj"]]]]])))
+            [:file "src/cogdrm_web/models/experiment_session.clj"]
+            [:file "src/cogdrm_web/models/storage.clj"]
+            [:file "src/cogdrm_web/server.clj"]
+            [:file "test/cogdrm_web/models/storage_test.clj"]]]])))
 
 
 (deftest parses-multiple-entries
   (is (= (git/parse entries)
-         [[:ENTRY
+         [[:entry
+           [:commit [:hash "d8ba9b0f53b7d4bec8e7e446f99afeba52c34d06"]]
            [:author "Adam Petersen <adam@adampetersen.se>"]
            [:date "2013-08-26"]
-           [:message "working with complete log"]
            [:changes
-            [:change [:file "project.clj"]]
-            [:change [:file "src/git_parse_proto/core.clj"]]
-            [:change [:file "test/git_parse_proto/core_test.clj"]]]]
-          [:ENTRY
+            [:file "project.clj"]
+            [:file "src/git_parse_proto/core.clj"]
+            [:file "test/git_parse_proto/core_test.clj"]]]
+          [:entry
+           [:commit [:hash "3fdfa645e49f26bfed74e667ad6978f5299e00fe"]]
            [:author "Adam Petersen <adam@adampetersen.se>"]
            [:date "2013-08-24"]
-           [:message "Initial prototype, parses one git log entry"]
            [:changes
-            [:change [:file ".gitignore"]]
-            [:change [:file "README.md"]]
-            [:change [:file "doc/intro.md"]]
-            [:change [:file "git_change_stats.txt"]]
-            [:change [:file "project.clj"]]
-            [:change [:file "src/git_parse_proto/core.clj"]]
-            [:change [:file "test/git_parse_proto/core_test.clj"]]]]])))
+            [:file ".gitignore"]
+            [:file "README.md"]
+            [:file "doc/intro.md"]
+            [:file "git_change_stats.txt"]
+            [:file "project.clj"]
+            [:file "src/git_parse_proto/core.clj"]
+            [:file "test/git_parse_proto/core_test.clj"]]]])))
 
 (deftest parses-empty-log
   (is (= (git/parse "")

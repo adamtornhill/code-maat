@@ -15,7 +15,9 @@
 ;;; into an Incanter dataset suitable for the supported analysis.
 ;;;
 ;;; Input: A SVN log on XML format.
-;;; TODO: document the required SVN log content!
+;;;
+;;; Ouput: An incanter dataset with the following columns:
+;;;   :entity :action :date :author :rev
 
 (defn zip->log-entries [zipped]
   (xml-> zipped :logentry))
