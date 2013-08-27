@@ -64,29 +64,28 @@
   [input]
    (git-log-parser input))
 
-;;; The parse result is fed into a zipper.
-;;; The functions below are accessors to different parts of the
-;;; information stored in the zipper.
-;;; Note that we never expose the zipper; it's an implementation detail.
-
-(defn- entries [z]
-  "Returns the top-level elements from the zipper as
-   a lazy seq."
-  (map #(-> % z/down) (dz/children z)))
+;;; The parse result from instaparse is given as hiccup vectors.
+;;; We define a set of accessors encapsulating the access to
+;;; the individual parts of the associative vectors.
+;;; Example input: a seq of =>
+;;; [:entry
+;;;  [:commit [:hash "123"]]
+;;;  [:author "a"]
+;;;  [:date "2013-01-30"]
+;;;  [:changes
+;;;   [:file ...]]]
 
 (defn- rev [z]
-  (-> z z/right z/down z/right z/down z/right z/node))
+  (get-in z [1 1 1]))
 
 (defn- author [z]
-  (-> z z/right z/right z/down z/right z/node))
+  (get-in z [2 1]))
 
 (defn- date [z]
-  (-> z z/right z/right z/right z/down z/right z/node))
+  (get-in z [3 1]))
 
 (defn- changes [z]
-  (rest
-   (map #(-> % z/node)
-       (-> z  z/right z/right z/right z/right dz/children))))
+  (rest (get-in z [4])))
 
 (defn- files [z]
   (map (fn [[tag name]] name) (changes z)))
@@ -109,13 +108,12 @@
   [gm]
   (->>
    gm
-   z/vector-zip
-   entries
    (reduce entry-as-row []))) 
 
 (defn parse-log
   [input]
   (->
+   input
    as-grammar-map
    grammar-map->rows
    incanter/to-dataset))
