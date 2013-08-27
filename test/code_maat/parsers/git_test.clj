@@ -4,7 +4,8 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.parsers.git-test
-  (:require [code-maat.parsers.git :as git])
+  (:require [code-maat.parsers.git :as git]
+            [incanter.core :as incanter])
   (:use clojure.test incanter.core))
 
 ;;; I sure could have used a more minimalistic set of data.
@@ -53,7 +54,7 @@ Date:   2013-08-24
  7 files changed, 498 insertions(+)")
 
 (deftest parses-an-entry
-  (is (= (git/parse entry)
+  (is (= (git/as-grammar-map entry)
          [[:entry
            [:commit [:hash "9fa7e32c7457092dbf4b89169d1c24aaf77bb44a"]]
            [:author "Adam Petersen <adam@adampetersen.se>"]
@@ -66,7 +67,7 @@ Date:   2013-08-24
 
 
 (deftest parses-multiple-entries
-  (is (= (git/parse entries)
+  (is (= (git/as-grammar-map entries)
          [[:entry
            [:commit [:hash "d8ba9b0f53b7d4bec8e7e446f99afeba52c34d06"]]
            [:author "Adam Petersen <adam@adampetersen.se>"]
@@ -89,5 +90,25 @@ Date:   2013-08-24
             [:file "test/git_parse_proto/core_test.clj"]]]])))
 
 (deftest parses-empty-log
-  (is (= (git/parse "")
+  (is (= (git/as-grammar-map "")
          [])))
+
+(deftest transforms-parse-result-to-rows-for-dataset
+  (is (= (git/grammar-map->rows
+           [[:entry
+           [:commit [:hash "123"]]
+           [:author "a"]
+           [:date "2013-01-30"]
+           [:changes
+            [:file "first.clj"]
+            [:file "second.clj"]]]
+            [:entry
+             [:commit [:hash "456"]]
+           [:author "b"]
+           [:date "2013-10-30"]
+           [:changes
+            [:file "third.clj"]]]])
+         [{:author "a", :rev "123", :date "2013-01-30", :file "first.clj"}
+          {:author "a", :rev "123", :date "2013-01-30", :file "second.clj"}
+          {:author "b", :rev "456", :date "2013-10-30", :file "third.clj"}])))
+

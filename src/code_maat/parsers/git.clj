@@ -4,7 +4,10 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.parsers.git
-  (:require [instaparse.core :as insta]))
+  (:require [instaparse.core :as insta]
+            [incanter.core :as incanter]
+            [clojure.zip :as z]
+            [clojure.data.zip :as dz]))
 
 ;;; This module is responsible for parsing a git log file.
 ;;;
@@ -57,9 +60,62 @@
 (def git-log-parser
   (insta/parser grammar))
 
-(defn parse
+(defn as-grammar-map
   [input]
-  (->>
-   (git-log-parser input)
-   (insta/transform transform-options)))
+   (git-log-parser input))
 
+;;; The parse result is fed into a zipper.
+;;; The functions below are accessors to different parts of the
+;;; information stored in the zipper.
+;;; Note that we never expose the zipper; it's an implementation detail.
+
+(defn- entries [z]
+  "Returns the top-level elements from the zipper as
+   a lazy seq."
+  (map #(-> % z/down) (dz/children z)))
+
+(defn- rev [z]
+  (-> z z/right z/down z/right z/down z/right z/node))
+
+(defn- author [z]
+  (-> z z/right z/right z/down z/right z/node))
+
+(defn- date [z]
+  (-> z z/right z/right z/right z/down z/right z/node))
+
+(defn- changes [z]
+  (rest
+   (map #(-> % z/node)
+       (-> z  z/right z/right z/right z/right dz/children))))
+
+(defn- files [z]
+  (map (fn [[tag name]] name) (changes z)))
+
+(defn- entry-as-row
+  [coll z]
+  (let [author (author z)
+        rev (rev z)
+        date (date z)
+        files (files z)]
+    (reduce conj
+            coll
+            (for [file files]
+              {:author author :rev rev :date date :file file}))))
+
+(defn grammar-map->rows
+  "Transforms the parse result (our grammar map) into
+   a seq of maps where each map represents one entity.
+   The grammar map is given as nested hiccup vectors."
+  [gm]
+  (->>
+   gm
+   z/vector-zip
+   entries
+   (reduce entry-as-row []))) 
+
+(defn parse-log
+  [input]
+  (->
+   as-grammar-map
+   grammar-map->rows
+   incanter/to-dataset))
