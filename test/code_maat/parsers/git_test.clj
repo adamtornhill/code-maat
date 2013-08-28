@@ -117,7 +117,7 @@ Date:   2013-08-24
 
 (deftest parses-to-dataset
   (testing "single entry in log"
-    (is (= (incanter/to-list (git/parse-log entry))
+    (is (= (incanter/to-list (git/parse-log entry {}))
            [["Adam Petersen <adam@adampetersen.se>" "9fa7e32c7457092dbf4b89169d1c24aaf77bb44a" "2013-01-30" "src/cogdrm_web/models/experiment_session.clj"]
             ["Adam Petersen <adam@adampetersen.se>" "9fa7e32c7457092dbf4b89169d1c24aaf77bb44a" "2013-01-30" "src/cogdrm_web/models/storage.clj"]
             ["Adam Petersen <adam@adampetersen.se>" "9fa7e32c7457092dbf4b89169d1c24aaf77bb44a" "2013-01-30" "src/cogdrm_web/server.clj"]

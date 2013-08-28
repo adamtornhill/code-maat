@@ -5,7 +5,9 @@
 
 (ns code-maat.parsers.git
   (:require [instaparse.core :as insta]
-            [incanter.core :as incanter]))
+            [incanter.core :as incanter]
+            [clj-time.format :as time-format]
+            [code-maat.parsers.limitters :as limiter]))
 
 ;;; This module is responsible for parsing a git log file.
 ;;;
@@ -113,12 +115,22 @@
    gm
    (reduce entry-as-row []))) 
 
+(def git-date-formatter (time-format/formatters :year-month-day))
+
+;;; NOTE: we could transform the entry during the parse!
+(defn- date-of
+  [git-entry]
+  (time-format/parse
+   git-date-formatter
+   (date git-entry)))
+
 (defn parse-log
   "Transforms the given input git log into an
    Incanter dataset suitable for the analysis modules." 
-  [input]
-  (->
+  [input parse-options]
+  (->>
    input
    as-grammar-map
+   (limiter/log-entries-to-include parse-options date-of)
    grammar-map->rows
    incanter/to-dataset))

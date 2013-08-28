@@ -44,7 +44,7 @@
     (->
      logfile-name
      slurp
-     git/parse-log)
+     (git/parse-log options))
     (catch IllegalArgumentException ae
       (throw ae))
     (catch Exception e

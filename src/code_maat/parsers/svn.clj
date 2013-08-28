@@ -59,14 +59,6 @@
 
 (def svn-date-formatter (time-format/formatters :date-time))
 
-(defn- make-date-filter
-  [filter-fn log-entry]
-  (let [extractor (make-extractor log-entry)
-        entry-date (time-format/parse
-                    svn-date-formatter
-                    (extractor :date text))]
-    (filter-fn entry-date)))
-
 (defn- date-of
   [log-entry]
   (let [extractor (make-extractor log-entry)]
