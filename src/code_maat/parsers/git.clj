@@ -40,11 +40,9 @@
     date = <'Date:'> <ws> #'.+'
     message = <nl> <ws> #'.+' <nl>
     changes = change* <summary>
-    <change> = <ws*> file <ws> <'|'> <ws> <modification> <nl>
+    <change> = <ws*> file <ws> <'|'> <ws*> <modification> <nl>
     file = #'[^\\s]+'
-    modification = lines_modified <ws> modification_churn
-    lines_modified = number
-    modification_churn = #'[\\+\\-]+'
+    modification = #'.+'
     summary = files_changed? <ws*> insertions? <ws*> deletions?
     files_changed = <ws*> number <ws> <files_changed_static>
     files_changed_static = 'file' 's'? ' changed,'
