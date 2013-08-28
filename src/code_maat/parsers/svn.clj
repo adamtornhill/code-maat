@@ -6,6 +6,7 @@
 (ns code-maat.parsers.svn
   (:use [clojure.data.zip.xml :only (attr text xml-> xml1->)]) ; dep: see below
   (:require [incanter.core :as incanter]
+            [code-maat.parsers.limitters :as limiter]
             [clj-time.core :as clj-time]
             [clj-time.format :as time-format]
             [clojure.xml :as xml]
@@ -56,11 +57,6 @@
                   :let [row {:entity e :action action :date date :author author :rev revision}]]
               row))))
 
-(defn- make-entries-limited-seq [parse-options s]
-  (if-let [n (:max-entries parse-options)]
-    (take n s)
-    s))
-
 (def svn-date-formatter (time-format/formatters :date-time))
 
 (defn- make-date-filter
@@ -71,37 +67,19 @@
                     (extractor :date text))]
     (filter-fn entry-date)))
 
-(defn- after-start-date?
-  "A predicate that returns true if the given log-entry contains
-   a time span after the start-time.
-   The intent is to limit the commits included in the analysis.
-   Over time, design issues get fixed and we don't want old
-   data to interfere with our analysis results."
-  [start-date log-entry]
-  (make-date-filter #(clj-time/after? % start-date) log-entry))
-
-(defn- before-end-date?
-  [end-date log-entry]
-  (make-date-filter #(clj-time/before? % end-date) log-entry))
-
-(defn- make-date-span-limited-seq [parse-options s]
-  (if-let [d (:date parse-options)]
-    (take-while (partial after-start-date? d) s)
-    s))
-
-(defn- log-entries-to-include
-  [parse-options s]
-  (let [limitter (comp
-                  (partial make-date-span-limited-seq parse-options)
-                  make-entries-limited-seq)]
-  (limitter parse-options s)))
+(defn- date-of
+  [log-entry]
+  (let [extractor (make-extractor log-entry)]
+    (time-format/parse
+     svn-date-formatter
+     (extractor :date text))))
 
 (defn- parse
   [zipped parse-options]
   (->>
    zipped
    zip->log-entries
-   (log-entries-to-include parse-options)
+   (limiter/log-entries-to-include parse-options date-of)
    (reduce as-rows [])
    incanter/to-dataset))
 
