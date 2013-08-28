@@ -11,7 +11,7 @@
 
 (defn- as-app-options [args]
   (cli/cli args
-           ;["-m" "--module" "Input vcs module type: supports svn or git"]
+           ["-vcs" "--version-control" "Input vcs module type: supports svn or git"]
            ;["-o" "--output" "Output format: supports csv or graphs" :default "csv"]
            ["-a" "--analysis" "The analysis to run (authors, revisions, coupling, :all)"
             :default "authors"]

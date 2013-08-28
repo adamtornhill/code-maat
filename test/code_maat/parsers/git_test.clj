@@ -108,9 +108,9 @@ Date:   2013-08-24
            [:date "2013-10-30"]
            [:changes
             [:file "third.clj"]]]])
-         [{:author "a", :rev "123", :date "2013-01-30", :file "first.clj"}
-          {:author "a", :rev "123", :date "2013-01-30", :file "second.clj"}
-          {:author "b", :rev "456", :date "2013-10-30", :file "third.clj"}])))
+         [{:author "a", :rev "123", :date "2013-01-30", :entity "first.clj"}
+          {:author "a", :rev "123", :date "2013-01-30", :entity "second.clj"}
+          {:author "b", :rev "456", :date "2013-10-30", :entity "third.clj"}])))
 
 (deftest parses-to-dataset
   (testing "single entry in log"

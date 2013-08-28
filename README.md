@@ -103,6 +103,11 @@ Future versions of Code Maat are likely to include direct visualization support.
 
 Code Maat uses the Incanter library. By default, Incanter will create an `awt frame`. You can surpress the frame by providing the following option to your `java` command: `-Djava.awt.headless=true`.
 
+## Limitations
+
+The current version of Code Maat processes all its content in memory. Thus, it doesn't scale to large input files. The recommendation is to limit the input by specifying a sensible start date with `--date` (you want to do that anyway to avoid confounds in the analysis). Further, you can modify the `--max-entries` switch to control the number of entries considered in the log.
+In a future version of Code Maat I plan to support a database back end.
+
 ## Future directions
 
 In future versions of Code Maat I plan to support `git`. I'll also probably add more analysis methods such as code churn and developer patterns.

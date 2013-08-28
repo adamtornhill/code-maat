@@ -12,3 +12,4 @@ pom.xml
 mytodo.txt
 *.txt#
 *.csv
+test_data.txt

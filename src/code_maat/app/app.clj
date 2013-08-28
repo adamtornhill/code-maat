@@ -4,12 +4,13 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.app.app
-   (:require [code-maat.parsers.svn :as svn]
-             [code-maat.parsers.xml :as xml]
-             [code-maat.output.csv :as csv-output]
-             [code-maat.analysis.authors :as authors]
-             [code-maat.analysis.entities :as entities]
-             [code-maat.analysis.logical-coupling :as coupling]))
+  (:require [code-maat.parsers.svn :as svn]
+            [code-maat.parsers.git :as git]
+            [code-maat.parsers.xml :as xml]
+            [code-maat.output.csv :as csv-output]
+            [code-maat.analysis.authors :as authors]
+            [code-maat.analysis.entities :as entities]
+            [code-maat.analysis.logical-coupling :as coupling]))
 
 ;;; TODO: consider making this dynamic in order to support new
 ;;;       analysis methods as plug-ins.
@@ -27,15 +28,36 @@
     (map (fn [a] #(a % options))
          (vals supported-analysis)))) ; :all
 
-(defn- xml->modifications [logfile-name options]
+(defn- svn-xml->modifications
+  [logfile-name options]
   (try
     (svn/zip->modification-sets
      (xml/file->zip logfile-name)
      options)
     (catch Exception e
-      (throw (IllegalArgumentException. "Failed to parse the given file - is it a valid svn logfile?")))))
+      (throw (IllegalArgumentException.
+              "Failed to parse the given file - is it a valid svn logfile?")))))
 
-;;; TODO: do not hardcode csv!
+(defn- git->modifications
+  [logfile-name options]
+  (try
+    (->
+     logfile-name
+     slurp
+     git/parse-log)
+    (catch Exception e
+      (throw (IllegalArgumentException.
+              "Failed to parse the given file - is it a valid git logfile?")))))
+  
+(defn- get-parser
+  [{:keys [version-control]}]
+  (case version-control
+    "svn" svn-xml->modifications
+    "git" git->modifications
+    (throw (IllegalArgumentException.
+            (str "Invalid --version-control specified: " version-control
+                 ". Supported options are: svn or git.")))))
+
 (defn- make-output [options]
   (if-let [n-out-rows (:rows options)]
     #(csv-output/write-to :stream % n-out-rows)
@@ -62,7 +84,8 @@
     :output - the type of result output to generate
     :analysis - the type of analysis to run
     :rows - the max number of results to include"
-  (let [changes (xml->modifications logfile-name options)
+  (let [vcs-parser (get-parser options)
+        changes (vcs-parser logfile-name options)
         analysis (make-analysis options)
         output! (make-output options)]
     (doseq [an-analysis analysis]

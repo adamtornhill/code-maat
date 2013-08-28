@@ -5,9 +5,7 @@
 
 (ns code-maat.parsers.git
   (:require [instaparse.core :as insta]
-            [incanter.core :as incanter]
-            [clojure.zip :as z]
-            [clojure.data.zip :as dz]))
+            [incanter.core :as incanter]))
 
 ;;; This module is responsible for parsing a git log file.
 ;;;
@@ -21,17 +19,17 @@
 ;;;  :date -> commit date as a string
 ;;;  :author -> as a string
 ;;;  :rev -> the hash used by git to identify the commit
-;;;
-;;; In the current version we only extract basic info on
-;;; authors and file modification patterns.
-;;; As we add more analysis options (e.g. churn), it gets
-;;; interesting to enable more parse output.
 
 (def ^:const transform-options
   "Specifies parser transformations."
   {:number read-string})
 
-;;; Here's the instaparse grammar for a git log-file:
+;;; Here's the instaparse grammar for a git log-file.
+;;;
+;;; In the current version we only extract basic info on
+;;; authors and file modification patterns.
+;;; As we add more analysis options (e.g. churn), it gets
+;;; interesting to enable more parse output.
 (def ^:const grammar
   "
     <S> = entries
@@ -99,7 +97,7 @@
     (reduce conj
             coll
             (for [file files]
-              {:author author :rev rev :date date :file file}))))
+              {:author author :rev rev :date date :entity file}))))
 
 (defn grammar-map->rows
   "Transforms the parse result (our grammar map) into

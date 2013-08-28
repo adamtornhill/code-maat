@@ -22,10 +22,12 @@
 (def ^:const statsvn-log-file "./test/code_maat/end_to_end/statsvn.log")
 
 (defn- svn-csv-options
+  ([analysis]
+     (svn-csv-options 10 analysis))
   ([rows analysis]
      (merge
       test-data/options-with-low-thresholds
-      {:module "svn"
+      {:version-control "svn"
        :output "csv"
        :rows rows
        :analysis analysis
@@ -67,10 +69,10 @@
 
 (deftest boundary-cases
   (testing "Empty input gives empty analysis results"
-    (is (= (run-with-str-output empty-log-file {:analysis "authors"})
+    (is (= (run-with-str-output empty-log-file (svn-csv-options "authors"))
            "entity,n-authors,n-revs\n"))
-     (is (= (run-with-str-output empty-log-file {:analysis "revisions"})
+     (is (= (run-with-str-output empty-log-file (svn-csv-options "revisions"))
             "entity,n-revs\n"))
-      (is (= (run-with-str-output empty-log-file {:analysis "coupling"})
+      (is (= (run-with-str-output empty-log-file (svn-csv-options "coupling"))
            "col-0\n")))) ; not perfect, but perhaps good enough for now...
     
