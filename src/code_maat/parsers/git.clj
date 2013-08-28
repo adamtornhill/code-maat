@@ -33,32 +33,39 @@
 (def ^:const grammar
   "
     <S> = entries
-    <entries> = (entry <nl*>)* | entry
-    entry = commit <nl> author <nl> date <nl> <message> <nl> changes
-    commit = <'commit'> <ws> hash
-    author = <'Author:'> <ws> #'.+'
-    date = <'Date:'> <ws> #'.+'
-    message = <nl> <ws> #'.+' <nl>
-    changes = change* <summary>
-    <change> = <ws*> file <ws> <'|'> <ws*> <modification> <nl>
-    file = #'[^\\s]+'
+    <entries> =    (entry <nl*>)* | entry
+    entry =        commit <nl> author <nl> date <nl> <message> <nl> changes
+    commit =       <'commit'> <ws> hash
+    author =       <'Author:'> <ws> #'.+'
+    date =         <'Date:'> <ws> #'.+'
+    message =      <nl> <ws> #'.+' <nl>
+    changes =      change* <summary>
+    <change> =     <ws*> file <ws> <'|'> <ws*> <modification> <nl>
+    file =         #'[^\\s]+'
     modification = #'.+'
-    summary = files_changed? <ws*> insertions? <ws*> deletions?
-    files_changed = <ws*> number <ws> <files_changed_static>
+    summary =      files_changed? <ws*> insertions? <ws*> deletions?
+    files_changed =         <ws*> number <ws> <files_changed_static>
     files_changed_static = 'file' 's'? ' changed,'
-    insertions = number <ws> <'insertion'  's'? '(+)'><','?>
-    deletions = number <ws> <'deletion' 's'? '(-)'>
+    insertions =            number <ws> <'insertion'  's'? '(+)'><','?>
+    deletions =             number <ws> <'deletion' 's'? '(-)'>
     number = #'\\d+'
-    ws = #'\\s+'
-    nl = '\\n'
-    hash = #'[\\da-f]+'")
+    ws =     #'\\s+'
+    nl =    '\\n'
+    hash =  #'[\\da-f]+'")
 
 (def git-log-parser
   (insta/parser grammar))
 
 (defn as-grammar-map
+  "The actual invokation of the parser.
+   Returns a Hiccup parse tree upon success,
+   otherwise an informative exception is thrown."
   [input]
-   (git-log-parser input))
+  (let [result (git-log-parser input)]
+    (if (insta/failure? result)
+      (throw (IllegalArgumentException.
+              (str (insta/get-failure result))))
+      result)))
 
 ;;; The parse result from instaparse is given as hiccup vectors.
 ;;; We define a set of accessors encapsulating the access to
@@ -107,6 +114,8 @@
    (reduce entry-as-row []))) 
 
 (defn parse-log
+  "Transforms the given input git log into an
+   Incanter dataset suitable for the analysis modules." 
   [input]
   (->
    input

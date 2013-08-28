@@ -45,6 +45,8 @@
      logfile-name
      slurp
      git/parse-log)
+    (catch IllegalArgumentException ae
+      (throw ae))
     (catch Exception e
       (throw (IllegalArgumentException.
               "Failed to parse the given file - is it a valid git logfile?")))))

@@ -65,7 +65,6 @@ Date:   2013-08-24
             [:file "src/cogdrm_web/server.clj"]
             [:file "test/cogdrm_web/models/storage_test.clj"]]]])))
 
-
 (deftest parses-multiple-entries
   (is (= (git/as-grammar-map entries)
          [[:entry
@@ -92,6 +91,10 @@ Date:   2013-08-24
 (deftest parses-empty-log
   (is (= (git/as-grammar-map "")
          [])))
+
+(deftest throws-on-invalid-input
+  (is (thrown? IllegalArgumentException
+               (git/as-grammar-map "simply not a valid git log here..."))))
 
 (deftest transforms-parse-result-to-rows-for-dataset
   (is (= (git/grammar-map->rows
