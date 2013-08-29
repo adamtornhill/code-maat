@@ -16,9 +16,11 @@
 ;;; Logical coupling refers to modules that tend to change together.
 ;;; It's information that's recorded in our version-control systems (VCS).
 ;;;
-;;; Format:
-;;; All analysis expect an Incanter dataset with (at least) the following columns:
-;;; ::entity :rev
+;;; Input: all analysis expect an Incanter dataset with (at least) the following columns:
+;;; :entity :rev
+;;;
+;;; Oputput: the analysis returns an Incanter dataset with the following columns:
+;;; :entity :coupled :degree :average-revs
 
 (defn- as-coupling-permutations
   [entities]
@@ -175,5 +177,5 @@
       ds
       calc-dependencies
       (as-logical-coupling-of-all options)
-      to-dataset
+      (ds/-dataset [:entity :coupled :degree :average-revs])
       ($order [:degree :average-revs] order-fn))))

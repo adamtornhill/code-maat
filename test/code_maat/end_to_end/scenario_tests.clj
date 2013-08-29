@@ -74,5 +74,5 @@
      (is (= (run-with-str-output empty-log-file (svn-csv-options "revisions"))
             "entity,n-revs\n"))
       (is (= (run-with-str-output empty-log-file (svn-csv-options "coupling"))
-           "col-0\n")))) ; not perfect, but perhaps good enough for now...
+           "entity,coupled,degree,average-revs\n"))))
     

@@ -62,5 +62,5 @@
        (->>
         g
         (map #(group->entity-with-author-count % by-rev))
-         (ds/-dataset [:entity :n-authors :n-revs])
-         (ds/-order-by :n-authors order-fn)))))
+        (ds/-dataset [:entity :n-authors :n-revs])
+        (ds/-order-by :n-authors order-fn)))))
