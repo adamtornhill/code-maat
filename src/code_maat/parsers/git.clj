@@ -36,22 +36,23 @@
   "
     <S> = entries
     <entries> =    (entry <nl*>)* | entry
-    entry =        commit <nl> author <nl> date <nl> <message> <nl> changes
+    entry =        commit <nl> <(merge nl)?> author <nl> date <nl> <message> <nl> changes
     commit =       <'commit'> <ws> hash
-    author =       <'Author:'> <ws> #'.+'
-    date =         <'Date:'> <ws> #'.+'
-    message =      <nl> <ws> #'.+' <nl>
+    merge =        'Merge: ' #'.'+
+    author =       <'Author:'> <ws+> #'.+'
+    date =         <'Date:'> <ws+> #'\\d{4}-\\d{2}-\\d{2}'
+    message =      <nl> (<ws ws+> #'.+'? <nl>)* (*to handle merges and reverts too*)
     changes =      change* <summary>
-    <change> =     <ws*> file <ws> <'|'> <ws*> <modification> <nl>
+    <change> =     <ws*> file <ws*> <'|'> <ws*> <modification> <nl>
     file =         #'[^\\s]+'
     modification = #'.+'
     summary =      files_changed? <ws*> insertions? <ws*> deletions?
-    files_changed =         <ws*> number <ws> <files_changed_static>
+    files_changed =         <ws*> number <ws*> <files_changed_static>
     files_changed_static = 'file' 's'? ' changed,'
-    insertions =            number <ws> <'insertion'  's'? '(+)'><','?>
-    deletions =             number <ws> <'deletion' 's'? '(-)'>
+    insertions =            number <ws*> <'insertion'  's'? '(+)'><','?>
+    deletions =             number <ws*> <'deletion' 's'? '(-)'>
     number = #'\\d+'
-    ws =     #'\\s+'
+    ws =     #'\\s'
     nl =    '\\n'
     hash =  #'[\\da-f]+'")
 

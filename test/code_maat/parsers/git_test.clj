@@ -53,6 +53,25 @@ Date:   2013-08-24
  test/git_parse_proto/core_test.clj |   20 ++
  7 files changed, 498 insertions(+)")
 
+(def ^:const entries-with-merge
+  "commit a6d03189b935c8483cec2c3816cbe072be58d92c
+Merge: 87fd16f ce57b75
+Author: XY
+Date:   2013-08-15
+
+    Merge pull request #44 from clojens/master
+
+    README closing paren
+
+commit ce57b75d8c0899dcfc343e4969e1aeba428a6429
+Author: ZV
+Date:   2013-08-15
+
+    missed a closing paren
+
+ README.md |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)")
+
 (deftest parses-an-entry
   (is (= (git/as-grammar-map entry)
          [[:entry
@@ -87,6 +106,19 @@ Date:   2013-08-24
             [:file "project.clj"]
             [:file "src/git_parse_proto/core.clj"]
             [:file "test/git_parse_proto/core_test.clj"]]]])))
+
+(deftest parses-merges-as-emtpy-change-sets
+  (is (= (git/as-grammar-map entries-with-merge)
+         [[:entry
+           [:commit [:hash "a6d03189b935c8483cec2c3816cbe072be58d92c"]]
+           [:author "XY"]
+           [:date "2013-08-15"]
+           [:changes]]
+          [:entry
+           [:commit [:hash "ce57b75d8c0899dcfc343e4969e1aeba428a6429"]]
+           [:author "ZV"]
+           [:date "2013-08-15"]
+           [:changes [:file "README.md"]]]])))
 
 (deftest parses-empty-log
   (is (= (git/as-grammar-map "")
