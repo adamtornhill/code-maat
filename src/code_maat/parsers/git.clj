@@ -69,7 +69,7 @@
    Returns a Hiccup parse tree upon success,
    otherwise an informative exception is thrown."
   [input]
-  (let [result (git-log-parser input)]
+  (let [result (insta/parse git-log-parser input)]
     (if (insta/failure? result)
       (raise-parse-failure (insta/get-failure result))
       result)))
@@ -118,7 +118,7 @@
   [gm]
   (->>
    gm
-   (reduce entry-as-row []))) 
+   (reduce entry-as-row [])))
 
 (def git-date-formatter (time-format/formatters :year-month-day))
 
