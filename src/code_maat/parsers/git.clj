@@ -58,6 +58,11 @@
 (def git-log-parser
   (insta/parser grammar))
 
+(defn- raise-parse-failure
+  [f]
+  (let [reason (with-out-str (print f))]
+    (throw (IllegalArgumentException. reason))))
+
 (defn as-grammar-map
   "The actual invokation of the parser.
    Returns a Hiccup parse tree upon success,
@@ -65,8 +70,7 @@
   [input]
   (let [result (git-log-parser input)]
     (if (insta/failure? result)
-      (throw (IllegalArgumentException.
-              (str (insta/get-failure result))))
+      (raise-parse-failure (insta/get-failure result))
       result)))
 
 ;;; The parse result from instaparse is given as hiccup vectors.

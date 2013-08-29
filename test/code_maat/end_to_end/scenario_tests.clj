@@ -19,8 +19,6 @@
 
 (def ^:const empty-log-file "./test/code_maat/end_to_end/empty.xml")
 
-(def ^:const statsvn-log-file "./test/code_maat/end_to_end/statsvn.log")
-
 (defn- svn-csv-options
   ([analysis]
      (svn-csv-options 10 analysis))
@@ -48,11 +46,6 @@
          "entity,n-revs\n/Infrastrucure/Network/Connection.cs ,2\n/Presentation/Status/ClientPresenter.cs ,1\n"))
   (is (= (run-with-str-output svn-log-file (svn-csv-options 10 "coupling"))
          "entity,coupled,degree,average-revs\n/Presentation/Status/ClientPresenter.cs ,/Infrastrucure/Network/Connection.cs ,66,2\n/Infrastrucure/Network/Connection.cs ,/Presentation/Status/ClientPresenter.cs ,66,2\n")))
-
-(deftest parses-live-data
-  (testing "StatSvn: this file has a different format (no kind-attribute on the paths)"
-    (is (= (run-with-str-output statsvn-log-file (svn-csv-options 2 "authors"))
-           "entity,n-authors,n-revs\n/trunk/statsvn/site/changes.xml,2,4\n/trunk/statsvn/project.properties,1,4\n"))))
 
 (deftest ignores-entities-before-the-start-date
   (is (= (run-with-str-output svn-log-file
