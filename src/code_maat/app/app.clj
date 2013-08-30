@@ -83,7 +83,6 @@
   "Runs the application using the given options.
    The options are a map with the following elements:
     :module - the VCS to parse
-    :output - the type of result output to generate
     :analysis - the type of analysis to run
     :rows - the max number of results to include"
   (let [vcs-parser (get-parser options)

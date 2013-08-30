@@ -6,9 +6,6 @@
 (ns code-maat.parsers.svn
   (:use [clojure.data.zip.xml :only (attr text xml-> xml1->)]) ; dep: see below
   (:require [incanter.core :as incanter]
-            [code-maat.parsers.limitters :as limiter]
-            [clj-time.core :as clj-time]
-            [clj-time.format :as time-format]
             [clojure.xml :as xml]
             [clojure.zip :as zip]))
 
@@ -57,21 +54,11 @@
                   :let [row {:entity e :action action :date date :author author :rev revision}]]
               row))))
 
-(def svn-date-formatter (time-format/formatters :date-time))
-
-(defn- date-of
-  [log-entry]
-  (let [extractor (make-extractor log-entry)]
-    (time-format/parse
-     svn-date-formatter
-     (extractor :date text))))
-
 (defn- parse
   [zipped parse-options]
   (->>
    zipped
    zip->log-entries
-   (limiter/log-entries-to-include parse-options date-of)
    (reduce as-rows [])
    incanter/to-dataset))
 

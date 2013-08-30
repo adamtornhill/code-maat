@@ -6,20 +6,14 @@
 (ns code-maat.core
   (:gen-class)
   (:require [code-maat.app.app :as app]
-            [clojure.tools.cli :as cli]
-            [clj-time.format :as time-format]))
+            [clojure.tools.cli :as cli]))
 
 (defn- as-app-options [args]
   (cli/cli args
            ["-vcs" "--version-control" "Input vcs module type: supports svn or git"]
-           ;["-o" "--output" "Output format: supports csv or graphs" :default "csv"]
            ["-a" "--analysis" "The analysis to run (authors, revisions, coupling, :all)"
             :default "authors"]
            ["-r" "--rows"   "Max rows in output" :default 10 :parse-fn #(Integer. %)]
-           ["-e" "--max-entries" "Max entries to parse in the input log file"
-            :default 1000 :parse-fn #(Integer. %)]
-           ["-d" "--date" "The start date to consider in the logs, given as yyyyMMdd"
-            :parse-fn #(time-format/parse (time-format/formatter "yyyyMMdd") %)]
            ["--min-revs" "Minimum number of revisions to include an entity in the analysis"
             :default 5 :parse-fn #(Integer. %)]
            ["--min-shared-revs" "Minimum number of shared revisions to include an entity in the analysis"

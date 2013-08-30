@@ -26,10 +26,8 @@
      (merge
       test-data/options-with-low-thresholds
       {:version-control "svn"
-       :output "csv"
        :rows rows
-       :analysis analysis
-       :max-entries 10})))
+       :analysis analysis})))
 
 (defn- with-date-limit [date options]
   (merge {:date date} options))
@@ -46,13 +44,6 @@
          "entity,n-revs\n/Infrastrucure/Network/Connection.cs ,2\n/Presentation/Status/ClientPresenter.cs ,1\n"))
   (is (= (run-with-str-output svn-log-file (svn-csv-options 10 "coupling"))
          "entity,coupled,degree,average-revs\n/Presentation/Status/ClientPresenter.cs ,/Infrastrucure/Network/Connection.cs ,66,2\n/Infrastrucure/Network/Connection.cs ,/Presentation/Status/ClientPresenter.cs ,66,2\n")))
-
-(deftest ignores-entities-before-the-start-date
-  (is (= (run-with-str-output svn-log-file
-           (with-date-limit
-             (clj-time/date-time 2013 03 01) ; after the last entry
-             (svn-csv-options 10 "authors")))
-         "entity,n-authors,n-revs\n")))
 
 (deftest reports-invalid-arguments
   (testing "Non-existent input file"

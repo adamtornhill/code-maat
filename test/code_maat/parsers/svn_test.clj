@@ -89,8 +89,3 @@
              ["/Infrastrucure/Network/Connection.cs "
               "/Presentation/Status/ClientPresenter.cs "
               "/Infrastrucure/Network/Connection.cs "])))))
-
-(deftest supports-filter-by-n-rows
-  (let [parse-options {:max-entries 1}]
-    (is (= (nrow (svn/zip->modification-sets svn-log parse-options))
-           2))))
