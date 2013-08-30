@@ -8,13 +8,17 @@
             [incanter.core :as incanter]))
 
 (defn all [ds]
-  (set (ds/-select-by :entity ds)))
+  (distinct (ds/-select-by :entity ds)))
 
 (defn- group->entity-with-rev-count
   [[entity-group changes]]
   [(:entity entity-group)
    (count
     (ds/-select-by :rev changes))])
+
+(defn all-revisions
+  [ds]
+  (distinct (ds/-select-by :rev ds)))
 
 (defn as-dataset-by-revision
   [ds]

@@ -11,7 +11,7 @@
 (defn- as-app-options [args]
   (cli/cli args
            ["-vcs" "--version-control" "Input vcs module type: supports svn or git"]
-           ["-a" "--analysis" "The analysis to run (authors, revisions, coupling, :all)"
+           ["-a" "--analysis" "The analysis to run (authors, revisions, coupling, summary, :all)"
             :default "authors"]
            ["-r" "--rows"   "Max rows in output" :default 10 :parse-fn #(Integer. %)]
            ["--min-revs" "Minimum number of revisions to include an entity in the analysis"

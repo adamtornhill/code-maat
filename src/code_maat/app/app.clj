@@ -10,14 +10,16 @@
             [code-maat.output.csv :as csv-output]
             [code-maat.analysis.authors :as authors]
             [code-maat.analysis.entities :as entities]
-            [code-maat.analysis.logical-coupling :as coupling]))
+            [code-maat.analysis.logical-coupling :as coupling]
+            [code-maat.analysis.summary :as summary]))
 
 ;;; TODO: consider making this dynamic in order to support new
 ;;;       analysis methods as plug-ins.
 (def ^:const supported-analysis
   {"authors" authors/by-count
    "revisions" entities/by-revision
-   "coupling" coupling/by-degree1})
+   "coupling" coupling/by-degree1
+   "summary" summary/overview})
 
 (defn- make-analysis
   "Returns a seq of analysis methods closing over the options.
