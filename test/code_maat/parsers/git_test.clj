@@ -14,111 +14,51 @@
 ;;; one module though.
 
 (def ^:const entry
-  "commit 9fa7e32c7457092dbf4b89169d1c24aaf77bb44a
-Author: Adam Petersen <adam@adampetersen.se>
-Date:   2013-01-30
-
-    Switched to MongoDB persistent sessions in order to scale on several web dynos
-
- src/cogdrm_web/models/experiment_session.clj |   94 ++++++++++++--------------
- src/cogdrm_web/models/storage.clj            |   24 +++++++
- src/cogdrm_web/server.clj                    |   13 +++-
- test/cogdrm_web/models/storage_test.clj      |    2 +-
- 4 files changed, 79 insertions(+), 54 deletions(-)")
+  "[990442e] Adam Petersen 2013-08-29 Adapted the grammar after live tests (git)
+M	project.clj
+M	src/code_maat/parsers/git.clj
+")
 
 (def ^:const entries
-  "commit d8ba9b0f53b7d4bec8e7e446f99afeba52c34d06
-Author: Adam Petersen <adam@adampetersen.se>
-Date:   2013-08-26
+  "[b777738] Adam Petersen 2013-08-29 git: parse merges and reverts too (grammar change)
+M	src/code_maat/parsers/git.clj
+M	test/code_maat/parsers/git_test.clj
 
-    working with complete log
-
- project.clj                        |    3 +-
- src/git_parse_proto/core.clj       |   31 ++++++++++++------
- test/git_parse_proto/core_test.clj |   62 +++++++++++++++++++++++++++++++++++-
- 3 files changed, 85 insertions(+), 11 deletions(-)
-
-commit 3fdfa645e49f26bfed74e667ad6978f5299e00fe
-Author: Adam Petersen <adam@adampetersen.se>
-Date:   2013-08-24
-
-    Initial prototype, parses one git log entry
-
- .gitignore                         |   11 +
- README.md                          |   13 ++
- doc/intro.md                       |    3 +
- git_change_stats.txt               |  420 ++++++++++++++++++++++++++++++++++++
- project.clj                        |    7 +
- src/git_parse_proto/core.clj       |   24 +++
- test/git_parse_proto/core_test.clj |   20 ++
- 7 files changed, 498 insertions(+)")
-
-(def ^:const entries-with-merge
-  "commit a6d03189b935c8483cec2c3816cbe072be58d92c
-Merge: 87fd16f ce57b75
-Author: XY
-Date:   2013-08-15
-
-    Merge pull request #44 from clojens/master
-
-    README closing paren
-
-commit ce57b75d8c0899dcfc343e4969e1aeba428a6429
-Author: ZV
-Date:   2013-08-15
-
-    missed a closing paren
-
- README.md |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)")
+[a527b79] Adam Petersen 2013-08-29 git: proper error messages from instaparse
+M	src/code_maat/parsers/git.clj
+M	test/code_maat/end_to_end/scenario_tests.clj
+A	test/code_maat/end_to_end/simple_git.txt
+A	test/code_maat/end_to_end/svn_live_data_test.clj
+")
 
 (deftest parses-an-entry
   (is (= (git/as-grammar-map entry)
          [[:entry
-           [:commit [:hash "9fa7e32c7457092dbf4b89169d1c24aaf77bb44a"]]
-           [:author "Adam Petersen <adam@adampetersen.se>"]
-           [:date "2013-01-30"]
+           [:commit [:hash "990442e"]]
+           [:author "Adam Petersen"]
+           [:date "2013-08-29"]
            [:changes
-            [:file "src/cogdrm_web/models/experiment_session.clj"]
-            [:file "src/cogdrm_web/models/storage.clj"]
-            [:file "src/cogdrm_web/server.clj"]
-            [:file "test/cogdrm_web/models/storage_test.clj"]]]])))
+            [:file "project.clj"]
+            [:file "src/code_maat/parsers/git.clj"]]]])))
 
 (deftest parses-multiple-entries
   (is (= (git/as-grammar-map entries)
          [[:entry
-           [:commit [:hash "d8ba9b0f53b7d4bec8e7e446f99afeba52c34d06"]]
-           [:author "Adam Petersen <adam@adampetersen.se>"]
-           [:date "2013-08-26"]
+           [:commit [:hash "b777738"]]
+           [:author "Adam Petersen"]
+           [:date "2013-08-29"]
            [:changes
-            [:file "project.clj"]
-            [:file "src/git_parse_proto/core.clj"]
-            [:file "test/git_parse_proto/core_test.clj"]]]
+            [:file "src/code_maat/parsers/git.clj"]
+            [:file "test/code_maat/parsers/git_test.clj"]]]
           [:entry
-           [:commit [:hash "3fdfa645e49f26bfed74e667ad6978f5299e00fe"]]
-           [:author "Adam Petersen <adam@adampetersen.se>"]
-           [:date "2013-08-24"]
+           [:commit [:hash "a527b79"]]
+           [:author "Adam Petersen"]
+           [:date "2013-08-29"]
            [:changes
-            [:file ".gitignore"]
-            [:file "README.md"]
-            [:file "doc/intro.md"]
-            [:file "git_change_stats.txt"]
-            [:file "project.clj"]
-            [:file "src/git_parse_proto/core.clj"]
-            [:file "test/git_parse_proto/core_test.clj"]]]])))
-
-(deftest parses-merges-as-emtpy-change-sets
-  (is (= (git/as-grammar-map entries-with-merge)
-         [[:entry
-           [:commit [:hash "a6d03189b935c8483cec2c3816cbe072be58d92c"]]
-           [:author "XY"]
-           [:date "2013-08-15"]
-           [:changes]]
-          [:entry
-           [:commit [:hash "ce57b75d8c0899dcfc343e4969e1aeba428a6429"]]
-           [:author "ZV"]
-           [:date "2013-08-15"]
-           [:changes [:file "README.md"]]]])))
+            [:file "src/code_maat/parsers/git.clj"]
+            [:file "test/code_maat/end_to_end/scenario_tests.clj"]
+            [:file "test/code_maat/end_to_end/simple_git.txt"]
+            [:file "test/code_maat/end_to_end/svn_live_data_test.clj"]]]])))
 
 (deftest parses-empty-log
   (is (= (git/as-grammar-map "")
@@ -150,7 +90,5 @@ Date:   2013-08-15
 (deftest parses-to-dataset
   (testing "single entry in log"
     (is (= (incanter/to-list (git/parse-log entry {}))
-           [["Adam Petersen <adam@adampetersen.se>" "9fa7e32c7457092dbf4b89169d1c24aaf77bb44a" "2013-01-30" "src/cogdrm_web/models/experiment_session.clj"]
-            ["Adam Petersen <adam@adampetersen.se>" "9fa7e32c7457092dbf4b89169d1c24aaf77bb44a" "2013-01-30" "src/cogdrm_web/models/storage.clj"]
-            ["Adam Petersen <adam@adampetersen.se>" "9fa7e32c7457092dbf4b89169d1c24aaf77bb44a" "2013-01-30" "src/cogdrm_web/server.clj"]
-            ["Adam Petersen <adam@adampetersen.se>" "9fa7e32c7457092dbf4b89169d1c24aaf77bb44a" "2013-01-30" "test/cogdrm_web/models/storage_test.clj"]]))))
+           [["Adam Petersen" "990442e" "2013-08-29" "project.clj"]
+            ["Adam Petersen" "990442e" "2013-08-29" "src/code_maat/parsers/git.clj"]]))))

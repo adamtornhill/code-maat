@@ -12,7 +12,8 @@
 ;;; This module is responsible for parsing a git log file.
 ;;;
 ;;; Input: a log file generated with the following command:
-;;;         git log --date=short --stat
+;;;         
+;;;    git log --pretty=format:'[%h] %an %ad %s' --name-status --date=short 
 ;;;
 ;;; Ouput: An incanter dataset with the following columns:
 ;;;   :entity :date :author :rev
@@ -22,39 +23,28 @@
 ;;;  :author -> as a string
 ;;;  :rev -> the hash used by git to identify the commit
 
-(def ^:const transform-options
-  "Specifies parser transformations."
-  {:number read-string})
-
-;;; Here's the instaparse grammar for a git log-file.
-;;;
-;;; In the current version we only extract basic info on
-;;; authors and file modification patterns.
-;;; As we add more analysis options (e.g. churn), it gets
-;;; interesting to enable more parse output.
 (def ^:const grammar
-  "
-    <S> = entries
-    <entries> =    (entry <nl*>)* | entry
-    entry =        commit <nl> <(merge nl)?> author <nl> date <nl> <message> <nl> changes
-    commit =       <'commit'> <ws> hash
-    merge =        'Merge: ' #'.'+
-    author =       <'Author:'> <ws+> #'.+'
-    date =         <'Date:'> <ws+> #'\\d{4}-\\d{2}-\\d{2}'
-    message =      <nl> (<ws ws+> #'.+'? <nl>)* (*to handle merges and reverts too*)
-    changes =      change* <summary>
-    <change> =     <ws*> file <ws*> <'|'> <ws*> <modification> <nl>
-    file =         #'[^\\s]+'
-    modification = #'.+'
-    summary =      files_changed? <ws*> insertions? <ws*> deletions?
-    files_changed =         <ws*> number <ws*> <files_changed_static>
-    files_changed_static = 'file' 's'? ' changed,'
-    insertions =            number <ws*> <'insertion'  's'? '(+)'><','?>
-    deletions =             number <ws*> <'deletion' 's'? '(-)'>
-    number = #'\\d+'
-    ws =     #'\\s'
-    nl =    '\\n'
-    hash =  #'[\\da-f]+'")
+  "Here's the instaparse grammar for a git log-file.
+   In the current version we only extract basic info on
+   authors and file modification patterns.
+   As we add more analysis options (e.g. churn), it gets
+   interesting to enable more parse output."
+   "
+    <S>       =   entries
+    <entries> =  (entry <nl*>)* | entry
+    entry     =  commit <ws> author <ws> date <ws> <message> <nl> changes
+    commit    =  <'['> hash <']'>
+    author    =  #'.+(?=\\s\\d{4}-)' (* match until the date field *)
+    date      =  #'\\d{4}-\\d{2}-\\d{2}'
+    message   =  #'.+'?
+    changes   =  change*
+    <change>  =  <action> <tab> file <nl>
+    action    =  #'.' (* added, modified, etc - single character *) 
+    file      =  #'.+'
+    ws        =  #'\\s'
+    tab       =  #'\\t'
+    nl        =  '\\n'
+    hash      =  #'[\\da-f]+'")
 
 (def git-log-parser
   (insta/parser grammar))
@@ -101,6 +91,8 @@
   (map (fn [[tag name]] name) (changes z)))
 
 (defn- entry-as-row
+  "Transforms one entry (as a hiccup formated vector) into
+   a map corresponding to a row in an Incanter dataset."
   [coll z]
   (let [author (author z)
         rev (rev z)
