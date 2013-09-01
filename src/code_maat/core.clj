@@ -19,7 +19,9 @@
            ["--min-shared-revs" "Minimum number of shared revisions to include an entity in the analysis"
             :default 5 :parse-fn #(Integer. %)]
            ["--min-coupling" "Minimum degree of coupling (in percentage) to consider"
-            :default 50 :parse-fn #(Integer. %)]))
+            :default 50 :parse-fn #(Integer. %)]
+           ["--max-coupling" "Maximum degree of coupling (in percentage) to consider"
+            :default 100 :parse-fn #(Integer. %)]))
 
 (defn- print-banner []
   (let [[options args banner] (as-app-options [])]

@@ -48,9 +48,7 @@
 
 (defn- grouped-by-rev
   [flat-data]
-  (->>
-   flat-data
-   (ds/-group-by :rev)))
+  (ds/-group-by :rev flat-data))
 
 (defn- make-entity-stats [] {:revs 0 :coupled {}})
 
@@ -128,13 +126,14 @@
   (:revs (dependencies entity)))
 
 (defn- within-threshold?
-  [{:keys [min-revs min-shared-revs min-coupling]}
+  [{:keys [min-revs min-shared-revs min-coupling max-coupling]}
    revs shared-revs coupling]
-  {:pre [(and min-revs min-shared-revs min-coupling)]}
+  {:pre [(and min-revs min-shared-revs min-coupling max-coupling)]}
   (and
    (>= revs min-revs)
    (>= shared-revs min-shared-revs)
-   (>= coupling min-coupling)))
+   (>= coupling min-coupling)
+   (<= (math/floor coupling) max-coupling)))
 
 (defn as-logical-coupling
   [all-dependencies within-threshold-fn? coll [entity {:keys [revs coupled]}]]

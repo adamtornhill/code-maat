@@ -27,4 +27,5 @@
   "Typically given as cmd line args"
   {:min-revs 1
    :min-shared-revs 1
-   :min-coupling 50})
+   :min-coupling 50
+   :max-coupling 100})
