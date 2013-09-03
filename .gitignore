@@ -11,5 +11,7 @@ pom.xml
 *~
 mytodo.txt
 *.txt#
+.#*
+*.clj#
 *.csv
 test_data.txt

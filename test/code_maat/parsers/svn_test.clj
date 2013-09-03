@@ -54,13 +54,13 @@
 (deftest one-modified-entity-per-row
   (let [[row1 row2] (svn/as-rows [] first-entry)]
     (is (= row1
-           {:entity "/Infrastrucure/Network/Connection.cs "
+           {:entity "/Infrastrucure/Network/Connection.cs"
             :date "2013-02-08T11:46:13.844538Z"
             :author "APT"
             :action :modified
             :rev "2"}))
     (is (= row2
-           {:entity "/Presentation/Status/ClientPresenter.cs "
+           {:entity "/Presentation/Status/ClientPresenter.cs"
             :date "2013-02-08T11:46:13.844538Z"
             :author "APT"
             :action :modified
@@ -69,7 +69,7 @@
 (deftest created-entities-are-marked
   (let [[row-with-created-entity] (svn/as-rows [] second-entry)]
     (is (= row-with-created-entity
-           {:entity "/Infrastrucure/Network/Connection.cs "
+           {:entity "/Infrastrucure/Network/Connection.cs"
             :date "2013-02-07T11:46:13.844538Z"
             :author "XYZ"
             :action :created
@@ -86,6 +86,6 @@
       (is (= ($ :author modifications)
              ["APT" "APT" "XYZ"]))
       (is (= ($ :entity modifications)
-             ["/Infrastrucure/Network/Connection.cs "
-              "/Presentation/Status/ClientPresenter.cs "
-              "/Infrastrucure/Network/Connection.cs "])))))
+             ["/Infrastrucure/Network/Connection.cs"
+              "/Presentation/Status/ClientPresenter.cs"
+              "/Infrastrucure/Network/Connection.cs"])))))

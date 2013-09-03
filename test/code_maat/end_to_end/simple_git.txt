@@ -1,18 +1,6 @@
-commit 2
-Author: APT
-Date:   2013-02-08
+[2] APT 2013-02-08 git: authors and revisions implemented
+M	/Infrastrucure/Network/Connection.cs
+M	/Presentation/Status/ClientPresenter.cs
 
-    git: authors and revisions implemented
-
- /Infrastrucure/Network/Connection.cs                   |    1 +
- /Presentation/Status/ClientPresenter.cs                |    5 +++
- 2 files changed, 57 insertions(+), 28 deletions(-)
-
-commit 1
-Author: XYZ
-Date:   2013-02-07
-
-    Report connection status
-
- /Infrastrucure/Network/Connection.cs                   |    1 +
- 1 files changed, 57 insertions(+), 28 deletions(-)
+[1] XYZ 2013-02-07 Report connection status
+M	/Infrastrucure/Network/Connection.cs

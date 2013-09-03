@@ -7,7 +7,8 @@
   (:use [clojure.data.zip.xml :only (attr text xml-> xml1->)]) ; dep: see below
   (:require [incanter.core :as incanter]
             [clojure.xml :as xml]
-            [clojure.zip :as zip]))
+            [clojure.zip :as zip]
+            [clojure.string :as s]))
 
 ;;; This module contains functionality for parsing a generated SVN log
 ;;; into an Incanter dataset suitable for the supported analysis.
@@ -30,7 +31,7 @@
    "R" :moved})
 
 (defn- group-file-with-action [entry]
-  (let [entity-name (text entry)
+  (let [entity-name (s/trimr (text entry))
         svn-action (attr entry :action)
         action (get svn-action->interpretable-action svn-action)]
     [entity-name action]))
