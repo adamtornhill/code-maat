@@ -31,64 +31,24 @@ A	test/code_maat/end_to_end/simple_git.txt
 A	test/code_maat/end_to_end/svn_live_data_test.clj
 ")
 
-(deftest parses-an-entry
-  (is (= (git/as-grammar-map entry)
-         [[:entry
-           [:commit [:hash "990442e"]]
-           [:author "Adam Petersen"]
-           [:date "2013-08-29"]
-           [:changes
-            [:file "project.clj"]
-            [:file "src/code_maat/parsers/git.clj"]]]])))
-
-(deftest parses-multiple-entries
-  (is (= (git/as-grammar-map entries)
-         [[:entry
-           [:commit [:hash "b777738"]]
-           [:author "Adam Petersen"]
-           [:date "2013-08-29"]
-           [:changes
-            [:file "src/code_maat/parsers/git.clj"]
-            [:file "test/code_maat/parsers/git_test.clj"]]]
-          [:entry
-           [:commit [:hash "a527b79"]]
-           [:author "Adam Petersen"]
-           [:date "2013-08-29"]
-           [:changes
-            [:file "src/code_maat/parsers/git.clj"]
-            [:file "test/code_maat/end_to_end/scenario_tests.clj"]
-            [:file "test/code_maat/end_to_end/simple_git.txt"]
-            [:file "test/code_maat/end_to_end/svn_live_data_test.clj"]]]])))
-
-(deftest parses-empty-log
-  (is (= (git/as-grammar-map "")
-         [])))
-
 (deftest throws-on-invalid-input
   (is (thrown? IllegalArgumentException
-               (git/as-grammar-map "simply not a valid git log here..."))))
+               (git/parse-log "simply not a valid git log here..." {}))))
 
-(deftest transforms-parse-result-to-rows-for-dataset
-  (is (= (git/grammar-map->rows
-           [[:entry
-           [:commit [:hash "123"]]
-           [:author "a"]
-           [:date "2013-01-30"]
-           [:changes
-            [:file "first.clj"]
-            [:file "second.clj"]]]
-            [:entry
-             [:commit [:hash "456"]]
-           [:author "b"]
-           [:date "2013-10-30"]
-           [:changes
-            [:file "third.clj"]]]])
-         [{:author "a", :rev "123", :date "2013-01-30", :entity "first.clj"}
-          {:author "a", :rev "123", :date "2013-01-30", :entity "second.clj"}
-          {:author "b", :rev "456", :date "2013-10-30", :entity "third.clj"}])))
+(deftest parses-single-entry-to-dataset
+  (is (= (incanter/to-list (git/parse-log entry {}))
+         [["Adam Petersen" "990442e" "2013-08-29" "project.clj"]
+          ["Adam Petersen" "990442e" "2013-08-29" "src/code_maat/parsers/git.clj"]])))
 
-(deftest parses-to-dataset
-  (testing "single entry in log"
-    (is (= (incanter/to-list (git/parse-log entry {}))
-           [["Adam Petersen" "990442e" "2013-08-29" "project.clj"]
-            ["Adam Petersen" "990442e" "2013-08-29" "src/code_maat/parsers/git.clj"]]))))
+(deftest parses-multiple-entries-to-dataset
+  (is (= (incanter/to-list (git/parse-log entries {}))
+         [["Adam Petersen" "b777738" "2013-08-29" "src/code_maat/parsers/git.clj"]
+          ["Adam Petersen" "b777738" "2013-08-29" "test/code_maat/parsers/git_test.clj"]
+          ["Adam Petersen" "a527b79" "2013-08-29" "src/code_maat/parsers/git.clj"]
+          ["Adam Petersen" "a527b79" "2013-08-29" "test/code_maat/end_to_end/scenario_tests.clj"]
+          ["Adam Petersen" "a527b79" "2013-08-29" "test/code_maat/end_to_end/simple_git.txt"]
+          ["Adam Petersen" "a527b79" "2013-08-29" "test/code_maat/end_to_end/svn_live_data_test.clj"]])))
+
+(deftest parses-empty-log-to-empty-dataset
+  (is (= (incanter/to-list (git/parse-log "" {}))
+         [])))

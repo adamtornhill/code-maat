@@ -4,8 +4,7 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.parsers.mercurial
-  (:require [instaparse.core :as insta]
-            [incanter.core :as incanter]))
+  (:require [code-maat.parsers.hiccup-based-parser :as hbp]))
 
 ;;; This module is responsible for parsing a Mercurial log file.
 ;;;
@@ -24,7 +23,7 @@
 ;;;  :author -> as a string
 ;;;  :rev -> revision from Mercurial
 
-(def ^:const grammar
+(def ^:const hg-grammar
   "Here's the instaparse grammar for a Mercurial log-file."
    "
     <S>       =   entries
@@ -39,20 +38,8 @@
     nl        =  '\\n'
     ")
 
-(def mercurial-log-parser
-  (insta/parser grammar))
-
-(defn- raise-parse-failure
-  [f]
-  (let [reason (with-out-str (print f))]
-    (throw (IllegalArgumentException. reason))))
-
-(defn as-grammar-map
-  "The actual invokation of the parser.
-   Returns a Hiccup parse tree upon success,
-   otherwise an informative exception is thrown."
-  [input]
-  (let [result (insta/parse mercurial-log-parser input)]
-    (if (insta/failure? result)
-      (raise-parse-failure (insta/get-failure result))
-      result)))
+(defn parse-log
+  "Transforms the given input MErcurial log into an
+   Incanter dataset suitable for the analysis modules." 
+  [input parse-options]
+  (hbp/parse-log input hg-grammar parse-options))

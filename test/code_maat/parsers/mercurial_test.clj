@@ -21,23 +21,17 @@ impl/actual_mailbox.h
 rev: 32 author: xyz date: 2010-04-03 files:
 impl/node.cpp tinch_pp/node.h")
 
-(deftest parses-an-entry
-  (is (= (hg/as-grammar-map entry)
-         [[:entry [:rev "47"]
-           [:author "apn <apn@somewhere.se>"]
-           [:date "2010-08-29"]
-           [:changes [:file ".hgtags"]]]])))
+(deftest parses-single-entry-to-dataset
+  (is (= (incanter/to-list (hg/parse-log entry {}))
+         [["apn <apn@somewhere.se>" "47" "2010-08-29" ".hgtags"]])))
 
-(deftest parses-multiple-entries
-  (is (= (hg/as-grammar-map entries)
-         [[:entry [:rev "33"]
-           [:author "apn"]
-           [:date "2010-04-14"]
-           [:changes
-            [:file "impl/CMakeLists.txt"]
-            [:file "impl/actual_mailbox.cpp"]
-            [:file "impl/actual_mailbox.h"]]]
-          [:entry [:rev "32"]
-           [:author "xyz"]
-           [:date "2010-04-03"]
-           [:changes [:file "impl/node.cpp tinch_pp/node.h"]]]])))
+(deftest parses-multiple-entries-to-dataset
+  (is (= (incanter/to-list (hg/parse-log entries {}))
+         [["apn" "33" "2010-04-14" "impl/CMakeLists.txt"]
+          ["apn" "33" "2010-04-14" "impl/actual_mailbox.cpp"]
+          ["apn" "33" "2010-04-14" "impl/actual_mailbox.h"]
+          ["xyz" "32" "2010-04-03" "impl/node.cpp tinch_pp/node.h"]])))
+
+(deftest parses-empty-log-to-empty-dataset
+  (is (= (incanter/to-list (hg/parse-log "" {}))
+         [])))
