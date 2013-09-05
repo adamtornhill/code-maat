@@ -6,6 +6,7 @@
 (ns code-maat.app.app
   (:require [code-maat.parsers.svn :as svn]
             [code-maat.parsers.git :as git]
+            [code-maat.parsers.mercurial :as hg]
             [code-maat.parsers.xml :as xml]
             [code-maat.output.csv :as csv-output]
             [code-maat.analysis.authors :as authors]
@@ -30,34 +31,42 @@
     (map (fn [a] #(a % options))
          (vals supported-analysis)))) ; :all
 
-(defn- svn-xml->modifications
-  [logfile-name options]
+(defn- run-parser-in-error-handling-context
+  [parse-fn vcs-name]
   (try
-    (svn/zip->modification-sets
-     (xml/file->zip logfile-name)
-     options)
-    (catch Exception e
-      (throw (IllegalArgumentException.
-              "Failed to parse the given file - is it a valid svn logfile?")))))
-
-(defn- git->modifications
-  [logfile-name options]
-  (try
-    (->
-     logfile-name
-     slurp
-     (git/parse-log options))
+    (parse-fn)
     (catch IllegalArgumentException ae
       (throw ae))
     (catch Exception e
       (throw (IllegalArgumentException.
-              "Failed to parse the given file - is it a valid git logfile?")))))
+              (str vcs-name ": Failed to parse the given file - is it a valid logfile?"))))))
+
+(defn- hg->modifications
+  [logfile-name options]
+  (run-parser-in-error-handling-context
+   #(-> logfile-name slurp (hg/parse-log options))
+   "Mercurial"))
+
+(defn- svn-xml->modifications
+  [logfile-name options]
+  (run-parser-in-error-handling-context
+   #(svn/zip->modification-sets
+     (xml/file->zip logfile-name)
+     options)
+   "svn"))
+
+(defn- git->modifications
+  [logfile-name options]
+  (run-parser-in-error-handling-context
+   #(-> logfile-name slurp (git/parse-log options))
+   "git"))
   
 (defn- get-parser
   [{:keys [version-control]}]
   (case version-control
     "svn" svn-xml->modifications
     "git" git->modifications
+    "hg"  hg->modifications
     (throw (IllegalArgumentException.
             (str "Invalid --version-control specified: " version-control
                  ". Supported options are: svn or git.")))))

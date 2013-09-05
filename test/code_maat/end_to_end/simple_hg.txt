@@ -1,0 +1,6 @@
+rev: 2 author: APT date: 2013-02-08 files:
+/Infrastrucure/Network/Connection.cs
+/Presentation/Status/ClientPresenter.cs
+
+rev: 1 author: XYZ date: 2013-02-07 files:
+/Infrastrucure/Network/Connection.cs
