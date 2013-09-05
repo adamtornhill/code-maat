@@ -3,7 +3,7 @@
 ;;; Distributed under the GNU General Public License v3.0,
 ;;; see http://www.gnu.org/licenses/gpl.html
 
-(defproject code-maat "0.2.0"
+(defproject code-maat "0.3.0-SNAPSHOT"
   :description "A toolset to mine and analyze version control data"
   :url "http://http://www.adampetersen.se/code/codemaat.htm"
   :license {:name "GNU General Public License v3.0"
