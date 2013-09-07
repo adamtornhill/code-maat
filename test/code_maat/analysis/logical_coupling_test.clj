@@ -85,7 +85,6 @@
   (is (= (coupling/as-logical-coupling
           all-dependencies
           no-threshold
-          []
           ["A"
            {:revs 2 :coupled {"C" 1, "B" 2}}])
          [{:entity "A" :coupled "B" :degree 100 :average-revs 2}

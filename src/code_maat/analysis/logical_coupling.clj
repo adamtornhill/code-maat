@@ -105,13 +105,19 @@
     (reduce update-coupling-in
             stats-with-updated-revs
             (in-same-revision changes-in-rev))))
-            
+
+(defn- changes-in-rev [g]
+  "Extracts the change set from an Incanter
+   dataset grouped by revision."
+  (map second g))
+
 (defn as-dependent-entities
   [changes-grouped-by-rev]
-  (reduce as-dependents-in-one-rev
-          {}
-          (map second
-               changes-grouped-by-rev)))
+  (->>
+   changes-grouped-by-rev
+   (changes-in-rev)
+   (reduce as-dependents-in-one-rev
+          {})))
 
 (defn calc-dependencies
   [ds]
@@ -136,7 +142,7 @@
    (<= (math/floor coupling) max-coupling)))
 
 (defn as-logical-coupling
-  [all-dependencies within-threshold-fn? coll [entity {:keys [revs coupled]}]]
+  [all-dependencies within-threshold-fn? [entity {:keys [revs coupled]}]]
    "This is where the actual action is - we receive a
    map for each entity with its total number of revisions and
    another map of its coupled entities. Based on that information
@@ -144,24 +150,20 @@
    each of its coupled counterparts.
    Future: consider weighting the total number of revisions into
    the calculation to avoiding skewed data."
-   (reduce conj
-           coll
-           (for [[coupled shared-revs] coupled
-                 :let [coupled-revs (n-entity-revs coupled all-dependencies)
-                       average-revs (m/average revs coupled-revs)
-                       coupling (m/as-percentage (/ shared-revs average-revs))]
-                 :when (within-threshold-fn? average-revs shared-revs coupling)]
-             {:entity entity :coupled coupled
-              :degree (int coupling) :average-revs (math/ceil average-revs)})))
+   (for [[coupled shared-revs] coupled
+         :let [coupled-revs (n-entity-revs coupled all-dependencies)
+               average-revs (m/average revs coupled-revs)
+               coupling (m/as-percentage (/ shared-revs average-revs))]
+         :when (within-threshold-fn? average-revs shared-revs coupling)]
+     {:entity entity :coupled coupled
+      :degree (int coupling) :average-revs (math/ceil average-revs)}))
 
 (defn as-logical-coupling-of-all
   [thresholds all-dependencies]
-  (let [as-coupling-in-commit #(as-logical-coupling all-dependencies
-                                                    (partial within-threshold? thresholds)
-                                                    %1 %2)]
-    (reduce as-coupling-in-commit
-            []
-            all-dependencies)))
+  (mapcat (partial as-logical-coupling
+                   all-dependencies
+                   (partial within-threshold? thresholds))
+          all-dependencies))
 
 (defn by-degree1
   "Calculates the degree of logical coupling. Returns a seq

@@ -52,25 +52,21 @@
 (defn- files [z]
   (map (fn [[tag name]] name) (changes z)))
 
+(defn- make-row-constructor
+  [v]
+  (let [author (author v)
+        rev (rev v)
+        date (date v)]
+    (fn [file]
+      {:author author :rev rev :date date :entity file})))
+
 (defn- entry-as-row
   "Transforms one entry (as a hiccup formated vector) into
    a map corresponding to a row in an Incanter dataset."
-  [coll z]
-  (let [author (author z)
-        rev (rev z)
-        date (date z)
-        files (files z)]
-    (reduce conj
-            coll
-            (for [file files]
-              {:author author :rev rev :date date :entity file}))))
-
-(defn grammar-map->rows
-  "Transforms the parse result (our grammar map) into
-   a seq of maps where each map represents one entity.
-   The grammar map is given as nested hiccup vectors."
-  [gm]
-  (reduce entry-as-row [] gm))
+  [v]
+  (let [row-ctor (make-row-constructor v)
+        files (files v)]
+    (map row-ctor files)))
 
 (defn parse-log
   "Transforms the given input git log into an
@@ -80,5 +76,5 @@
     (->>
      input
      (as-grammar-map parser)
-     grammar-map->rows
+     (mapcat entry-as-row)
      incanter/to-dataset)))
