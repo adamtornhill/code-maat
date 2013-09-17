@@ -65,7 +65,7 @@ When invoked without any arguments, Code Maat prints its usage:
              Switches                 Default   Desc
              --------                 -------   ----
              -vcs, --version-control            Input vcs module type: supports svn, git or hg
-             -a,  --analysis           authors  The analysis to run (authors, revisions, coupling, summary, :all)
+             -a,  --analysis           authors  The analysis to run (authors, revisions, coupling, summary, identity)
              -r, --rows                10       Max rows in output
              --min-revs                5        Minimum number of revisions to include an entity in the analysis
              --min-shared-revs         5        Minimum number of shared revisions to include an entity in the analysis
@@ -122,6 +122,10 @@ In the example above, the first column (`entity`) gives us the name of the modul
 Future versions of Code Maat are likely to include direct visualization support. For now, the generated csv can be saved to a file and imported into a spreadsheet program such as OpenOffice or Excel. That allows us to generate charts such as the ones below:
 
 ![coupling visualized](doc/imgs/coupling_sample.png).
+
+### Intermediate results
+
+Code Maat supports an `identity` analysis. By using this switch, Code Maat will output the intermediate parse result of the raw VCS file. This can be useful either as a debug aid or as input to other tools.
 
 ### JVM options
 

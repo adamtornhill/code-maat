@@ -82,6 +82,24 @@
   (is (= (run-with-str-output log-file options)
          "entity,coupled,degree,average-revs\n/Presentation/Status/ClientPresenter.cs,/Infrastrucure/Network/Connection.cs,66,2\n/Infrastrucure/Network/Connection.cs,/Presentation/Status/ClientPresenter.cs,66,2\n")))
 
+;;; The identity analysis is intended as a debug aid or to
+;;; generate parsed VCS data as input to other tools.
+;;; The idea with identity is to dump the parse result to
+;;; the output.
+(deftest svn-identity-analysis-contains-additional-info
+  (is (= (run-with-str-output svn-log-file (svn-csv-options "identity"))
+         "entity,action,date,author,rev\n/Infrastrucure/Network/Connection.cs,:modified,2013-02-08T11:46:13.844538Z,APT,2\n/Presentation/Status/ClientPresenter.cs,:modified,2013-02-08T11:46:13.844538Z,APT,2\n/Infrastrucure/Network/Connection.cs,:modified,2013-02-07T11:46:13.844538Z,XYZ,1\n")))
+
+;;; The git and Mercurical parsers do not include the
+;;; 'action' tag that we have in the current SVN data.
+;;; I'm likely to add it later. For now, just document
+;;; the behavior here.
+(def-data-driven-with-vcs-test identity-analysis
+   [[git-log-file (git-options "identity")]
+    [hg-log-file (hg-options "identity")]]
+  (is (= (run-with-str-output log-file options)
+         "author,rev,date,entity\nAPT,2,2013-02-08,/Infrastrucure/Network/Connection.cs\nAPT,2,2013-02-08,/Presentation/Status/ClientPresenter.cs\nXYZ,1,2013-02-07,/Infrastrucure/Network/Connection.cs\n")))
+
 (deftest reports-invalid-arguments
   (testing "Non-existent input file"
     (is (thrown? IllegalArgumentException (app/run "I/do/not/exist"))))
@@ -108,4 +126,3 @@
    [empty-hg-file (hg-options "revisions")]]
   (is (= (run-with-str-output log-file options)
          "entity,n-revs\n")))
-    

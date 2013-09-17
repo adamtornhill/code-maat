@@ -38,10 +38,10 @@
   (->>
    entity-group
    (ds/-select-by :author)
-   set
+   distinct
    count))
 
-(defn- group->entity-with-author-count
+(defn- make-entity-with-author-count
   [[entity-group entity-changes] ds]
   (let [entity (:entity entity-group)]
     [entity
@@ -57,10 +57,10 @@
   ([ds options]
      (by-count ds options :desc))
   ([ds options order-fn]
-     (let [g (ds/-group-by :entity ds)
+     (let [by-entity (ds/-group-by :entity ds)
            by-rev (entities/as-dataset-by-revision ds)]
        (->>
-        g
-        (map #(group->entity-with-author-count % by-rev))
+        by-entity
+        (map #(make-entity-with-author-count % by-rev))
         (ds/-dataset [:entity :n-authors :n-revs])
         (ds/-order-by :n-authors order-fn)))))

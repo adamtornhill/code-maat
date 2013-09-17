@@ -20,7 +20,8 @@
   {"authors" authors/by-count
    "revisions" entities/by-revision
    "coupling" coupling/by-degree1
-   "summary" summary/overview})
+   "summary" summary/overview
+   "identity" (fn [input _] input)}) ; for debugging - dumps all raw data
 
 (defn- make-analysis
   "Returns a seq of analysis methods closing over the options.
@@ -50,9 +51,7 @@
 (defn- svn-xml->modifications
   [logfile-name options]
   (run-parser-in-error-handling-context
-   #(svn/zip->modification-sets
-     (xml/file->zip logfile-name)
-     options)
+   #(-> logfile-name xml/file->zip (svn/zip->modification-sets options))
    "svn"))
 
 (defn- git->modifications
