@@ -119,7 +119,11 @@ In the example above, the first column (`entity`) gives us the name of the modul
 
 ### Visualizing the result
 
-Future versions of Code Maat are likely to include direct visualization support. For now, the generated csv can be saved to a file and imported into a spreadsheet program such as OpenOffice or Excel. That allows us to generate charts such as the ones below:
+Future versions of Code Maat are likely to include direct visualization support. For now, I work with a set of standalone tools. I've open sourced one of those as [Metrics Tree Map](https://github.com/adamtornhill/MetricsTreeMap):
+
+![coupling visualized](doc/imgs/tree_map_sample.png).
+
+An alternative is to save the generated CSV to a file and import it into a spreadsheet program such as OpenOffice or Excel. That allows us to generate charts such as the ones below:
 
 ![coupling visualized](doc/imgs/coupling_sample.png).
 
