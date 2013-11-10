@@ -12,7 +12,8 @@
             [code-maat.analysis.authors :as authors]
             [code-maat.analysis.entities :as entities]
             [code-maat.analysis.logical-coupling :as coupling]
-            [code-maat.analysis.summary :as summary]))
+            [code-maat.analysis.summary :as summary]
+            [code-maat.analysis.churn :as churn]))
 
 ;;; TODO: consider making this dynamic in order to support new
 ;;;       analysis methods as plug-ins.
@@ -21,8 +22,9 @@
    "revisions" entities/by-revision
    "coupling" coupling/by-degree1
    "summary" summary/overview
-   "identity" (fn [input _] input)}) ; for debugging - dumps all raw data
-
+   "identity" (fn [input _] input) ; for debugging - dumps all raw data
+   "abs-churn" churn/absolutes-trend})
+   
 (defn- make-analysis
   "Returns a seq of analysis methods closing over the options.
    Each analysis method takes a single data set as argument."
