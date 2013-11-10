@@ -12,7 +12,7 @@
 ;;;
 ;;; Input: a log file generated with the following command:
 ;;;         
-;;;    git log --pretty=format:'[%h] %an %ad %s' --name-status --date=short 
+;;;    git log --pretty=format:'[%h] %an %ad %s' --date=short --numstat
 ;;;
 ;;; Ouput: An incanter dataset with the following columns:
 ;;;   :entity :date :author :rev
@@ -37,8 +37,10 @@
     date      =  #'\\d{4}-\\d{2}-\\d{2}'
     message   =  #'.+'?
     changes   =  change*
-    <change>  =  <action> <tab> file <nl>
-    action    =  #'.' (* added, modified, etc - single character *) 
+    change    =  added <tab> deleted <tab> file <nl>
+    added     =  numstat
+    deleted   =  numstat
+    <numstat> =  #'[\\d-]*' (* binary files are presented with a dash *)
     file      =  #'.+'
     ws        =  #'\\s'
     tab       =  #'\\t'

@@ -1,230 +1,238 @@
 [9b5bc71] Lluis Sanchez 2013-08-29 Fixed bug #14295 - Project.Load incorrectly resets the FullFileName property
-M	mcs/class/Microsoft.Build.Engine/Microsoft.Build.BuildEngine/Project.cs
-M	mcs/class/Microsoft.Build.Engine/Test/Microsoft.Build.BuildEngine/ProjectTest.cs
+4	2	mcs/class/Microsoft.Build.Engine/Microsoft.Build.BuildEngine/Project.cs
+11	0	mcs/class/Microsoft.Build.Engine/Test/Microsoft.Build.BuildEngine/ProjectTest.cs
 
 [18baa67] Rodrigo Kumpera 2013-08-28 Fix some warning.
-M	mono/mini/method-to-ir.c
+6	6	mono/mini/method-to-ir.c
 
 [a9b4ca9] Rodrigo Kumpera 2013-08-28 [runtime]Don't assume MonoType extends directly from System.Type
-M	mono/metadata/marshal.c
-M	mono/mini/method-to-ir.c
+1	1	mono/metadata/marshal.c
+1	1	mono/mini/method-to-ir.c
 
 [fc522a4] Marek Safar 2013-08-28 Fixes parameter name
-M	mcs/class/corlib/System.Collections.ObjectModel/Collection.cs
+7	6	mcs/class/corlib/System.Collections.ObjectModel/Collection.cs
 
 [2f639b3] Marek Safar 2013-08-28 Use IReflectType interface instead of TypeDelegator for introspection type extensions. Fixes #14168
-M	mcs/class/corlib/System.Reflection.Emit/EnumBuilder.cs
-M	mcs/class/corlib/System.Reflection.Emit/GenericTypeParameterBuilder.cs
-M	mcs/class/corlib/System.Reflection.Emit/TypeBuilder.cs
-M	mcs/class/corlib/System.Reflection/IntrospectionExtensions.cs
-M	mcs/class/corlib/System.Reflection/MonoGenericClass.cs
-M	mcs/class/corlib/System.Reflection/TypeDelegator.cs
-M	mcs/class/corlib/System.Reflection/TypeInfo.cs
-M	mcs/class/corlib/System/MonoType.cs
-A	mcs/class/corlib/Test/System.Reflection/IntrospectionExtensionsTest.cs
-M	mcs/class/corlib/corlib_test.dll.sources
+20	1	mcs/class/corlib/System.Reflection.Emit/EnumBuilder.cs
+6	1	mcs/class/corlib/System.Reflection.Emit/GenericTypeParameterBuilder.cs
+18	1	mcs/class/corlib/System.Reflection.Emit/TypeBuilder.cs
+7	2	mcs/class/corlib/System.Reflection/IntrospectionExtensions.cs
+6	1	mcs/class/corlib/System.Reflection/MonoGenericClass.cs
+14	0	mcs/class/corlib/System.Reflection/TypeDelegator.cs
+5	24	mcs/class/corlib/System.Reflection/TypeInfo.cs
+7	1	mcs/class/corlib/System/MonoType.cs
+57	0	mcs/class/corlib/Test/System.Reflection/IntrospectionExtensionsTest.cs
+1	0	mcs/class/corlib/corlib_test.dll.sources
 
 [af31330] Marek Safar 2013-08-28 Make setProperties private
-M	mcs/class/System.Drawing/System.Drawing/Font.cs
+1	1	mcs/class/System.Drawing/System.Drawing/Font.cs
 
 [abe9522] Marek Safar 2013-08-28 Merge pull request #743 from gvillanueva/master
 [234c346] gvillanueva 2013-08-27 Rewrote Font.GetHashCode() to improve uniqueness. Added test cases to prevent reintroduction of collision scenarios observed in Font.GetHashCode().
-M	mcs/class/System.Drawing/System.Drawing/Font.cs
-M	mcs/class/System.Drawing/Test/System.Drawing/TestFont.cs
+16	2	mcs/class/System.Drawing/System.Drawing/Font.cs
+30	0	mcs/class/System.Drawing/Test/System.Drawing/TestFont.cs
 
 [be400d4] Rodrigo Kumpera 2013-08-27 Naming cleanup.
-M	mcs/class/corlib/System/Console.iOS.cs
+3	3	mcs/class/corlib/System/Console.iOS.cs
 
 [b08d9c2] Miguel de Icaza 2013-08-27 Console.iOS: Reset sb.Length in all cases, even for poor man's print
-M	mcs/class/corlib/System/Console.iOS.cs
+1	1	mcs/class/corlib/System/Console.iOS.cs
 
 [982f710] Marek Safar 2013-08-27 Invalid syntax during attribute target parsing can crash parser. Fixes #14245
-A	mcs/errors/cs0658-4.cs
-M	mcs/mcs/attribute.cs
+18	0	mcs/errors/cs0658-4.cs
+1	1	mcs/mcs/attribute.cs
 
 [fd12f0b] Miguel de Icaza 2013-08-26 Console.iOS: add fallback for the case where monotouch_log is not linked in
-M	mcs/class/corlib/System/Console.iOS.cs
+17	3	mcs/class/corlib/System/Console.iOS.cs
 
 [b2cc26a] Michael Hutchinson 2013-08-26 Merge pull request #742 from remobjects/import-project-userfile
 [60fd58a] Carlo Kok 2013-08-26 Import ".user" as if it was part of the project, this lets users override the options without checking changes to the main project file.
-M	mcs/tools/xbuild/xbuild/2.0/Microsoft.Common.targets
-M	mcs/tools/xbuild/xbuild/3.5/Microsoft.Common.targets
-M	mcs/tools/xbuild/xbuild/4.0/Microsoft.Common.targets
+2	0	mcs/tools/xbuild/xbuild/2.0/Microsoft.Common.targets
+2	0	mcs/tools/xbuild/xbuild/3.5/Microsoft.Common.targets
+2	0	mcs/tools/xbuild/xbuild/4.0/Microsoft.Common.targets
 
 [4ec5963] Marek Habersack 2013-08-26 Merge pull request #726 from pruiz/xamarin-bug-13708
 [8e5e7ea] Marek Safar 2013-08-26 Merge pull request #741 from marcominetti/master
 [94e8ad6] marcominetti 2013-08-26 cleaned console logs in MakeExpression function
-M	mcs/mcs/nullable.cs
+0	2	mcs/mcs/nullable.cs
 
 [cf0b312] marcominetti 2013-08-26 cleaned console logs in MakeExpression function
-M	mcs/mcs/expression.cs
+0	2	mcs/mcs/expression.cs
 
 [16013bc] Marek Safar 2013-08-26 Merge pull request #740 from pruiz/dataannotations-enhancements
 [71d6896] Pablo Ruiz Garcia 2013-08-26 Reverted string.Format(CultureInfo.CurrentCulture, ..) change.
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/CompareAttribute.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/FileExtensionsAttribute.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/MaxLengthAttribute.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/MinLengthAttribute.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/RangeAttribute.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/RegularExpressionAttribute.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/StringLengthAttribute.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/ValidationAttribute.cs
+1	1	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/CompareAttribute.cs
+1	1	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/FileExtensionsAttribute.cs
+1	1	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/MaxLengthAttribute.cs
+1	1	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/MinLengthAttribute.cs
+1	1	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/RangeAttribute.cs
+1	1	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/RegularExpressionAttribute.cs
+2	2	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/StringLengthAttribute.cs
+1	1	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/ValidationAttribute.cs
 
 [8c2c29d] Marek Safar 2013-08-26 Add test for #12745
-M	mcs/class/corlib/Test/System.Runtime.CompilerServices/TaskAwaiterTest.cs
+12	0	mcs/class/corlib/Test/System.Runtime.CompilerServices/TaskAwaiterTest.cs
 
 [46e571e] Pablo Ruiz Garcia 2013-08-25 Set correct author on test files.
-M	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/CompareAttributeTest.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/CreditCardAttributeTest.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/EmailAddressAttributeTest.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/FileExtensionsAttributeTest.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/PhoneAttributeTest.cs
+2	1	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/CompareAttributeTest.cs
+2	1	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/CreditCardAttributeTest.cs
+2	1	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/EmailAddressAttributeTest.cs
+2	1	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/FileExtensionsAttributeTest.cs
+2	1	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/PhoneAttributeTest.cs
 
 [eb25dfc] Pablo Ruiz Garcia 2013-08-25 Some enhancements and additions to DataAnnotations, incluiding implemented of a few missing pieces of Sys.ComponentModel.DataAnnotations v4.5, like: 	- CompareAttribute 	- CreditCardAttribute 	- EmailAddressAttribute 	- FileExtensionsAttribute 	- PhoneAttribute 	- Implemented  IsValid() methods of Min/MaxLengthAttribute. 	- Fixed all existing Validation attributes so they take into account current's locale when composing ErrorMessage.
-A	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/CompareAttribute.cs
-A	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/CreditCardAttribute.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/DataType.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/DataTypeAttribute.cs
-A	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/EmailAddressAttribute.cs
-A	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/FileExtensionsAttribute.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/MaxLengthAttribute.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/MinLengthAttribute.cs
-A	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/PhoneAttribute.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/RangeAttribute.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/RegularExpressionAttribute.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/StringLengthAttribute.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/TimestampAttribute.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/ValidationAttribute.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/ValidationResult.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations_test.dll.sources
-A	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/CompareAttributeTest.cs
-A	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/CreditCardAttributeTest.cs
-A	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/EmailAddressAttributeTest.cs
-A	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/FileExtensionsAttributeTest.cs
-A	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/PhoneAttributeTest.cs
-M	mcs/class/System.ComponentModel.DataAnnotations/net_4_5_System.ComponentModel.DataAnnotations.dll.sources
+118	0	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/CompareAttribute.cs
+81	0	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/CreditCardAttribute.cs
+6	1	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/DataType.cs
+23	2	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/DataTypeAttribute.cs
+73	0	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/EmailAddressAttribute.cs
+92	0	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/FileExtensionsAttribute.cs
+43	1	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/MaxLengthAttribute.cs
+34	9	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/MinLengthAttribute.cs
+69	0	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/PhoneAttribute.cs
+2	1	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/RangeAttribute.cs
+2	1	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/RegularExpressionAttribute.cs
+3	2	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/StringLengthAttribute.cs
+8	4	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/TimestampAttribute.cs
+8	1	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/ValidationAttribute.cs
+11	0	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations/ValidationResult.cs
+5	0	mcs/class/System.ComponentModel.DataAnnotations/System.ComponentModel.DataAnnotations_test.dll.sources
+69	0	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/CompareAttributeTest.cs
+59	0	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/CreditCardAttributeTest.cs
+57	0	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/EmailAddressAttributeTest.cs
+60	0	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/FileExtensionsAttributeTest.cs
+57	0	mcs/class/System.ComponentModel.DataAnnotations/Test/System.ComponentModel.DataAnnotations/PhoneAttributeTest.cs
+5	0	mcs/class/System.ComponentModel.DataAnnotations/net_4_5_System.ComponentModel.DataAnnotations.dll.sources
 
 [0d864b0] Sebastien Pouliot 2013-08-24 SRE.ParameterBuilder cannot be exposed in FULL_AOT_RUNTIME
-M	mcs/class/corlib/System.Reflection/ParameterInfo.cs
+2	1	mcs/class/corlib/System.Reflection/ParameterInfo.cs
 
 [3b846d3] Rodrigo Kumpera 2013-08-23 We have g_getenv for portability reasons, so let's use it.
-M	eglib/src/gfile-posix.c
-M	mono/io-layer/shared.c
-M	mono/metadata/boehm-gc.c
-M	mono/metadata/cominterop.c
-M	mono/metadata/console-unix.c
-M	mono/metadata/lock-tracer.c
-M	mono/metadata/sgen-gc.c
-M	mono/mini/debugger-agent.c
-M	mono/mini/driver.c
-M	mono/mini/ir-emit.h
-M	mono/mini/liveness.c
-M	mono/mini/main.c
-M	mono/mini/method-to-ir.c
-M	mono/mini/mini-arm.c
-M	mono/mini/mini-gc.c
-M	mono/mini/mini-llvm-cpp.cpp
-M	mono/mini/mini-llvm.c
-M	mono/mini/mini-x86.c
-M	mono/mini/mini.c
-M	mono/mini/ssapre.c
-M	mono/utils/mono-hwcap.c
-M	mono/utils/mono-logger.c
+1	1	eglib/src/gfile-posix.c
+1	1	mono/io-layer/shared.c
+3	3	mono/metadata/boehm-gc.c
+1	1	mono/metadata/cominterop.c
+2	2	mono/metadata/console-unix.c
+1	1	mono/metadata/lock-tracer.c
+2	2	mono/metadata/sgen-gc.c
+1	1	mono/mini/debugger-agent.c
+3	3	mono/mini/driver.c
+2	2	mono/mini/ir-emit.h
+1	1	mono/mini/liveness.c
+1	1	mono/mini/main.c
+4	4	mono/mini/method-to-ir.c
+1	1	mono/mini/mini-arm.c
+6	6	mono/mini/mini-gc.c
+1	1	mono/mini/mini-llvm-cpp.cpp
+3	3	mono/mini/mini-llvm.c
+1	1	mono/mini/mini-x86.c
+18	18	mono/mini/mini.c
+2	2	mono/mini/ssapre.c
+1	1	mono/utils/mono-hwcap.c
+2	2	mono/utils/mono-logger.c
 
 [722ace9] Zoltan Varga 2013-08-23 Fix yet another DISABLE_JIT bug in wrapper generation. Fixes #14194.
-M	mono/metadata/marshal.c
+10	0	mono/metadata/marshal.c
 
 [20d08fd] Marek Safar 2013-08-23 Annonymous method storey inside async storey has to capture this directly when the storey does not have any parents. Fixes #14126
-M	mcs/mcs/anonymous.cs
-M	mcs/mcs/statement.cs
-A	mcs/tests/test-async-49.cs
-M	mcs/tests/ver-il-net_4_5.xml
+1	1	mcs/mcs/anonymous.cs
+25	4	mcs/mcs/statement.cs
+45	0	mcs/tests/test-async-49.cs
+51	0	mcs/tests/ver-il-net_4_5.xml
 
 [29c42bf] Rodrigo Kumpera 2013-08-22 Add tests for the new 4.0 behavior in ParameterInfo.
-M	mcs/class/corlib/Test/System.Reflection/ParameterInfoTest.cs
+164	0	mcs/class/corlib/Test/System.Reflection/ParameterInfoTest.cs
 
 [3673d05] Rodrigo Kumpera 2013-08-22 [corlib]Implement .net 4.0 ParameterInfo.
-M	mcs/class/corlib/System.Reflection.Emit/ConstructorBuilder.cs
-M	mcs/class/corlib/System.Reflection.Emit/ConstructorOnTypeBuilderInst.cs
-M	mcs/class/corlib/System.Reflection.Emit/DynamicMethod.cs
-M	mcs/class/corlib/System.Reflection.Emit/MethodBuilder.cs
-M	mcs/class/corlib/System.Reflection/MonoMethod.cs
-A	mcs/class/corlib/System.Reflection/MonoParameterInfo.cs
-M	mcs/class/corlib/System.Reflection/MonoProperty.cs
-M	mcs/class/corlib/System.Reflection/ParameterInfo.cs
-M	mcs/class/corlib/corlib.dll.sources
-M	mono/metadata/reflection.c
+1	1	mcs/class/corlib/System.Reflection.Emit/ConstructorBuilder.cs
+2	2	mcs/class/corlib/System.Reflection.Emit/ConstructorOnTypeBuilderInst.cs
+1	1	mcs/class/corlib/System.Reflection.Emit/DynamicMethod.cs
+1	1	mcs/class/corlib/System.Reflection.Emit/MethodBuilder.cs
+1	1	mcs/class/corlib/System.Reflection/MonoMethod.cs
+240	0	mcs/class/corlib/System.Reflection/MonoParameterInfo.cs
+1	1	mcs/class/corlib/System.Reflection/MonoProperty.cs
+85	131	mcs/class/corlib/System.Reflection/ParameterInfo.cs
+1	0	mcs/class/corlib/corlib.dll.sources
+7	3	mono/metadata/reflection.c
 
 [cfa7bad] Marek Safar 2013-08-22 Fixes negative symbol definition for few locales to be simple -. Fixes #14185
-M	mono/metadata/culture-info-tables.h
-M	tools/locale-builder/Driver.cs
+974	976	mono/metadata/culture-info-tables.h
+8	2	tools/locale-builder/Driver.cs
 
 [33bd250] Zoltan Varga 2013-08-22 Disable two delegate tests on mobile.
-M	mcs/class/corlib/Test/System/DelegateTest.cs
+6	0	mcs/class/corlib/Test/System/DelegateTest.cs
 
 [95a6979] Marek Safar 2013-08-22 Enable fixed failing test
-M	mcs/tests/known-issues-net_4_5
-M	mcs/tests/ver-il-net_4_5.xml
+0	1	mcs/tests/known-issues-net_4_5
+16	0	mcs/tests/ver-il-net_4_5.xml
 
 [9bcd33f] Neale Ferguson 2013-08-22 Enable INLINE support for s390x
-M	mono/metadata/mono-debug.h
-M	mono/mini/debug-mini.c
-M	mono/mini/mini-s390x.c
+3	0	mono/metadata/mono-debug.h
+8	0	mono/mini/debug-mini.c
+14	54	mono/mini/mini-s390x.c
 
 [b46b038] Sebastien Pouliot 2013-08-21 Fix test case not to assume it can write in the current directory
-M	mcs/class/System.XML/Test/System.Xml.Xsl/XslTransformTests.cs
+3	2	mcs/class/System.XML/Test/System.Xml.Xsl/XslTransformTests.cs
 
 [7770413] Mark Probst 2013-08-21 [sgen] Disable cementing for parallel mark&sweep.
-M	mono/metadata/sgen-gc.c
+8	2	mono/metadata/sgen-gc.c
 
 [f2e7f36] Sebastien Pouliot 2013-08-21 Use the invarient culture calendar if the requested one is not available. Partial fix for #13977
-M	mcs/class/corlib/System.Globalization/CultureInfo.cs
+1	1	mcs/class/corlib/System.Globalization/CultureInfo.cs
 
 [41290d3] Atsushi Eno 2013-08-22 Fix bug #14143 - xsl:import in included stylesheet caused compilation error.
-M	mcs/class/System.XML/Mono.Xml.Xsl/XslStylesheet.cs
+3	1	mcs/class/System.XML/Mono.Xml.Xsl/XslStylesheet.cs
 
 [a700784] Rodrigo Kumpera 2013-08-21 [runtime] Don't allow execution of dynamic assemblies without run access. Fixes #7126
-M	mcs/class/corlib/Test/System.Reflection.Emit/AssemblyBuilderTest.cs
-M	mono/metadata/icall.c
+26	2	mcs/class/corlib/Test/System.Reflection.Emit/AssemblyBuilderTest.cs
+8	1	mono/metadata/icall.c
 
 [de2efdb] Rodrigo Kumpera 2013-08-21 [corlib]Fix 2.0 test suite breakage.
-M	mcs/class/corlib/Test/System/TypeTest.cs
+1	1	mcs/class/corlib/Test/System/TypeTest.cs
 
 [d71ca46] Rodrigo Kumpera 2013-08-21 [verifier]Remove duplicate check.
-M	mono/metadata/verify.c
+0	2	mono/metadata/verify.c
 
 [2d6335f] Atsushi Eno 2013-08-21 revert default serialization: ignore non-public members. Also need to exclude backing field in non-default serialization.
-M	mcs/class/System.ServiceModel.Web/System.Runtime.Serialization.Json/TypeMap.cs
+8	4	mcs/class/System.ServiceModel.Web/System.Runtime.Serialization.Json/TypeMap.cs
 
 [bfff327] Rodrigo Kumpera 2013-08-20 [runtime]Add some error checking to custom attr parsing and plug a memory leak. Fixes #13435.
-M	mono/metadata/reflection.c
-M	mono/mini/debugger-agent.c
+28	2	mono/metadata/reflection.c
+2	1	mono/mini/debugger-agent.c
 
 [8cb8add] Zoltan Varga 2013-08-21 Make the dmcs/gmcs scripts identical to the mcs script with an extra -sdk: argument, to avoid PATH problems, and to allow the windows installer to generate .bat files for them. Hopefully fixes #8813.
-M	scripts/dmcs.in
-M	scripts/gmcs.in
+1	1	scripts/dmcs.in
+1	1	scripts/gmcs.in
 
 [e0c4e5b] Rodrigo Kumpera 2013-08-20 [runtime] Handle custom attributes with nested array of enums. Fixes #13767
-M	mcs/class/corlib/Test/System/TypeTest.cs
-M	mono/metadata/reflection.c
+41	0	mcs/class/corlib/Test/System/TypeTest.cs
+19	0	mono/metadata/reflection.c
 
 [0152cee9] Zoltan Varga 2013-08-21 Use i686-pc-mingw32-gcc as the mkbundle compiler on windows.
-M	mcs/tools/mkbundle/mkbundle.cs
+1	1	mcs/tools/mkbundle/mkbundle.cs
 
 [7685ca6] Zoltan Varga 2013-08-20 Merge pull request #737 from Mixaill/master
 [ac146cb] Rodrigo Kumpera 2013-08-20 [verify]Relax the restriction on global methods visibility. Fixes #13890.
-M	mono/metadata/metadata-verify.c
+2	2	mono/metadata/metadata-verify.c
 
 [c187e5e] Rodrigo Kumpera 2013-08-20 [verifier]Since 4.5 arrays now implement IReadOnlyList<T> and IReadOnlyCollection<T>. Verify this properly. Fixes #13879.
-M	mono/metadata/verify.c
+28	0	mono/metadata/verify.c
 
 [ba8d128] Zoltan Varga 2013-08-20 Add support for more return types for constrained gsharedvt calls. Fixes #13030.
-M	mono/mini/aot-compiler.c
-M	mono/mini/gshared.cs
-M	mono/mini/method-to-ir.c
-M	mono/mini/mini.h
+0	2	mono/mini/aot-compiler.c
+28	1	mono/mini/gshared.cs
+7	10	mono/mini/method-to-ir.c
+2	0	mono/mini/mini.h
 
 [c686f20] Zoltan Varga 2013-08-20 Enable support for constrained gsharedvt calls to Object.GetType ().
-M	mono/mini/gshared.cs
-M	mono/mini/jit-icalls.c
-M	mono/mini/method-to-ir.c
+20	0	mono/mini/gshared.cs
+22	11	mono/mini/jit-icalls.c
+4	5	mono/mini/method-to-ir.c
+
+[74fc821] Zoltan Varga 2013-08-20 Fix a regression introduced by d84a165c8e799d8734df5f51a6dcf12b1f2a3695. Unbox casts were failing for enums. Fixes #14026.
+6	1	mono/mini/gshared.cs
+3	5	mono/mini/jit-icalls.c
+
+[e50f956] Paolo Molaro 2013-08-20 Merge pull request #739 from mono/upstream-master
+[25961ac] Paolo Molaro 2013-08-20 Ported perf code to work on arm and adjusted to changes in the kernel that broke mmap().
+143	39	mono/profiler/proflog.c

@@ -47,10 +47,24 @@
   (get-in z [3 1]))
 
 (defn- changes [z]
+  "The parsed changes includes info on the number of
+   lines added, deleted and the name of the entity itself.
+   For example:
+    [:changes [:added 1] [:deleted 1] [:file project.clj]]"
   (rest (get-in z [4])))
 
+(defn- churn-stats? [c]
+  (= :change (get-in c [0])))
+
+(defn- file-name [change]
+  "I've only implemented line counts for git - make
+   sure it works for hg too. A bit ugly for sure..."
+  (if (churn-stats? change)
+    (get-in change [3 1])
+    (get-in change [1])))
+
 (defn- files [z]
-  (map (fn [[tag name]] name) (changes z)))
+  (map file-name (changes z)))
 
 (defn- make-row-constructor
   [v]
