@@ -15,14 +15,14 @@
 
 (def ^:const entry
   "[990442e] Adam Petersen 2013-08-29 Adapted the grammar after live tests (git)
-1	1	project.clj
-2	2	src/code_maat/parsers/git.clj
+1	0	project.clj
+2	4	src/code_maat/parsers/git.clj
 ")
 
 (def ^:const binary-entry
   "[990442e] Adam Petersen 2013-11-10 Testing binary entries
--	-	project.clj
-2	2	src/code_maat/parsers/git.clj
+-	-	project.bin
+2	40	src/code_maat/parsers/git.clj
 ")
 
 (def ^:const entries
@@ -43,23 +43,23 @@
 
 (deftest parses-single-entry-to-dataset
   (is (= (incanter/to-list (git/parse-log entry {}))
-         [["Adam Petersen" "990442e" "2013-08-29" "project.clj"]
-          ["Adam Petersen" "990442e" "2013-08-29" "src/code_maat/parsers/git.clj"]])))
+         [["0" "1" "Adam Petersen" "990442e" "2013-08-29" "project.clj"]
+          ["4" "2" "Adam Petersen" "990442e" "2013-08-29" "src/code_maat/parsers/git.clj"]])))
 
 (deftest parses-entry-with-binary-to-dataset
   "The churn for binary entries are given as a dash (-)."
   (is (= (incanter/to-list (git/parse-log binary-entry {}))
-         [["Adam Petersen" "990442e" "2013-11-10" "project.clj"]
-          ["Adam Petersen" "990442e" "2013-11-10" "src/code_maat/parsers/git.clj"]])))
+         [["-"  "-" "Adam Petersen" "990442e" "2013-11-10" "project.bin"]
+          ["40" "2" "Adam Petersen" "990442e" "2013-11-10" "src/code_maat/parsers/git.clj"]])))
 
 (deftest parses-multiple-entries-to-dataset
   (is (= (incanter/to-list (git/parse-log entries {}))
-         [["Adam Petersen" "b777738" "2013-08-29" "src/code_maat/parsers/git.clj"]
-          ["Adam Petersen" "b777738" "2013-08-29" "test/code_maat/parsers/git_test.clj"]
-          ["Adam Petersen" "a527b79" "2013-08-29" "src/code_maat/parsers/git.clj"]
-          ["Adam Petersen" "a527b79" "2013-08-29" "test/code_maat/end_to_end/scenario_tests.clj"]
-          ["Adam Petersen" "a527b79" "2013-08-29" "test/code_maat/end_to_end/simple_git.txt"]
-          ["Adam Petersen" "a527b79" "2013-08-29" "test/code_maat/end_to_end/svn_live_data_test.clj"]])))
+         [["9"  "10" "Adam Petersen" "b777738" "2013-08-29" "src/code_maat/parsers/git.clj"]
+          ["0"  "32" "Adam Petersen" "b777738" "2013-08-29" "test/code_maat/parsers/git_test.clj"]
+          ["2"   "6" "Adam Petersen" "a527b79" "2013-08-29" "src/code_maat/parsers/git.clj"]
+          ["7"   "0" "Adam Petersen" "a527b79" "2013-08-29" "test/code_maat/end_to_end/scenario_tests.clj"]
+          ["0"  "18" "Adam Petersen" "a527b79" "2013-08-29" "test/code_maat/end_to_end/simple_git.txt"]
+          ["0"  "21" "Adam Petersen" "a527b79" "2013-08-29" "test/code_maat/end_to_end/svn_live_data_test.clj"]])))
 
 (deftest parses-empty-log-to-empty-dataset
   (is (= (incanter/to-list (git/parse-log "" {}))

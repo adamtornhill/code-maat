@@ -47,32 +47,42 @@
   (get-in z [3 1]))
 
 (defn- changes [z]
-  "The parsed changes includes info on the number of
-   lines added, deleted and the name of the entity itself.
-   For example:
-    [:changes [:added 1] [:deleted 1] [:file project.clj]]"
   (rest (get-in z [4])))
 
 (defn- churn-stats? [c]
+  
   (= :change (get-in c [0])))
 
-(defn- file-name [change]
-  "I've only implemented line counts for git - make
-   sure it works for hg too. A bit ugly for sure..."
+(defn- file-stats [change]
+  "The file statistics are at least the name of the file.
+   Some VCS (git) allows me to easily include churn stats.
+   If they're available, I parse them too.
+   Example:
+    [[:change [:added 10] [:deleted 9] [:file src/code_maat/parsers/git.clj]]"
   (if (churn-stats? change)
-    (get-in change [3 1])
-    (get-in change [1])))
+    {:name (get-in change [3 1])
+     :added (get-in change [1 1])
+     :deleted (get-in change [2 1])}
+    {:name (get-in change [1])}))
 
 (defn- files [z]
-  (map file-name (changes z)))
+  (map file-stats (changes z)))
 
 (defn- make-row-constructor
   [v]
   (let [author (author v)
         rev (rev v)
         date (date v)]
-    (fn [file]
-      {:author author :rev rev :date date :entity file})))
+    (fn [{:keys [name added deleted]}]
+      (let [mandatory  {:author author
+                        :rev rev
+                        :date date
+                        :entity name}
+            optional {:loc-added added
+                      :loc-deleted deleted}]
+        (if (and added deleted)
+          (merge mandatory optional)
+          mandatory)))))
 
 (defn- entry-as-row
   "Transforms one entry (as a hiccup formated vector) into

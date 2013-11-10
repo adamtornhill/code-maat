@@ -26,8 +26,8 @@
   "Here's the instaparse grammar for a git log-file.
    In the current version we only extract basic info on
    authors and file modification patterns.
-   As we add more analysis options (e.g. churn), it gets
-   interesting to enable more parse output."
+   To calculate churn, we parse the lines added/deleted too.
+   That info is added b the numstat argument."
    "
     <S>       =   entries
     <entries> =  (entry <nl*>)* | entry
