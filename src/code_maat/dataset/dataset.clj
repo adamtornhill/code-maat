@@ -17,6 +17,15 @@
 ;;; Thus, the responsibility of this module is to provide a uniform API by
 ;;; always returning a seq.
 
+(defmacro def-ds
+  "Defines a constant Incanter dataset based on
+   the given vector data.
+   This macro is typically used in the test cases."
+  [name data]
+  (let [ds-name (symbol (str name))]
+    `(def ^:const ~ds-name
+       (incanter/to-dataset ~data))))
+
 (defn -empty?
   [ds]
   (= 0 (incanter/nrow ds)))

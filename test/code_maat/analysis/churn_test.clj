@@ -5,26 +5,25 @@
 
 (ns code-maat.analysis.churn-test
   (:require [code-maat.analysis.churn :as churn]
-            [code-maat.analysis.test-data :as test-data]
+            [code-maat.dataset.dataset :as ds]
             [incanter.core :as incanter])
   (:use clojure.test))
 
 (def ^:const options {})
 
-(def ^:const incomplete
-   (incanter/to-dataset
-    [{:entity "A" :rev 1 :author "at" :date "2013-11-10"}
-     {:entity "B" :rev 2 :author "ta" :date "2013-11-11"}]))
 
-(def ^:const simple
-   (incanter/to-dataset
-    [{:entity "A" :rev 1 :author "at" :date "2013-11-10" :loc-added "10" :loc-deleted "1"}
-     {:entity "B" :rev 2 :author "ta" :date "2013-11-11" :loc-added "20" :loc-deleted "2"}
-     {:entity "B" :rev 3 :author "at" :date "2013-11-11" :loc-added "2" :loc-deleted "0"}]))
 
-(def ^:const with-binary
-   (incanter/to-dataset
-    [{:entity "binary" :rev 1 :author "at" :date "2013-11-10" :loc-added "-" :loc-deleted "-"}]))
+(ds/def-ds incomplete
+  [{:entity "A" :rev 1 :author "at" :date "2013-11-10"}
+   {:entity "B" :rev 2 :author "ta" :date "2013-11-11"}])
+
+(ds/def-ds simple
+  [{:entity "A" :rev 1 :author "at" :date "2013-11-10" :loc-added "10" :loc-deleted "1"}
+   {:entity "B" :rev 2 :author "ta" :date "2013-11-11" :loc-added "20" :loc-deleted "2"}
+   {:entity "B" :rev 3 :author "at" :date "2013-11-11" :loc-added "2" :loc-deleted "0"}])
+
+(ds/def-ds with-binary
+  [{:entity "binary" :rev 1 :author "at" :date "2013-11-10" :loc-added "-" :loc-deleted "-"}])
 
 (deftest throws-error-on-missing-modification-info
   "Some VCS (e.g. hg) don't provide the necessary metrics.

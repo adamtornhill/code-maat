@@ -53,9 +53,17 @@
     [date added deleted]))
 
 (defn absolutes-trend
+  "Calculates the absolute code churn measures per date.
+   Returns an Incanter dataset with the number of lines
+   added and deleted each day (note that only dates wich
+   involved commits are considered)."
   [ds options]
   (throw-on-missing-data ds)
   (->>
    (ds/-group-by :date ds)
    (sum-by-date)
    (ds/-dataset [:date :added :deleted])))
+
+(defn churn-by-author
+  [ds options]
+  (throw-on-missing-data ds))
