@@ -43,7 +43,7 @@ To analyze our VCS data we need to define a temporal period of interest. Over ti
 
 #### Generate a git log file using the following command:
 
-          git log --pretty=format:'[%h] %an %ad %s' --name-status --date=short --after=YYYY-MM-DD
+          git log --pretty=format:'[%h] %an %ad %s' --date=short --numstat --after=YYYY-MM-DD
 
 #### Generate a Mercurial log file using the following command:
 
@@ -126,6 +126,26 @@ Future versions of Code Maat are likely to include direct visualization support.
 An alternative is to save the generated CSV to a file and import it into a spreadsheet program such as OpenOffice or Excel. That allows us to generate charts such as the ones below:
 
 ![coupling visualized](doc/imgs/coupling_sample.png).
+
+## Code churn measures
+
+Code churn is related to post-release defects. Modules with higher churn tend to have more defects. There are several different aspects of code churn. I intend to support several of them in Code Maat.
+
+### Absolute churn
+
+The absolute code churn numbers are calculated with the `-a abs-churn` option. Note that the option is only available for `git`. The analysis will output a CSV table with the churn accumulated per date:
+
+             date,       added, deleted
+             2013-08-09,   259,      20
+             2013-08-19,   146,      77
+             2013-08-21,     5,       6
+             2013-08-20,   773,     121
+             2013-08-30,   349,     185
+             ...
+
+Visualizing the result allows us to spot general trends over time:
+
+![abs churn visualized](doc/imgs/abs_churn_sample.png).
 
 ### Intermediate results
 
