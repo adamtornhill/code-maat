@@ -3,9 +3,9 @@
 ;;; Distributed under the GNU General Public License v3.0,
 ;;; see http://www.gnu.org/licenses/gpl.html
 
-(defproject code-maat "0.4.0"
+(defproject code-maat "0.5.0-SNAPSHOT"
   :description "A toolset to mine and analyze version control data"
-  :url "http://http://www.adampetersen.se/code/codemaat.htm"
+  :url "http://www.adamtornhill.com/code/codemaat.htm"
   :license {:name "GNU General Public License v3.0"
             :url "http://www.gnu.org/licenses/gpl.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]

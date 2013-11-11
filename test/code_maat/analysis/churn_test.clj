@@ -22,6 +22,12 @@
    {:entity "B" :rev 2 :author "ta" :date "2013-11-11" :loc-added "20" :loc-deleted "2"}
    {:entity "B" :rev 3 :author "at" :date "2013-11-11" :loc-added "2" :loc-deleted "0"}])
 
+(ds/def-ds same-author
+  [{:entity "A" :rev 1 :author "at" :date "2013-11-10" :loc-added "10" :loc-deleted "1"}
+   {:entity "A" :rev 2 :author "at" :date "2013-11-11" :loc-added "2" :loc-deleted "5"}
+   {:entity "A" :rev 3 :author "xy" :date "2013-11-11" :loc-added "7" :loc-deleted "1"}
+   {:entity "A" :rev 4 :author "xy" :date "2013-11-11" :loc-added "8" :loc-deleted "2"}])
+
 (ds/def-ds with-binary
   [{:entity "binary" :rev 1 :author "at" :date "2013-11-10" :loc-added "-" :loc-deleted "-"}])
 
@@ -57,3 +63,17 @@
          (incanter/to-dataset
           [{:entity "B" :added 22 :deleted 2}
            {:entity "A" :added 10 :deleted 1}]))))
+
+(deftest calculates-author-ownership-from-churn
+  (is (= (churn/as-ownership simple options)
+          (ds/-dataset [:entity :author :added :deleted]
+           [["A" "at" 10 1]
+            ["B" "ta" 20 2]
+            ["B" "at" 2 0]]))))
+
+(deftest sums-ownership-churn-for-same-author
+  "We want an aggregated number when the same author makes multiple mods."
+  (is (= (churn/as-ownership same-author options)
+         (ds/-dataset [:entity :author :added :deleted]
+          [["A" "at" 12 6]
+           ["A" "xy" 15 3]]))))

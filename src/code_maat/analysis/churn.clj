@@ -53,6 +53,27 @@
               deleted (total-churn :loc-deleted changes)]]
     [grouping added deleted]))
 
+(defn- sum-by-author-contrib
+  [grouped]
+  (for [[entity-entry changes] grouped
+        :let [entity (:entity entity-entry)
+              author-group (ds/-group-by :author changes)
+              author-contrib (sum-by-group :author author-group)]]
+    [entity author-contrib]))
+
+(defn- normalize-contrib
+  "Each entity is associated with its contributing authors.
+   An author may be included multiple times. We need to
+   join that info and splice one entity into multiple rows
+   to make up an Incanter dataset.
+   Example on input:
+    [Entity [[ta 20 2] [at 2 0]]]
+  Should result in:
+    [Entity ta 20 2]
+    [Entity at  2 0]"
+  [[name contribs]]
+  (map (fn [[a add del]] [name a add del]) contribs))
+
 (defn- churn-by
   [group ds options]
   (throw-on-missing-data ds)
@@ -87,3 +108,18 @@
   (->>
    (churn-by :entity ds options)
    (ds/-order-by :added :desc)))
+
+(defn as-ownership
+  "Returns a table specifying the ownership of
+   each module. Ownership is defined as the
+   amount of churn contributed by each author
+   to each entity." 
+  [ds options]
+  (throw-on-missing-data ds)
+  (->>
+   (ds/-group-by :entity ds)
+   (sum-by-author-contrib)
+   (mapcat normalize-contrib)
+   (ds/-dataset [:entity :author :added :deleted])
+   (ds/-order-by :entity :asc)))
+  

@@ -32,3 +32,11 @@
                               {:version-control "git"
                                :analysis "entity-churn"})
          "entity,added,deleted\n/Infrastrucure/Network/Connection.cs,19,4\n/Presentation/Status/ClientPresenter.cs,3,4\n")))
+
+(deftest calculates-ownership-by-churn
+  "Calculate amount of individual contributions based on the
+   churn of each author on a per entity-basis."
+  (is (= (run-with-str-output git-log-file 
+                              {:version-control "git"
+                               :analysis "entity-ownership"})
+         "entity,author,added,deleted\n/Infrastrucure/Network/Connection.cs,APT,1,2\n/Infrastrucure/Network/Connection.cs,XYZ,18,2\n/Presentation/Status/ClientPresenter.cs,APT,3,4\n")))

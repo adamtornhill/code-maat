@@ -165,6 +165,19 @@ The pre-release churn of a module is a good predictor of its number of post-rele
 
 Note: Some research suggests that relative churn measures are better, while others don't find any significant differences. The metrics calculated by Code Maat are absolute for now because it's easier to calculate. I'm likely to include support for relative churn too.
 
+## Ownership patterns
+
+Once we have mined the organizational metrics descibed above, we may find we have multiple developers working on the same modules. How is their effort distributed? Does a particular module have a major developer or is everyone contributing a small piece? Let's find out by running the `-a entity-ownership` analysis. This analysis gives us the following output:
+
+             entity,               author,  added, deleted
+             analysis/authors.clj,    apt,    164,      98
+             analysis/authors.clj,    qew,     81,      10
+             analysis/authors.clj,     jt,     42,      32
+             analysis/entities.clj,   apt,     72,      24
+             ...
+
+This information may be a useful guide to find the right author to discuss functionality and potential refactoringswith. Note that the ownership is calculated on churn alone and is sensitive to the same biases.
+
 ### Intermediate results
 
 Code Maat supports an `identity` analysis. By using this switch, Code Maat will output the intermediate parse result of the raw VCS file. This can be useful either as a debug aid or as input to other tools.
