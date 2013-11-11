@@ -24,7 +24,8 @@
    "summary" summary/overview
    "identity" (fn [input _] input) ; for debugging - dumps all raw data
    "abs-churn" churn/absolutes-trend
-   "author-churn" churn/by-author})
+   "author-churn" churn/by-author
+   "entity-churn" churn/by-entity})
    
 (defn- make-analysis
   "Returns a seq of analysis methods closing over the options.

@@ -25,3 +25,10 @@
                               {:version-control "git"
                                :analysis "author-churn"})
          "author,added,deleted\nAPT,4,6\nXYZ,18,2\n")))
+
+(deftest calculates-churn-by-entity
+  "Identify entities with the highest churn rate."
+  (is (= (run-with-str-output git-log-file 
+                              {:version-control "git"
+                               :analysis "entity-churn"})
+         "entity,added,deleted\n/Infrastrucure/Network/Connection.cs,19,4\n/Presentation/Status/ClientPresenter.cs,3,4\n")))

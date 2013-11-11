@@ -50,3 +50,10 @@
          (incanter/to-dataset
           [{:author "at" :added 12 :deleted 1}
            {:author "ta" :added 20 :deleted 2}]))))
+
+(deftest calculates-churn-by-entity
+  "Identify entities with the highest churn rate."
+  (is (= (churn/by-entity simple options)
+         (incanter/to-dataset
+          [{:entity "B" :added 22 :deleted 2}
+           {:entity "A" :added 10 :deleted 1}]))))

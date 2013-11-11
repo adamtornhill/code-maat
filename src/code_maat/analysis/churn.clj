@@ -73,3 +73,17 @@
   "Sums the total churn for each contributing author."
   [ds options]
   (churn-by :author ds options))
+
+(defn by-entity
+  "Returns the absolute churn of each entity.
+   The entities are sorted at churn rate in
+   descending order based on the lines added
+   metric. The idea is that entities
+   with higher churn rate (even absolute) are
+   more likely to contain post-release defects, where
+   the number of lines added is a better predictor
+   than lines deleted."
+  [ds options]
+  (->>
+   (churn-by :entity ds options)
+   (ds/-order-by :added :desc)))
