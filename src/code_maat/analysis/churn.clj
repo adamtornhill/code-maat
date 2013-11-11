@@ -38,19 +38,28 @@
   (reduce +
           (map as-int (ds/-select-by selector ds))))
 
-(defn- sum-by-date
-  "Sums the given dataset by date and churn.
-   The dataset is grouped on :date. That means,
-   each entry is a pair of date and changes recorded in
-   that day. The changes are Incanter datasets themselves
-   so we can keep using Incanter to extract data for each
-   group."
-  [grouped]
-  (for [[date-entry changes] grouped
-        :let [date (:date date-entry)
+(defn- sum-by-group
+  "Sums the given dataset by a given group and churn.
+   The given dataset, grouped-ds, is grouped by the column
+   given as group.
+   That means, each entry is a pair of some grouping construct
+   and the changes related to that construct. The changes are
+   Incanter datasets themselves so we can keep using
+   Incanter to extract data for each group."
+  [group grouped]
+  (for [[group-entry changes] grouped
+        :let [grouping (group group-entry)
               added (total-churn :loc-added changes)
               deleted (total-churn :loc-deleted changes)]]
-    [date added deleted]))
+    [grouping added deleted]))
+
+(defn- churn-by
+  [group ds options]
+  (throw-on-missing-data ds)
+  (->>
+   (ds/-group-by group ds)
+   (sum-by-group group)
+   (ds/-dataset [group :added :deleted])))
 
 (defn absolutes-trend
   "Calculates the absolute code churn measures per date.
@@ -58,28 +67,9 @@
    added and deleted each day (note that only dates wich
    involved commits are considered)."
   [ds options]
-  (throw-on-missing-data ds)
-  (->>
-   (ds/-group-by :date ds)
-   (sum-by-date)
-   (ds/-dataset [:date :added :deleted])))
-
-(defn- sum-by-author
-  "Sums the given dataset by author.
-   The idea is to get an overall picture of the
-   individual churn rates.
-   The given dataset is expected to be sorted by author."
-  [grouped]
-  (for [[author-entry changes] grouped
-        :let [author (:author author-entry)
-              added (total-churn :loc-added changes)
-              deleted (total-churn :loc-deleted changes)]]
-    [author added deleted]))
+  (churn-by :date ds options))
 
 (defn by-author
+  "Sums the total churn for each contributing author."
   [ds options]
-  (throw-on-missing-data ds)
-  (->>
-   (ds/-group-by :author ds)
-   (sum-by-author)
-   (ds/-dataset [:author :added :deleted])))
+  (churn-by :author ds options))
