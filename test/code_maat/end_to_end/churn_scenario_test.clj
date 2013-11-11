@@ -18,3 +18,10 @@
                               {:version-control "git"
                                :analysis "abs-churn"})
          "date,added,deleted\n2013-02-08,4,6\n2013-02-07,18,2\n")))
+
+(deftest calculates-churn-by-author
+  "The total churn of each individual contributor"
+  (is (= (run-with-str-output git-log-file 
+                              {:version-control "git"
+                               :analysis "author-churn"})
+         "author,added,deleted\nAPT,4,6\nXYZ,18,2\n")))

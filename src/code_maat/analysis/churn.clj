@@ -64,6 +64,22 @@
    (sum-by-date)
    (ds/-dataset [:date :added :deleted])))
 
-(defn churn-by-author
+(defn- sum-by-author
+  "Sums the given dataset by author.
+   The idea is to get an overall picture of the
+   individual churn rates.
+   The given dataset is expected to be sorted by author."
+  [grouped]
+  (for [[author-entry changes] grouped
+        :let [author (:author author-entry)
+              added (total-churn :loc-added changes)
+              deleted (total-churn :loc-deleted changes)]]
+    [author added deleted]))
+
+(defn by-author
   [ds options]
-  (throw-on-missing-data ds))
+  (throw-on-missing-data ds)
+  (->>
+   (ds/-group-by :author ds)
+   (sum-by-author)
+   (ds/-dataset [:author :added :deleted])))

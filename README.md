@@ -147,6 +147,18 @@ Visualizing the result allows us to spot general trends over time:
 
 ![abs churn visualized](doc/imgs/abs_churn_sample.png).
 
+### Churn by author
+
+The idea behind this analysis is to get an idea of the overal contributions by each individual. The analysis is invoked with the `-a author-churn"` option. The result will be given as CSV:
+
+             author,        added, deleted
+             Adam Tornhill, 13826,    1670
+             Some One Else,   123,      80
+             Mr Petersen,       3,       3
+             ...
+
+And, of course, you wouldn't use this data for any performance evaluation; it wouldn't serve well (in case anything should be rewarded it would be a net deletion of code - there's too much of it in the world).
+
 ### Intermediate results
 
 Code Maat supports an `identity` analysis. By using this switch, Code Maat will output the intermediate parse result of the raw VCS file. This can be useful either as a debug aid or as input to other tools.

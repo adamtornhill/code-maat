@@ -23,7 +23,8 @@
    "coupling" coupling/by-degree1
    "summary" summary/overview
    "identity" (fn [input _] input) ; for debugging - dumps all raw data
-   "abs-churn" churn/absolutes-trend})
+   "abs-churn" churn/absolutes-trend
+   "author-churn" churn/by-author})
    
 (defn- make-analysis
   "Returns a seq of analysis methods closing over the options.

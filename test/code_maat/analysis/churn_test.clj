@@ -43,3 +43,10 @@
   (is  (= (churn/absolutes-trend with-binary options)
           (incanter/to-dataset
            [{:date "2013-11-10" :added 0 :deleted 0}]))))
+
+(deftest calculates-churn-by-author
+  "Get an overview of individual contributions."
+  (is (= (churn/by-author simple options)
+         (incanter/to-dataset
+          [{:author "at" :added 12 :deleted 1}
+           {:author "ta" :added 20 :deleted 2}]))))
