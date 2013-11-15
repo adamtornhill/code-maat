@@ -13,7 +13,8 @@
             [code-maat.analysis.entities :as entities]
             [code-maat.analysis.logical-coupling :as coupling]
             [code-maat.analysis.summary :as summary]
-            [code-maat.analysis.churn :as churn]))
+            [code-maat.analysis.churn :as churn]
+            [code-maat.analysis.effort :as effort]))
 
 ;;; TODO: consider making this dynamic in order to support new
 ;;;       analysis methods as plug-ins.
@@ -26,7 +27,8 @@
    "abs-churn" churn/absolutes-trend
    "author-churn" churn/by-author
    "entity-churn" churn/by-entity
-   "entity-ownership" churn/as-ownership})
+   "entity-ownership" churn/as-ownership
+   "entity-effort" effort/as-revisions-per-author})
    
 (defn- make-analysis
   "Returns a seq of analysis methods closing over the options.

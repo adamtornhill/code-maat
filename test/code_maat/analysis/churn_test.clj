@@ -11,8 +11,6 @@
 
 (def ^:const options {})
 
-
-
 (ds/def-ds incomplete
   [{:entity "A" :rev 1 :author "at" :date "2013-11-10"}
    {:entity "B" :rev 2 :author "ta" :date "2013-11-11"}])

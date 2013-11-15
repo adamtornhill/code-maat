@@ -176,7 +176,16 @@ Once we have mined the organizational metrics descibed above, we may find we hav
              analysis/entities.clj,   apt,     72,      24
              ...
 
-This information may be a useful guide to find the right author to discuss functionality and potential refactoringswith. Note that the ownership is calculated on churn alone and is sensitive to the same biases.
+Another ownership view is to consider the effort spent by individual authors on the different entities in the system. This analysis is run by the `-a entity-effort` option. The analysis gives us the following table:
+
+             entity,                author, author-revs, total-revs
+             analysis/authors.clj,     apt,           5,         10
+             analysis/authors.clj,     qew,           3,         10
+             analysis/authors.clj,      jt,           1,         10
+             analysis/authors.clj,     apt,           1,         10
+             ...
+
+This information may be a useful guide to find the right author to discuss functionality and potential refactoringswith. Just note that the ownership metrics are sensitive to the same biases as the churn metrics; they're both heuristics and no absolute truths.
 
 ### Intermediate results
 

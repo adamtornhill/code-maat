@@ -5,8 +5,7 @@
 
 (ns code-maat.analysis.churn
   (:require [code-maat.dataset.dataset :as ds]
-            [incanter.core :as incanter]
-            [code-maat.analysis.entities :as entities]))
+            [incanter.core :as incanter]))
 
 ;;; This module contains functions for calculating churn metrics.
 ;;; Code churn is related to the quality of modules; the higher
@@ -118,7 +117,7 @@
   (throw-on-missing-data ds)
   (->>
    (ds/-group-by :entity ds)
-   (sum-by-author-contrib)
+   sum-by-author-contrib
    (mapcat normalize-contrib)
    (ds/-dataset [:entity :author :added :deleted])
    (ds/-order-by :entity :asc)))
