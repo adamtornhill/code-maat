@@ -89,6 +89,13 @@
   (is (= (run-with-str-output log-file options)
          "entity,author,author-revs,total-revs\n/Infrastrucure/Network/Connection.cs,APT,1,2\n/Infrastrucure/Network/Connection.cs,XYZ,1,2\n/Presentation/Status/ClientPresenter.cs,APT,1,1\n")))
 
+(def-data-driven-with-vcs-test analysis-of-communication
+  [[svn-log-file (svn-csv-options "communication")]
+   [git-log-file (git-options "communication")]
+   [hg-log-file (hg-options "communication")]]
+  (is (= (run-with-str-output log-file options)
+         "author,peer,shared,average,strength\nAPT,XYZ,1,2,50\nXYZ,APT,1,2,50\n")))
+
 ;;; The identity analysis is intended as a debug aid or to
 ;;; generate parsed VCS data as input to other tools.
 ;;; The idea with identity is to dump the parse result to
@@ -143,3 +150,10 @@
    [empty-hg-file (hg-options "entity-effort")]]
   (is (= (run-with-str-output log-file options)
          "entity,author,author-revs,total-revs\n")))
+
+(def-data-driven-with-vcs-test analysis-of-communication-with-empty-log
+  [[empty-log-file (svn-csv-options "communication")]
+   [empty-git-file (git-options "communication")]
+   [empty-hg-file (hg-options "communication")]]
+  (is (= (run-with-str-output log-file options)
+         "author,peer,shared,average,strength\n")))
