@@ -58,6 +58,12 @@
   [author freqs]
   (freqs [author author]))
 
+(defn- strength-from
+  [shared-commits average-commits]
+  (int
+   (m/as-percentage
+    (/ shared-commits average-commits))))
+
 (defn- with-commit-stats
   "The statistics are calculated from the raw
    data, freqs. The data contains pairs for all
@@ -68,18 +74,15 @@
    That self-pairing is stripped from the final
    statistics but used here to carry information."
   [freqs]
-  (for [[pair freq] freqs
-       :let [me (first pair)
-             peer (second pair)
+  (for [[pair shared-commits] freqs
+       :let [[me peer] pair
              my-commits (commits-of me freqs)
              peer-commits (commits-of peer freqs)
              average-commits (math/ceil
                               (m/average my-commits peer-commits))
-             strength (int
-                       (m/as-percentage
-                        (/ freq average-commits)))]
+             strength (strength-from shared-commits average-commits)]
        :when (not (= me peer))]
-    [me peer freq average-commits strength]))
+    [me peer shared-commits average-commits strength]))
 
 (defn by-shared-entities
   "Caclulates the communication needs as based upon

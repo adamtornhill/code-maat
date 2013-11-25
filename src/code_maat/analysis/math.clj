@@ -5,8 +5,10 @@
 
 (ns code-maat.analysis.math)
 
-(defn average [x y]
-  (/ (+ x y) 2))
+(defn average [& vals]
+  (/
+   (reduce + vals)
+   (count vals)))
 
 (defn as-percentage [v]
   (* v 100))
