@@ -7,6 +7,7 @@
   (:use [clojure.data.zip.xml :only (attr text xml-> xml1->)]) ; dep: see below
   (:require [incanter.core :as incanter]
             [clojure.xml :as xml]
+            [code-maat.dataset.dataset :as ds]
             [clojure.zip :as zip]
             [clojure.string :as s]))
 
@@ -36,32 +37,32 @@
         action (get svn-action->interpretable-action svn-action)]
     [entity-name action]))
 
-(defn- extract-modified-files [logentry]
+(defn- extract-modified-files
   "Extracts all modified files from the given logentry."
+  [logentry]
   (let [paths (xml-> logentry :paths :path)]
     (map group-file-with-action paths)))
 
-(defn as-rows [coll svn-logentry]
+(defn as-rows
   "Transforms the given svn logentry to a seq of rows containing
    the modification data for each entity."
+  [svn-logentry]
   (let [extractor (make-extractor svn-logentry)
         entities (extract-modified-files svn-logentry)
         date (extractor :date text)
         author (extractor :author text)
         revision (extractor (attr :revision))]
-    (reduce conj
-            coll
-            (for [[e action] entities
-                  :let [row {:entity e :action action :date date :author author :rev revision}]]
-              row))))
+    (map (fn [[entity action]]
+           [entity date author action revision])
+         entities)))
 
 (defn- parse
   [zipped parse-options]
   (->>
    zipped
    zip->log-entries
-   (reduce as-rows [])
-   incanter/to-dataset))
+   (mapcat as-rows)
+   (ds/-dataset [:entity :date :author :action :rev])))
 
 (defn zip->modification-sets
   "Transforms the given zipped svn log into an Incanter

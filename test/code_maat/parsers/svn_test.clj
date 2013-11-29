@@ -52,28 +52,28 @@
          2)))
 
 (deftest one-modified-entity-per-row
-  (let [[row1 row2] (svn/as-rows [] first-entry)]
+  (let [[row1 row2] (svn/as-rows first-entry)]
     (is (= row1
-           {:entity "/Infrastrucure/Network/Connection.cs"
-            :date "2013-02-08T11:46:13.844538Z"
-            :author "APT"
-            :action :modified
-            :rev "2"}))
+           ["/Infrastrucure/Network/Connection.cs"
+            "2013-02-08T11:46:13.844538Z"
+            "APT"
+            :modified
+            "2"]))
     (is (= row2
-           {:entity "/Presentation/Status/ClientPresenter.cs"
-            :date "2013-02-08T11:46:13.844538Z"
-            :author "APT"
-            :action :modified
-            :rev "2"}))))
+           ["/Presentation/Status/ClientPresenter.cs"
+            "2013-02-08T11:46:13.844538Z"
+            "APT"
+            :modified
+            "2"]))))
 
 (deftest created-entities-are-marked
-  (let [[row-with-created-entity] (svn/as-rows [] second-entry)]
+  (let [[row-with-created-entity] (svn/as-rows second-entry)]
     (is (= row-with-created-entity
-           {:entity "/Infrastrucure/Network/Connection.cs"
-            :date "2013-02-07T11:46:13.844538Z"
-            :author "XYZ"
-            :action :created
-            :rev "1"}))))
+           ["/Infrastrucure/Network/Connection.cs"
+            "2013-02-07T11:46:13.844538Z"
+            "XYZ"
+            :created
+            "1"]))))
 
 (deftest builds-complete-modification-history-from-log
   "We know from the test above that details are OK => just
