@@ -165,14 +165,14 @@
                    (partial within-threshold? thresholds))
           all-dependencies))
 
-(defn by-degree1
+(defn by-degree
   "Calculates the degree of logical coupling. Returns a seq
    sorted in descending order (default) or an optional, custom sorting criterion.
    The calulcation is  based on the given coupling statistics.
    The coupling is calculated as a percentage value based on
    the number of shared commits between coupled entities divided
    by the average number of total commits for the coupled entities."
-  ([ds options] (by-degree1 ds options :desc))
+  ([ds options] (by-degree ds options :desc))
   ([ds options order-fn]
      (->>
       ds

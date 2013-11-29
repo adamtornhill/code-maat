@@ -92,7 +92,7 @@
 
 (deftest calculates-coupling-by-its-degree
   (testing "With coupled entities"
-    (is (= (incanter/to-list (coupling/by-degree1
+    (is (= (incanter/to-list (coupling/by-degree
                               coupledd
                               test-data/options-with-low-thresholds))
            ;; :entity :coupled :degree :average-revs
@@ -103,7 +103,7 @@
             ["B"      "C"       66    2]
             ["A"      "C"       66    2]])))
   (testing "A single change set with a single entity (boundary case)"
-    (is (= (incanter/to-list (coupling/by-degree1
+    (is (= (incanter/to-list (coupling/by-degree
                               (incanter/to-dataset single-entity-commit)
                               test-data/options-with-low-thresholds))
            []))))

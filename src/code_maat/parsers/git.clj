@@ -31,11 +31,11 @@
    "
     <S>       =   entries
     <entries> =  (entry <nl*>)* | entry
-    entry     =  rev <ws> author <ws> date <ws> <message> <nl> changes
+    entry     =  rev <ws> author <ws> date <message> <nl> changes
     rev       =  <'['> #'[\\da-f]+' <']'>
     author    =  #'.+(?=\\s\\d{4}-)' (* match until the date field *)
     date      =  #'\\d{4}-\\d{2}-\\d{2}'
-    message   =  #'.+'?
+    message   =  #'[^\\n]+'
     changes   =  change*
     change    =  added <tab> deleted <tab> file <nl>
     added     =  numstat

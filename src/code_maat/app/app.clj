@@ -22,7 +22,7 @@
 (def ^:const supported-analysis
   {"authors" authors/by-count
    "revisions" entities/by-revision
-   "coupling" coupling/by-degree1
+   "coupling" coupling/by-degree
    "summary" summary/overview
    "identity" (fn [input _] input) ; for debugging - dumps all raw data
    "abs-churn" churn/absolutes-trend
