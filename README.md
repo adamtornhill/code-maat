@@ -6,7 +6,7 @@ Code Maat is a command line tool used to mine and analyze data from version-cont
 
 To understand large-scale software systems we need to look at their evolution. The history of our system provides us with data we cannot derive from a single snapshot of the source code. Instead VCS data blends technical, social and organizational information along a temporal axis that let us map out our interaction patterns in the code. Analyzing these patterns gives us early warnings on potential design issues and development bottlenecks, as well as suggesting new modularities based on actual interactions with the code. Addressing these issues saves costs, simplifies maintenance and let us evolve our systems in the direction of how we actually work with the code.
 
-Code Maat was developed to accompany the discussions in my book [Code as a Crime Scene](https://leanpub.com/crimescene).
+Code Maat was developed to accompany the discussions in my upcoming book [Code as a Crime Scene](http://pragprog.com/book/atcrime/code-as-a-crime-scene).
 
 ### About the name
 
@@ -53,30 +53,35 @@ To analyze our VCS data we need to define a temporal period of interest. Over ti
 
 You can run Code Maat directly from leiningen:
 
-    	  lein run logfile.log -vcs <vcs>
+    	  lein run -l logfile.log -c <vcs>
 
 If you've built a standalone jar (`lein uberjar`), run it with a simple java invocation:
 
-     	  java -jar code-maat-0.2.0.jar -vcs <vcs>
+     	  java -jar code-maat-0.5.1.jar -l logfile.log -c <vcs>
 
-When invoked without any arguments, Code Maat prints its usage:
+When invoked with `-h`, Code Maat prints its usage:
 
-             adam$ java -jar code-maat-0.2.0.jar
-             Switches                 Default   Desc
-             --------                 -------   ----
-             -vcs, --version-control            Input vcs module type: supports svn, git or hg
-             -a,  --analysis           authors  The analysis to run (authors, revisions, coupling, summary, identity)
-             -r, --rows                10       Max rows in output
-             --min-revs                5        Minimum number of revisions to include an entity in the analysis
-             --min-shared-revs         5        Minimum number of shared revisions to include an entity in the analysis
-             --min-coupling            50       Minimum degree of coupling (in percentage) to consider
-             --max-coupling           100       Maximum degree of coupling (in percentage) to consider
+             adam$ java -jar code-maat-0.5.1.jar
+             This is Code Maat, a program used to collect statistics from a VCS.
+             
+             Usage: program-name log-file [options]
+             
+             Options:
+             -l, --log LOG                                   Log file with input data
+             -c, --version-control VCS                       Input vcs module type: supports svn, git or hg
+             -a, --analysis ANALYSIS                authors  The analysis to run (authors, revisions, coupling, summary, churn, identity)
+             -r, --rows ROWS                        10       Max rows in output
+             -n, --min-revs MIN-REVS                5        Minimum number of revisions to include an entity in the analysis
+             -m, --min-shared-revs MIN-SHARED-REVS  5        Minimum number of shared revisions to include an entity in the analysis
+             -i, --min-coupling MIN-COUPLING        50       Minimum degree of coupling (in percentage) to consider
+             -x, --max-coupling MAX-COUPLING        100      Maximum degree of coupling (in percentage) to consider
+             -h, --help
 
 #### Generating a summary
 
 When starting out, I find it useful to get an overview of the mined data. With the `summary` analysis, Code Maat produces such an overview:
 
-   	   java -jar code-maat-0.2.0.jar logfile.log -vcs git -a summary
+   	   java -jar code-maat-0.5.1.jar -l logfile.log -c git -a summary
 
 The resulting output is on csv format:
 
@@ -90,7 +95,7 @@ The resulting output is on csv format:
 
 By default, Code Maat runs an analysis on the number of authors per module. The authors analysis is based on the idea that the more developers working on a module, the larger the communication challenges. The analysis is invoked with the following command:
 
-   	   java -jar code-maat-0.2.0.jar logfile.log -vcs git
+   	   java -jar code-maat-0.5.1.jar -l logfile.log -c git
 
 The resulting output is on CSV format:
 
@@ -106,7 +111,7 @@ In example above, the first column gives us the name of module, the second the t
 
 Logical coupling refers to modules that tend to change together. Modules that are logically coupled have a hidden, implicit dependency between them such that a change to one of them leads to a predictable change in the coupled module. To analyze the logical coupling in a system, invoke Code Maat with the following arguments:
 
-              java -jar code-maat-0.1.0.jar logfile.log -vcs git -a coupling
+              java -jar code-maat-0.5.1.jar -l logfile.log -c git -a coupling
 
 The resulting output is on CSV format:
 
