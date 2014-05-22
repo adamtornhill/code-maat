@@ -63,4 +63,4 @@
         by-entity
         (map #(make-entity-with-author-count % by-rev))
         (ds/-dataset [:entity :n-authors :n-revs])
-        (ds/-order-by :n-authors order-fn)))))
+        (ds/-order-by [:n-authors :n-revs] order-fn)))))

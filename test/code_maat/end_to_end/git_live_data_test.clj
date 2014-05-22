@@ -15,4 +15,4 @@
                     {:version-control "git"
                      :analysis "authors"
                      :rows 2}))
-         "entity,n-authors,n-revs\nmono/metadata/sgen-gc.c,2,2\nmcs/class/corlib/System/Console.iOS.cs,2,3\n")))
+         "entity,n-authors,n-revs\nmono/mini/method-to-ir.c,2,5\nmcs/class/corlib/System/Console.iOS.cs,2,3\n")))

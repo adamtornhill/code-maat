@@ -87,8 +87,8 @@
           no-threshold
           ["A"
            {:revs 2 :coupled {"C" 1, "B" 2}}])
-         [{:entity "A" :coupled "B" :degree 100 :average-revs 2}
-          {:entity "A" :coupled "C" :degree 66 :average-revs 2}])))
+         [{:entity "A" :coupled "C" :degree 66 :average-revs 2}
+          {:entity "A" :coupled "B" :degree 100 :average-revs 2}])))
 
 (deftest calculates-coupling-by-its-degree
   (testing "With coupled entities"

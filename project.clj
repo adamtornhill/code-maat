@@ -8,7 +8,7 @@
   :url "http://www.adamtornhill.com/code/codemaat.htm"
   :license {:name "GNU General Public License v3.0"
             :url "http://www.gnu.org/licenses/gpl.html"}
-  :dependencies [[org.clojure/clojure "1.5.1"]
+  :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/data.zip "0.1.1"]
 		 [incanter "1.5.4"]
                  [org.clojure/tools.cli "0.3.1"]

@@ -15,4 +15,4 @@
                     {:version-control "hg"
                      :analysis "authors"
                      :rows 2}))
-         "entity,n-authors,n-revs\nDoxyfile,3,3\ntest/CMakeLists.txt,3,21\n")))
+         "entity,n-authors,n-revs\ntest/CMakeLists.txt,3,21\nCMakeLists.txt,3,6\n")))

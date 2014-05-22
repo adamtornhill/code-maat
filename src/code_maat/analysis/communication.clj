@@ -98,5 +98,5 @@
    by-shared-work-frequency
    with-commit-stats
    (ds/-dataset [:author :peer :shared :average :strength])
-   (ds/-order-by :strength :desc)))
+   (ds/-order-by [:strength :author] :desc)))
 

@@ -94,7 +94,7 @@
    [git-log-file (git-options "communication")]
    [hg-log-file (hg-options "communication")]]
   (is (= (run-with-str-output log-file options)
-         "author,peer,shared,average,strength\nAPT,XYZ,1,2,50\nXYZ,APT,1,2,50\n")))
+         "author,peer,shared,average,strength\nXYZ,APT,1,2,50\nAPT,XYZ,1,2,50\n")))
 
 ;;; The identity analysis is intended as a debug aid or to
 ;;; generate parsed VCS data as input to other tools.

@@ -29,6 +29,11 @@
 (ds/def-ds with-binary
   [{:entity "binary" :rev 1 :author "at" :date "2013-11-10" :loc-added "-" :loc-deleted "-"}])
 
+(defn- as-ds
+  "Returns a dataset with a fixed column order."
+  [v]
+  (ds/-dataset [:date :added :deleted] v))
+
 (deftest throws-error-on-missing-modification-info
   "Some VCS (e.g. hg) don't provide the necessary metrics.
    In case a churn analysis is requested on such incomplete
@@ -38,29 +43,28 @@
 
 (deftest calculates-absolute-churn-by-date
   (is (= (churn/absolutes-trend simple options)
-         (incanter/to-dataset
+         (as-ds
           [{:date "2013-11-10" :added 10 :deleted 1}
            {:date "2013-11-11" :added 22 :deleted 2}]))))
 
 (deftest binaries-are-counted-as-zero-churn
   "There are simply no statistics from the VCS for these."
   (is  (= (churn/absolutes-trend with-binary options)
-          (incanter/to-dataset
-           [{:date "2013-11-10" :added 0 :deleted 0}]))))
+          (as-ds [{:date "2013-11-10" :added 0 :deleted 0}]))))
 
 (deftest calculates-churn-by-author
   "Get an overview of individual contributions."
   (is (= (churn/by-author simple options)
-         (incanter/to-dataset
-          [{:author "at" :added 12 :deleted 1}
-           {:author "ta" :added 20 :deleted 2}]))))
+         (ds/-dataset [:author :added :deleted]
+                      [{:author "at" :added 12 :deleted 1}
+                       {:author "ta" :added 20 :deleted 2}]))))
 
 (deftest calculates-churn-by-entity
   "Identify entities with the highest churn rate."
   (is (= (churn/by-entity simple options)
-         (incanter/to-dataset
-          [{:entity "B" :added 22 :deleted 2}
-           {:entity "A" :added 10 :deleted 1}]))))
+         (ds/-dataset [:entity :added :deleted]
+                      [{:entity "B" :added 22 :deleted 2}
+                       {:entity "A" :added 10 :deleted 1}]))))
 
 (deftest calculates-author-ownership-from-churn
   (is (= (churn/as-ownership simple options)

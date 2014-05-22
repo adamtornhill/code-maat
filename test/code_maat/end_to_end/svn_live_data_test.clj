@@ -18,4 +18,4 @@
                       {:version-control "svn"
                        :analysis "authors"
                        :rows 2}))
-           "entity,n-authors,n-revs\n/trunk/statsvn/src/net/sf/statcvs/util/SvnInfoUtils.java,4,16\n/trunk/statsvn/src/net/sf/statcvs/renderer/StackedBarChart.java,4,4\n"))))
+           "entity,n-authors,n-revs\n/trunk/statsvn/src/net/sf/statcvs/Main.java,4,19\n/trunk/statsvn/src/net/sf/statcvs/input/Builder.java,4,18\n"))))

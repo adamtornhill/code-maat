@@ -22,7 +22,7 @@
          (ds/-dataset [:author :peer :shared :average :strength]
                       [["jt" "at" 2 2 100 ]
                        ["at" "jt" 2 2 100 ]
-                       ["ap" "at" 1 2  50 ]
                        ["jt" "ap" 1 2  50]
+                       ["at" "ap" 1 2  50]
                        ["ap" "jt" 1 2  50]
-                       ["at" "ap" 1 2  50]]))))
+                       ["ap" "at" 1 2  50]]))))
