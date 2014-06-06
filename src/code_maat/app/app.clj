@@ -16,6 +16,7 @@
             [code-maat.analysis.summary :as summary]
             [code-maat.analysis.churn :as churn]
             [code-maat.analysis.effort :as effort]
+            [code-maat.app.layer-mapper :as mapper]
             [code-maat.analysis.communication :as communication]))
 
 ;;; Principles:
@@ -102,6 +103,17 @@
             (str "Invalid --version-control specified: " version-control
                  ". Supported options are: svn or git.")))))
 
+(defn- aggregate-on-boundaries
+  "The individual changes may be aggregated into layers
+   of architectural significance. This is done by re-mapping
+   the name.
+   In case there isn't any specified grouping, just work on
+   the raw modifications."
+  [options commits]
+  (if-let [grouping (:group options)]
+    (mapper/run grouping commits)
+    commits))
+
 (defn- make-output [options]
   (if-let [n-out-rows (:rows options)]
     #(csv-output/write-to :stream % n-out-rows)
@@ -121,15 +133,17 @@
     (catch Exception e
       (throw-internal-error e))))
 
-(defn run [logfile-name options]
+(defn run
   "Runs the application using the given options.
    The options are a map with the following elements:
     :module - the VCS to parse
     :analysis - the type of analysis to run
     :rows - the max number of results to include"
+  [logfile-name options]
   (let [vcs-parser (parser-from options)
         changes (vcs-parser logfile-name options)
-        changes-ds (incanter/to-dataset changes)
+        aggregated (aggregate-on-boundaries options changes)
+        changes-ds (incanter/to-dataset aggregated)
         analysis (make-analysis options)
         output! (make-output options)]
     (doseq [an-analysis analysis]

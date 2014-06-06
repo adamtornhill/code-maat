@@ -44,7 +44,7 @@
   "This entry point parses the given layer info.
    All entities in each commit are then re-mapped to one
    of the given layers "
-  [commits layer-info-file]
+  [layer-info-file commits]
   (->>
    (layers-from layer-info-file)
    (map-entities->layers commits)))
