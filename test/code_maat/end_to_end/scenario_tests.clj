@@ -102,7 +102,7 @@
 ;;; the output.
 (deftest svn-identity-analysis-contains-additional-info
   (is (= (run-with-str-output svn-log-file (svn-csv-options "identity"))
-         "entity,date,author,action,rev\n/Infrastrucure/Network/Connection.cs,2013-02-08T11:46:13.844538Z,APT,:modified,2\n/Presentation/Status/ClientPresenter.cs,2013-02-08T11:46:13.844538Z,APT,:modified,2\n/Infrastrucure/Network/Connection.cs,2013-02-07T11:46:13.844538Z,XYZ,:modified,1\n")))
+         "entity,date,author,action,rev\n/Infrastrucure/Network/Connection.cs,2013-02-08T11:46:13.844538Z,APT,M,2\n/Presentation/Status/ClientPresenter.cs,2013-02-08T11:46:13.844538Z,APT,M,2\n/Infrastrucure/Network/Connection.cs,2013-02-07T11:46:13.844538Z,XYZ,M,1\n")))
 
 ;;; The git and Mercurical parsers do not include the
 ;;; 'action' tag that we have in the current SVN data.
