@@ -69,7 +69,7 @@
    #(-> logfile-name slurp (git/parse-log options))
    "git"))
   
-(defn- get-parser
+(defn- parser-from
   [{:keys [version-control]}]
   (case version-control
     "svn" svn-xml->modifications
@@ -104,7 +104,7 @@
     :module - the VCS to parse
     :analysis - the type of analysis to run
     :rows - the max number of results to include"
-  (let [vcs-parser (get-parser options)
+  (let [vcs-parser (parser-from options)
         changes (vcs-parser logfile-name options)
         analysis (make-analysis options)
         output! (make-output options)]
