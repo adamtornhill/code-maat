@@ -15,7 +15,7 @@
     ["-a" "--analysis ANALYSIS"
      "The analysis to run (authors, revisions, coupling, summary, churn, identity)"
      :default "authors"]
-    ["-r" "--rows ROWS" "Max rows in output" :default 10 :parse-fn #(Integer/parseInt %)]
+    ["-r" "--rows ROWS" "Max rows in output" :parse-fn #(Integer/parseInt %)]
     ["-n" "--min-revs MIN-REVS" "Minimum number of revisions to include an entity in the analysis"
      :default 5 :parse-fn #(Integer/parseInt %)]
     ["-m" "--min-shared-revs MIN-SHARED-REVS" "Minimum number of shared revisions to include an entity in the analysis"
