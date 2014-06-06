@@ -4,8 +4,7 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.parsers.git-test
-  (:require [code-maat.parsers.git :as git]
-            [incanter.core :as incanter])
+  (:require [code-maat.parsers.git :as git])
   (:use clojure.test incanter.core))
 
 ;;; I sure could have used a more minimalistic set of data.
@@ -42,25 +41,57 @@
                (git/parse-log "simply not a valid git log here..." {}))))
 
 (deftest parses-single-entry-to-dataset
-  (is (= (incanter/to-list (git/parse-log entry {}))
-         [["0" "1" "Adam Petersen" "990442e" "2013-08-29" "project.clj"]
-          ["4" "2" "Adam Petersen" "990442e" "2013-08-29" "src/code_maat/parsers/git.clj"]])))
+  (is (= (git/parse-log entry {})
+         [{:loc-deleted "0"
+           :loc-added "1"
+           :author "Adam Petersen"
+           :rev "990442e"
+           :date "2013-08-29"
+           :entity "project.clj"}
+          {:loc-deleted "4"
+           :loc-added "2"
+           :author "Adam Petersen"
+           :rev "990442e"
+           :date "2013-08-29"
+           :entity "src/code_maat/parsers/git.clj"}])))
 
 (deftest parses-entry-with-binary-to-dataset
   "The churn for binary entries are given as a dash (-)."
-  (is (= (incanter/to-list (git/parse-log binary-entry {}))
-         [["-"  "-" "Adam Petersen" "990442e" "2013-11-10" "project.bin"]
-          ["40" "2" "Adam Petersen" "990442e" "2013-11-10" "src/code_maat/parsers/git.clj"]])))
+  (is (= (git/parse-log binary-entry {})
+         [{:loc-deleted "-"
+           :loc-added "-"
+           :author "Adam Petersen"
+           :rev "990442e"
+           :date "2013-11-10"
+           :entity "project.bin"}
+          {:loc-deleted "40"
+           :loc-added "2"
+           :author "Adam Petersen"
+           :rev "990442e"
+           :date "2013-11-10"
+           :entity "src/code_maat/parsers/git.clj"}])))
 
 (deftest parses-multiple-entries-to-dataset
-  (is (= (incanter/to-list (git/parse-log entries {}))
-         [["9"  "10" "Adam Petersen" "b777738" "2013-08-29" "src/code_maat/parsers/git.clj"]
-          ["0"  "32" "Adam Petersen" "b777738" "2013-08-29" "test/code_maat/parsers/git_test.clj"]
-          ["2"   "6" "Adam Petersen" "a527b79" "2013-08-29" "src/code_maat/parsers/git.clj"]
-          ["7"   "0" "Adam Petersen" "a527b79" "2013-08-29" "test/code_maat/end_to_end/scenario_tests.clj"]
-          ["0"  "18" "Adam Petersen" "a527b79" "2013-08-29" "test/code_maat/end_to_end/simple_git.txt"]
-          ["0"  "21" "Adam Petersen" "a527b79" "2013-08-29" "test/code_maat/end_to_end/svn_live_data_test.clj"]])))
+  (is (= (git/parse-log entries {})
+         [{:loc-deleted "9" :loc-added "10"
+           :author "Adam Petersen" :rev "b777738" :date "2013-08-29"
+           :entity "src/code_maat/parsers/git.clj"}
+          {:loc-deleted "0" :loc-added "32"
+           :author "Adam Petersen" :rev "b777738" :date "2013-08-29"
+           :entity "test/code_maat/parsers/git_test.clj"}
+          {:loc-deleted "2" :loc-added "6"
+           :author "Adam Petersen" :rev "a527b79" :date "2013-08-29"
+           :entity "src/code_maat/parsers/git.clj"}
+          {:loc-deleted "7" :loc-added "0"
+           :author "Adam Petersen" :rev "a527b79" :date "2013-08-29"
+           :entity "test/code_maat/end_to_end/scenario_tests.clj"}
+          {:loc-deleted "0" :loc-added "18",
+           :author "Adam Petersen" :rev "a527b79" :date "2013-08-29"
+           :entity "test/code_maat/end_to_end/simple_git.txt"}
+          {:loc-deleted "0" :loc-added "21"
+           :author "Adam Petersen" :rev "a527b79" :date "2013-08-29"
+           :entity "test/code_maat/end_to_end/svn_live_data_test.clj"}])))
 
 (deftest parses-empty-log-to-empty-dataset
-  (is (= (incanter/to-list (git/parse-log "" {}))
+  (is (= (git/parse-log "" {})
          [])))

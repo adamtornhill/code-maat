@@ -8,6 +8,7 @@
             [code-maat.parsers.git :as git]
             [code-maat.parsers.mercurial :as hg]
             [code-maat.parsers.xml :as xml]
+            [incanter.core :as incanter]
             [code-maat.output.csv :as csv-output]
             [code-maat.analysis.authors :as authors]
             [code-maat.analysis.entities :as entities]
@@ -16,6 +17,28 @@
             [code-maat.analysis.churn :as churn]
             [code-maat.analysis.effort :as effort]
             [code-maat.analysis.communication :as communication]))
+
+;;; Principles:
+;;;
+;;; All individual parts (parsers, analyses, outputs) are kept in
+;;; separate, independet units.
+;;;
+;;; This top-level program (app - lousy name) glues the individual
+;;; parts together into a pipeline of behaviour. The parts are
+;;; selected based on the option passed in from the user interface.
+;;;
+;;; The overall flow is:
+;;;  1 Input: raw text-files (log, optional layer spec, etc)
+;;;  2 Parsers: receive the Input, returns a seq of maps. Each map
+;;;    describes one modification.
+;;;  3 The output from the parsers is fed into the layer mapping.
+;;;    This is an optional step where individual changes may be
+;;;    aggregated to fit analyses at architectural boundaries.
+;;;  4 The seq of maps is now transformed into Incanter datasets.
+;;;  5 The analyses receive the datasets. An analysis always returns
+;;;    a dataset itself.
+;;;  6 The output stage receives the dataset.
+
 
 ;;; TODO: consider making this dynamic in order to support new
 ;;;       analysis methods as plug-ins.
@@ -106,8 +129,9 @@
     :rows - the max number of results to include"
   (let [vcs-parser (parser-from options)
         changes (vcs-parser logfile-name options)
+        changes-ds (incanter/to-dataset changes)
         analysis (make-analysis options)
         output! (make-output options)]
     (doseq [an-analysis analysis]
-      (run-with-recovery-point an-analysis changes output!))))
+      (run-with-recovery-point an-analysis changes-ds output!))))
   

@@ -7,7 +7,7 @@
   (:require [code-maat.parsers.svn :as svn]
             [code-maat.parsers.xml :as xml-parser]
             [clojure.data.zip.xml :as zip])
-  (:use clojure.test incanter.core))
+  (:use clojure.test))
 
 ;;; A sample from a svn log file, served as test data to the unit tests.
 (def svn-log (xml-parser/string->zip "<?xml version='1.0'?>
@@ -79,12 +79,12 @@
    check the quantities."
   (let [modifications (svn/zip->modification-sets svn-log)]
     (testing "parses all items"
-      (is (= (nrow modifications)
+      (is (= (count modifications)
              3)))
     (testing "parses the log info into each row"
-      (is (= ($ :author modifications)
+      (is (= (map :author modifications)
              ["APT" "APT" "XYZ"]))
-      (is (= ($ :entity modifications)
+      (is (= (map :entity modifications)
              ["/Infrastrucure/Network/Connection.cs"
               "/Presentation/Status/ClientPresenter.cs"
               "/Infrastrucure/Network/Connection.cs"])))))

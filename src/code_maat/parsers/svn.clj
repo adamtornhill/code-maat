@@ -5,17 +5,16 @@
 
 (ns code-maat.parsers.svn
   (:use [clojure.data.zip.xml :only (attr text xml-> xml1->)]) ; dep: see below
-  (:require [incanter.core :as incanter]
-            [clojure.xml :as xml]
+  (:require [clojure.xml :as xml]
             [clojure.zip :as zip]
             [clojure.string :as s]))
 
 ;;; This module contains functionality for parsing a generated SVN log
-;;; into an Incanter dataset suitable for the supported analysis.
+;;; into a map suitable for the supported analysis.
 ;;;
 ;;; Input: A SVN log on XML format.
 ;;;
-;;; Ouput: An incanter dataset with the following columns:
+;;; Ouput: A seq of maps with the following keys:
 ;;;   :entity :action :date :author :rev
 
 (defn zip->log-entries [zipped]
@@ -57,13 +56,12 @@
   (->>
    zipped
    zip->log-entries
-   (mapcat as-rows)
-   incanter/to-dataset))
+   (mapcat as-rows)))
 
 (defn zip->modification-sets
-  "Transforms the given zipped svn log into an Incanter
-   dataset of modification data.
-   The dataset contains the following rows:
+  "Transforms the given zipped svn log into a map
+   of modification data.
+   The map contains the following rows:
    :entity :action :date :author :rev"
   ([zipped]
      (zip->modification-sets zipped {}))

@@ -4,8 +4,7 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.parsers.hiccup-based-parser
-  (:require [instaparse.core :as insta]
-            [incanter.core :as incanter]))
+  (:require [instaparse.core :as insta]))
 
 ;;; This module encapsulates the common functionality of parsing a
 ;;; VCS log into Hiccup format using Instaparse.
@@ -86,19 +85,18 @@
 
 (defn- entry-as-row
   "Transforms one entry (as a hiccup formated vector) into
-   a map corresponding to a row in an Incanter dataset."
+   a map representing one row in the change information."
   [v]
   (let [row-ctor (make-row-constructor v)
         files (files v)]
     (map row-ctor files)))
 
 (defn parse-log
-  "Transforms the given input git log into an
-   Incanter dataset suitable for the analysis modules." 
+  "Transforms the given input git log into a
+   seq of maps suitable for the analysis modules." 
   [input grammar parse-options]
   (let [parser (insta/parser grammar)]
     (->>
      input
      (as-grammar-map parser)
-     (mapcat entry-as-row)
-     incanter/to-dataset)))
+     (mapcat entry-as-row))))
