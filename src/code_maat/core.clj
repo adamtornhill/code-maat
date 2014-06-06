@@ -12,19 +12,20 @@
 (def cli-options
   [["-l" "--log LOG" "Log file with input data"]
    ["-c" "--version-control VCS" "Input vcs module type: supports svn, git or hg"]
-    ["-a" "--analysis ANALYSIS"
-     "The analysis to run (authors, revisions, coupling, summary, churn, identity)"
-     :default "authors"]
-    ["-r" "--rows ROWS" "Max rows in output" :parse-fn #(Integer/parseInt %)]
-    ["-n" "--min-revs MIN-REVS" "Minimum number of revisions to include an entity in the analysis"
-     :default 5 :parse-fn #(Integer/parseInt %)]
-    ["-m" "--min-shared-revs MIN-SHARED-REVS" "Minimum number of shared revisions to include an entity in the analysis"
-     :default 5 :parse-fn #(Integer/parseInt %)]
-    ["-i" "--min-coupling MIN-COUPLING" "Minimum degree of coupling (in percentage) to consider"
-     :default 50 :parse-fn #(Integer/parseInt %)]
-    ["-x" "--max-coupling MAX-COUPLING" "Maximum degree of coupling (in percentage) to consider"
-     :default 100 :parse-fn #(Integer/parseInt %)]
-    ["-h" "--help"]])
+   ["-a" "--analysis ANALYSIS"
+    "The analysis to run (authors, revisions, coupling, summary, churn, identity)"
+    :default "authors"]
+   ["-r" "--rows ROWS" "Max rows in output" :parse-fn #(Integer/parseInt %)]
+   ["-g" "--group GROUP" "A file with a pre-defined set of layers. The data will be aggregated according to the group of layers."]
+   ["-n" "--min-revs MIN-REVS" "Minimum number of revisions to include an entity in the analysis"
+    :default 5 :parse-fn #(Integer/parseInt %)]
+   ["-m" "--min-shared-revs MIN-SHARED-REVS" "Minimum number of shared revisions to include an entity in the analysis"
+    :default 5 :parse-fn #(Integer/parseInt %)]
+   ["-i" "--min-coupling MIN-COUPLING" "Minimum degree of coupling (in percentage) to consider"
+    :default 50 :parse-fn #(Integer/parseInt %)]
+   ["-x" "--max-coupling MAX-COUPLING" "Maximum degree of coupling (in percentage) to consider"
+    :default 100 :parse-fn #(Integer/parseInt %)]
+   ["-h" "--help"]])
 
 (defn- usage [options-summary]
   (->> ["This is Code Maat, a program used to collect statistics from a VCS."
