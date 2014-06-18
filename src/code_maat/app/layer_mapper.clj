@@ -19,9 +19,13 @@
   [layer-exprs entity]
   (some #(re-find % entity) layer-exprs))
 
+(defn- as-layer-expr
+  [layer]
+  (re-pattern (str "^" layer "/")))
+
 (defn- as-layer-exprs
   [layers]
-  (map #(re-pattern (str "^" % "/")) layers))
+  (map as-layer-expr layers))
 
 (defn map-entities->layers
   "Maps each entity in the commits to one of the pre-defined
