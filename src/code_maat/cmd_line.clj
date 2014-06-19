@@ -3,7 +3,7 @@
 ;;; Distributed under the GNU General Public License v3.0,
 ;;; see http://www.gnu.org/licenses/gpl.html
 
-(ns code-maat.core
+(ns code-maat.cmd-line
   (:gen-class)
   (:require [code-maat.app.app :as app]
             [clojure.string :as string]
