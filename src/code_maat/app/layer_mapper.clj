@@ -20,10 +20,10 @@
   "
     <S>       = groups
     <groups>  = (group <nl*>)* | group
-    group     = path <ws*> <separator> <ws*> name
+    group     = path <ws+> <separator> <ws+> name
     path      = #'^[\\w/\\\\]+'
     separator = '=>'
-    name      = #'\\w+'
+    name      = #'[^\\n]+'
     ws        =  #'\\s'
     nl        =  '\\n'")
 
