@@ -16,7 +16,7 @@
             [code-maat.analysis.summary :as summary]
             [code-maat.analysis.churn :as churn]
             [code-maat.analysis.effort :as effort]
-            [code-maat.app.layer-mapper :as mapper]
+            [code-maat.app.grouper :as grouper]
             [code-maat.analysis.communication :as communication]))
 
 ;;; Principles:
@@ -111,7 +111,7 @@
    the raw modifications."
   [options commits]
   (if-let [grouping (:group options)]
-    (mapper/run grouping commits)
+    (grouper/run grouping commits)
     commits))
 
 (defn- make-output [options]
