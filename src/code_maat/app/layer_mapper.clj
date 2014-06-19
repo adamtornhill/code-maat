@@ -4,9 +4,9 @@
 (ns code-maat.app.layer-mapper
   (:require [instaparse.core :as insta]))
 
-;;; Code Maat supports analysis according to pre-defined layers.
-;;; These layers are typically architectural boundaries. All data
-;;; will be aggregated into that layered view before analysis.
+;;; Code Maat supports analysis according to pre-defined architectual groups.
+;;; These groups are typically architectural boundaries. All data
+;;; will be aggregated into that view before analysis.
 
 ;; Parsing the group specification
 ;; ===============================
@@ -76,54 +76,54 @@
 ;; ===========================================
 
 (defn- entity->logical-name
-  [entity layer-exprs]
+  [entity group-exprs]
   (some (fn [{:keys [path-match logical-name]}]
           (when (re-find path-match entity)
             logical-name))
-        layer-exprs))
+        group-exprs))
 
-(defn- commit->commit-by-layer
-  [commit layer-exprs]
-  (update-in commit [:entity] #(entity->logical-name % layer-exprs))) 
+(defn- commit->commit-by-group
+  [commit group-exprs]
+  (update-in commit [:entity] #(entity->logical-name % group-exprs))) 
 
-(defn- within-layers?
-  [layer-exprs entity]
+(defn- within-group?
+  [group-exprs entity]
   (->>
-   (map :path-match layer-exprs)
+   (map :path-match group-exprs)
    (some #(re-find % entity))))
 
-(defn- as-layer-expr
+(defn- as-group-expr
   [{:keys [path name]}]
   {:path-match (re-pattern (str "^" path "/"))
    :logical-name name})
 
-(defn- as-layer-exprs
-  [layers]
-  (map as-layer-expr layers))
+(defn- as-group-exprs
+  [group-spec]
+  (map as-group-expr group-spec))
 
-(defn map-entities->layers
+(defn map-entities->groups
   "Maps each entity in the commits to one of the pre-defined
-   architectural layers.
-   The layers are given as a seq of maps. Each map denotes the
-   physical path to the layer together with its logical name.
+   architectural boundaries (groups).
+   The groups are given as a seq of maps. Each map denotes the
+   physical path to the group together with its logical name.
    We translate that path into a regex that matches
    entity names with logical names."
-  [commits layers]
-  (let [layer-exprs (as-layer-exprs layers)]
+  [commits groups]
+  (let [group-exprs (as-group-exprs groups)]
     (->>
-     (filter #(within-layers? layer-exprs (:entity %)) commits)
-     (map #(commit->commit-by-layer % layer-exprs)))))
+     (filter #(within-group? group-exprs (:entity %)) commits)
+     (map #(commit->commit-by-group % group-exprs)))))
 
-(defn- layers-from
-  [layer-info-file]
-  (slurp layer-info-file))
+(defn- groups-from
+  [group-info-file]
+  (slurp group-info-file))
 
 (defn run
-  "This entry point parses the given layer info.
+  "This entry point parses the given group info.
    All entities in each commit are then re-mapped to one
-   of the given layers "
-  [layer-info-file commits]
+   of the given groups."
+  [group-info-file commits]
   (->>
-   (layers-from layer-info-file)
+   (groups-from group-info-file)
    text->group-specification
-   (map-entities->layers commits)))
+   (map-entities->groups commits)))

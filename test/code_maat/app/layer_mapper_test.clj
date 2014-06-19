@@ -40,16 +40,16 @@
 
 (deftest entities-are-mapped-to-defined-layers
   (testing "Mapped to the same layer"
-    (is (= (mapper/map-entities->layers entities-in-same-layer top-level-layer)
+    (is (= (mapper/map-entities->groups entities-in-same-layer top-level-layer)
            [{:rev 1 :entity "T"}
             {:rev 2 :entity "T"}])))
   (testing "Mapped to different layers"
-     (is (= (mapper/map-entities->layers entities-multiple-layers multiple-layers)
+     (is (= (mapper/map-entities->groups entities-multiple-layers multiple-layers)
             [{:rev 1 :entity "Top"}
              {:rev 2 :entity "infrastructure"}]))))
 
 ;; Filter out any entity that doesn't match the given layer structure.
 ;; Most of the time this is probably what we want.
 (deftest unmapped-entities-are-ignored
-  (is (= (mapper/map-entities->layers entities-multiple-layers top-level-layer)
+  (is (= (mapper/map-entities->groups entities-multiple-layers top-level-layer)
          [{:rev 1 :entity "T"}])))
