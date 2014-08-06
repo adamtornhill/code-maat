@@ -5,7 +5,6 @@
 
 (ns code-maat.analysis.logical-coupling
   (:require [clojure.math.combinatorics :as combo]
-            [code-maat.analysis.entities :as entities]
             [code-maat.dataset.dataset :as ds]
             [code-maat.analysis.math :as m]
             [clojure.math.numeric-tower :as math])
@@ -22,11 +21,11 @@
 ;;; Oputput: the analysis returns an Incanter dataset with the following columns:
 ;;; :entity :coupled :degree :average-revs
 
-(defn- as-coupling-permutations
+(defn- drop-duplicates
   [entities]
-  (remove (fn [[f s]] (= f s))
-          (combo/selections entities 2)))
+  (remove (fn [[f s]] (= f s)) entities))
 
+;; TODO: use sort-by, apply compare
 (defn- drop-mirrored-modules
   [entities]
   (->
@@ -37,114 +36,30 @@
         entities)
    distinct))
 
-(defn- entities-in-rev
-  [rev-ds]
-  (ds/-select-by :entity rev-ds))
-
-(defn- make-entity<->coupled-pair
-  [[entity coupled]]
-  {:entity entity :coupled coupled})
-
-(defn in-same-revision
-  "Calculates a vector of all entities coupled in
-   the given dataset for one revision.
-   The returned vector contains maps of :entity and :coupled."
-  [rev-ds]
-  (->>
-   rev-ds
-   entities-in-rev
-   as-coupling-permutations
-   drop-mirrored-modules
-   (map make-entity<->coupled-pair)))
-
+(defn- as-co-changing-modules
+  "Returns pairs representing the modules
+   coupled in the given change set.
+   Note that we keep single modules that
+   aren't coupled - we need them to calculate
+   the correct number of total revisions."
+  [entities]
+  (->
+   (combo/selections entities 2)
+   drop-mirrored-modules))
+   
 (defn- grouped-by-rev
   [flat-data]
   (->>
    ($ [:rev :entity] flat-data) ; minimal
    (ds/-group-by :rev)))
 
-(defn- make-entity-stats [] {:revs 0 :coupled {}})
-
-(defmacro ensure-exists
-  "Ensures that the entity exists in the given stat(istics).
-   When not, the entity is added and bound to the value
-   returned from evaluating the default form."
-  [entity stats default]
-  `(update-in ~stats [~entity]
-              (fnil identity
-                    ~default)))
-(defn- inc-revs
-  [entity entity-stats]
-  {:pre  [(entity-stats entity)]}
-  (update-in entity-stats [entity]
-             #(update-in % [:revs] inc)))
-
-(defn update-entity-rev-in
-  [stats entity]
-  (inc-revs entity
-            (ensure-exists entity
-                           stats
-                           (make-entity-stats))))
-
-(defn- inc-coupling
-  [coupled coupled-stats]
-  {:pre  [(coupled-stats coupled)]}
-  (update-in coupled-stats [coupled] inc))
-
-(defn- add-coupling
-  [entity coupled entity-spec]
-  (update-in entity-spec
-             [:coupled]
-             #(inc-coupling coupled
-                            (ensure-exists coupled % 0))))
-
-(defn update-coupling-in
-  [stats {:keys [entity coupled]}]
-  {:pre  [(stats entity)]}
-  (update-in stats
-             [entity]
-             #(add-coupling entity coupled %)))
-
-(defn- as-updated-revisions
-  [entities stats]
-  (reduce update-entity-rev-in
-          stats
-          entities))
-
-(defn- as-dependents-in-one-rev
-  [stats changes-in-rev]
-  (let [entities (entities-in-rev changes-in-rev)
-        stats-with-updated-revs (as-updated-revisions entities stats)]
-    (reduce update-coupling-in
-            stats-with-updated-revs
-            (in-same-revision changes-in-rev))))
-
 (defn- changes-in-rev [g]
   "Extracts the change set from an Incanter
    dataset grouped by revision."
   (map second g))
 
-(defn as-dependent-entities
-  [changes-grouped-by-rev]
-  (->>
-   changes-grouped-by-rev
-   (changes-in-rev)
-   (reduce as-dependents-in-one-rev
-          {})))
-
-(defn calc-dependencies
-  [ds]
-  (->
-   ds
-   grouped-by-rev
-   as-dependent-entities))
-
-(defn- n-entity-revs
-  [entity dependencies]
-  {:pre [(dependencies entity)]}
-  (:revs (dependencies entity)))
-
 (defn- within-threshold?
+  "Used to filter the results based on user options."
   [{:keys [min-revs min-shared-revs min-coupling max-coupling]}
    revs shared-revs coupling]
   {:pre [(and min-revs min-shared-revs min-coupling max-coupling)]}
@@ -154,29 +69,66 @@
    (>= coupling min-coupling)
    (<= (math/floor coupling) max-coupling)))
 
-(defn as-logical-coupling
-  [all-dependencies within-threshold-fn? [entity {:keys [revs coupled]}]]
-   "This is where the actual action is - we receive a
-   map for each entity with its total number of revisions and
-   another map of its coupled entities. Based on that information
-   we calculate the degree of coupling between the entity and
-   each of its coupled counterparts.
-   Future: consider weighting the total number of revisions into
-   the calculation to avoiding skewed data."
-   (for [[coupled shared-revs] coupled
-         :let [coupled-revs (n-entity-revs coupled all-dependencies)
-               average-revs (m/average revs coupled-revs)
-               coupling (m/as-percentage (/ shared-revs average-revs))]
-         :when (within-threshold-fn? average-revs shared-revs coupling)]
-     {:entity entity :coupled coupled
-      :degree (int coupling) :average-revs (math/ceil average-revs)}))
+(def entities-in-rev
+  (partial ds/-select-by :entity))
 
-(defn as-logical-coupling-of-all
-  [thresholds all-dependencies]
-  (mapcat (partial as-logical-coupling
-                   all-dependencies
-                   (partial within-threshold? thresholds))
-          all-dependencies))
+(defn- modules-in-one-rev
+  "We receive pairs of co-changing modules in a
+   revision  and return a seq of all distinct modules."
+  [m]
+  (->
+   (flatten m)
+   distinct))
+
+(defn- module-by-revs
+  "Returns a map with each module as key and
+   its number of revisions as value.
+   This is used when calculating the degree
+   of coupling later."
+  [all-co-changing] 
+  (->
+   (mapcat modules-in-one-rev all-co-changing)
+   frequencies))
+
+(defn co-changing-by-revision
+  "Calculates a vector of all entities coupled
+  in the revision represented by the dataset."
+  [ds]
+  (->>
+   (grouped-by-rev ds)
+   changes-in-rev
+   (map entities-in-rev)
+   (map as-co-changing-modules)))
+
+(defn- coupling-frequencies
+  [co-changing]
+  "Returns a map with pairs of coupled
+   modules (pairs) as keyes and their
+   number of shared revisions as value."
+  (->
+   (apply concat co-changing)
+   drop-duplicates ; remember: included to get the right total revisions
+   frequencies
+   vec))
+   
+(defn- as-logical-coupling-measure
+  "This is where the result is assembled.
+   We already have all the data. Now we just pass through the
+   coupled modules, with their co-change frequencies, and
+   transform it to a degree of coupling.
+   The coupling formula is simple: the number of shared
+   revisions divided by the average number of revisions for
+   the two coupled modules."
+  [ds within-threshold-fn?]
+  (let [co-changing (co-changing-by-revision ds)
+        module-revs (module-by-revs co-changing)
+        coupling (coupling-frequencies co-changing)]
+    (for [[[first-entity second-entity] shared-revs] coupling
+          :let [average-revs (m/average (module-revs first-entity) (module-revs second-entity))
+                coupling (m/as-percentage (/ shared-revs average-revs))]
+          :when (within-threshold-fn? average-revs shared-revs coupling)]
+      {:entity first-entity :coupled second-entity
+       :degree (int coupling) :average-revs (int (math/ceil average-revs))})))
 
 (defn by-degree
   "Calculates the degree of logical coupling. Returns a seq
@@ -185,11 +137,12 @@
    The coupling is calculated as a percentage value based on
    the number of shared commits between coupled entities divided
    by the average number of total commits for the coupled entities."
-  ([ds options] (by-degree ds options :desc))
+  ([ds options]
+     (by-degree ds options :desc))
   ([ds options order-fn]
      (->>
-      ds
-      calc-dependencies
-      (as-logical-coupling-of-all options)
+      (partial within-threshold? options)
+      (as-logical-coupling-measure ds)
       (ds/-dataset [:entity :coupled :degree :average-revs])
       ($order [:degree :average-revs] order-fn))))
+
