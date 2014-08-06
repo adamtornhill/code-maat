@@ -23,17 +23,14 @@
 
 (defn- drop-duplicates
   [entities]
-  (remove (fn [[f s]] (= f s)) entities))
+  (remove #(= % (reverse %)) entities))
 
-;; TODO: use sort-by, apply compare
 (defn- drop-mirrored-modules
+  "Removed mirrored change sets such as:
+    [A B] [B A] => [A B]"
   [entities]
   (->
-   (map (fn [[f s]]
-          (if (pos? (compare f s))
-            [s f]
-            [f s]))
-        entities)
+   (map sort entities)
    distinct))
 
 (defn- as-co-changing-modules
