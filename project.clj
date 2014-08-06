@@ -13,10 +13,10 @@
 		 [incanter "1.5.5"]
                  [org.clojure/tools.cli "0.3.1"]
                  [org.clojure/data.csv "0.1.2"]
-                 [clj-time "0.7.0"]
+                 [clj-time "0.8.0"]
                  [org.clojure/math.numeric-tower "0.0.4"]
-                 [org.clojure/math.combinatorics "0.0.7"]
-                 [instaparse "1.3.2"]]
+                 [org.clojure/math.combinatorics "0.0.8"]
+                 [instaparse "1.3.3"]]
   :main code-maat.cmd-line
   :aot [code-maat.cmd-line]
   :jvm-opts ["-Xmx4g" "-Djava.awt.headless=true" "-Xss512M"])
