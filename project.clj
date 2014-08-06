@@ -19,4 +19,4 @@
                  [instaparse "1.3.2"]]
   :main code-maat.cmd-line
   :aot [code-maat.cmd-line]
-  :jvm-opts ["-Xmx4g" "-Djava.awt.headless=true"])
+  :jvm-opts ["-Xmx4g" "-Djava.awt.headless=true" "-Xss512M"])
