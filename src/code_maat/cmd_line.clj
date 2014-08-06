@@ -25,6 +25,9 @@
     :default 50 :parse-fn #(Integer/parseInt %)]
    ["-x" "--max-coupling MAX-COUPLING" "Maximum degree of coupling (in percentage) to consider"
     :default 100 :parse-fn #(Integer/parseInt %)]
+   ["-s" "--max-changeset-size MAX-CHANGESET-SIZE"
+    "Maximum number of modules in a change set if it shall be included in a coupling analysis"
+    :default 30 :parse-fn #(Integer/parseInt %)]
    ["-h" "--help"]])
 
 (defn- usage [options-summary]

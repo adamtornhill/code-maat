@@ -28,4 +28,5 @@
   {:min-revs 1
    :min-shared-revs 1
    :min-coupling 50
-   :max-coupling 100})
+   :max-coupling 100
+   :max-changeset-size 10})

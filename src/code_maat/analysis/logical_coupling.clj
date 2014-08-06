@@ -82,13 +82,18 @@
    (mapcat modules-in-one-rev all-co-changing)
    frequencies))
 
+(defn exceeds-max-changeset-size?
+  [max-size change-set]
+  (> (count change-set) max-size))
+
 (defn co-changing-by-revision
   "Calculates a vector of all entities coupled
   in the revision represented by the dataset."
-  [ds]
+  [ds options]
   (->>
    (as-entities-by-revision ds)
    (map entities-in-rev)
+   (remove (partial exceeds-max-changeset-size? (:max-changeset-size options)))
    (map as-co-changing-modules)))
 
 (defn- coupling-frequencies
@@ -110,8 +115,8 @@
    The coupling formula is simple: the number of shared
    revisions divided by the average number of revisions for
    the two coupled modules."
-  [ds within-threshold-fn?]
-  (let [co-changing (co-changing-by-revision ds)
+  [ds options within-threshold-fn?]
+  (let [co-changing (co-changing-by-revision ds options)
         module-revs (module-by-revs co-changing)
         coupling (coupling-frequencies co-changing)]
     (for [[[first-entity second-entity] shared-revs] coupling
@@ -133,7 +138,7 @@
   ([ds options order-fn]
      (->>
       (partial within-threshold? options)
-      (as-logical-coupling-measure ds)
+      (as-logical-coupling-measure ds options)
       (ds/-dataset [:entity :coupled :degree :average-revs])
       ($order [:degree :average-revs] order-fn))))
 
