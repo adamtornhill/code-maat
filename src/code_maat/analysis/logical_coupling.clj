@@ -47,16 +47,14 @@
    (combo/selections entities 2)
    drop-mirrored-modules))
    
-(defn- grouped-by-rev
-  [flat-data]
+(defn- as-entities-by-revision
+  "Extracts the change set per revision
+   from an Incanter dataset."
+  [ds]
   (->>
-   ($ [:rev :entity] flat-data) ; minimal
-   (ds/-group-by :rev)))
-
-(defn- changes-in-rev [g]
-  "Extracts the change set from an Incanter
-   dataset grouped by revision."
-  (map second g))
+   ($ [:rev :entity] ds) ; minimal
+   (ds/-group-by :rev)
+   (map second)))
 
 (defn- within-threshold?
   "Used to filter the results based on user options."
@@ -95,8 +93,7 @@
   in the revision represented by the dataset."
   [ds]
   (->>
-   (grouped-by-rev ds)
-   changes-in-rev
+   (as-entities-by-revision ds)
    (map entities-in-rev)
    (map as-co-changing-modules)))
 
