@@ -27,6 +27,16 @@
   (remove (fn [[f s]] (= f s))
           (combo/selections entities 2)))
 
+(defn- drop-mirrored-modules
+  [entities]
+  (->
+   (map (fn [[f s]]
+          (if (pos? (compare f s))
+            [s f]
+            [f s]))
+        entities)
+   distinct))
+
 (defn- entities-in-rev
   [rev-ds]
   (ds/-select-by :entity rev-ds))
@@ -44,6 +54,7 @@
    rev-ds
    entities-in-rev
    as-coupling-permutations
+   drop-mirrored-modules
    (map make-entity<->coupled-pair)))
 
 (defn- grouped-by-rev

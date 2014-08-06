@@ -80,7 +80,7 @@
    [git-log-file (git-options "coupling")]
    [hg-log-file (hg-options "coupling")]]
   (is (= (run-with-str-output log-file options)
-         "entity,coupled,degree,average-revs\n/Presentation/Status/ClientPresenter.cs,/Infrastrucure/Network/Connection.cs,66,2\n/Infrastrucure/Network/Connection.cs,/Presentation/Status/ClientPresenter.cs,66,2\n")))
+         "entity,coupled,degree,average-revs\n/Infrastrucure/Network/Connection.cs,/Presentation/Status/ClientPresenter.cs,66,2\n")))
 
 (def-data-driven-with-vcs-test analysis-of-effort
   [[svn-log-file (svn-csv-options "entity-effort")]

@@ -34,10 +34,7 @@
   (is (= (set (coupling/in-same-revision revd))
          (set [{:entity "A" :coupled "B"}
                {:entity "A" :coupled "C"}
-               {:entity "B" :coupled "A"}
-               {:entity "B" :coupled "C"}
-               {:entity "C" :coupled "A"}
-               {:entity "C" :coupled "B"}])))
+               {:entity "B" :coupled "C"}])))
   (testing "Workaround for Incanter's single value return instead of seq of one element."
     (is (= (coupling/in-same-revision (incanter/to-dataset single-entity-commit))
            []))))
@@ -77,7 +74,12 @@
 
 (deftest calculates-change-dependencies
   (is (= (coupling/calc-dependencies coupledd)
-        all-dependencies)))
+         {"C"
+          {:revs 1, :coupled {}}
+          "B"
+          {:revs 2, :coupled {"C" 1}}
+          "A"
+          {:revs 2, :coupled {"C" 1, "B" 2}}})))
 
 (defn- no-threshold [& _] true)
 
@@ -96,10 +98,7 @@
                               coupledd
                               test-data/options-with-low-thresholds))
            ;; :entity :coupled :degree :average-revs
-           [["B"      "A"       100   2]
-            ["A"      "B"       100   2]
-            ["C"      "B"       66    2]
-            ["C"      "A"       66    2]
+           [["A"      "B"       100   2]
             ["B"      "C"       66    2]
             ["A"      "C"       66    2]])))
   (testing "A single change set with a single entity (boundary case)"

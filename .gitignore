@@ -8,6 +8,7 @@ pom.xml
 .lein-deps-sum
 .lein-failures
 .lein-plugins
+.lein*
 *~
 mytodo.txt
 *.txt#
