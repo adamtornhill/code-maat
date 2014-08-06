@@ -124,8 +124,8 @@
           :let [average-revs (m/average (module-revs first-entity) (module-revs second-entity))
                 coupling (m/as-percentage (/ shared-revs average-revs))]
           :when (within-threshold-fn? average-revs shared-revs coupling)]
-      {:entity first-entity :coupled second-entity
-       :degree (int coupling) :average-revs (int (math/ceil average-revs))})))
+      [first-entity second-entity
+       (int coupling) (math/ceil average-revs)])))
 
 (defn by-degree
   "Calculates the degree of logical coupling. Returns a seq
