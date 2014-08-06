@@ -67,13 +67,10 @@
 (def entities-in-rev
   (partial ds/-select-by :entity))
 
-(defn- modules-in-one-rev
+(def modules-in-one-rev
   "We receive pairs of co-changing modules in a
    revision  and return a seq of all distinct modules."
-  [m]
-  (->
-   (flatten m)
-   distinct))
+  (comp distinct flatten))
 
 (defn- module-by-revs
   "Returns a map with each module as key and
