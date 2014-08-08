@@ -22,7 +22,7 @@
    ["-m" "--min-shared-revs MIN-SHARED-REVS" "Minimum number of shared revisions to include an entity in the analysis"
     :default 5 :parse-fn #(Integer/parseInt %)]
    ["-i" "--min-coupling MIN-COUPLING" "Minimum degree of coupling (in percentage) to consider"
-    :default 50 :parse-fn #(Integer/parseInt %)]
+    :default 30 :parse-fn #(Integer/parseInt %)]
    ["-x" "--max-coupling MAX-COUPLING" "Maximum degree of coupling (in percentage) to consider"
     :default 100 :parse-fn #(Integer/parseInt %)]
    ["-s" "--max-changeset-size MAX-CHANGESET-SIZE"
