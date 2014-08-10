@@ -13,6 +13,7 @@
             [code-maat.analysis.authors :as authors]
             [code-maat.analysis.entities :as entities]
             [code-maat.analysis.logical-coupling :as coupling]
+            [code-maat.analysis.sum-of-coupling :as soc]
             [code-maat.analysis.summary :as summary]
             [code-maat.analysis.churn :as churn]
             [code-maat.analysis.effort :as effort]
@@ -47,6 +48,7 @@
   {"authors" authors/by-count
    "revisions" entities/by-revision
    "coupling" coupling/by-degree
+   "soc" soc/by-degree
    "summary" summary/overview
    "identity" (fn [input _] input) ; for debugging - dumps all raw data
    "abs-churn" churn/absolutes-trend
