@@ -4,7 +4,7 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.analysis.logical-coupling
-  (:require [clojure.math.combinatorics :as combo]
+  (:require [code-maat.analysis.coupling-algos :as c]
             [code-maat.dataset.dataset :as ds]
             [code-maat.analysis.math :as m]
             [clojure.math.numeric-tower :as math])
@@ -21,92 +21,6 @@
 ;;; Oputput: the analysis returns an Incanter dataset with the following columns:
 ;;; :entity :coupled :degree :average-revs
 
-(defn- drop-duplicates
-  [entities]
-  (remove #(= % (reverse %)) entities))
-
-(defn- drop-mirrored-modules
-  "Removed mirrored change sets such as:
-    [A B] [B A] => [A B]"
-  [entities]
-  (->
-   (map sort entities)
-   distinct))
-
-(defn- as-co-changing-modules
-  "Returns pairs representing the modules
-   coupled in the given change set.
-   Note that we keep single modules that
-   aren't coupled - we need them to calculate
-   the correct number of total revisions."
-  [entities]
-  (->
-   (combo/selections entities 2)
-   drop-mirrored-modules))
-   
-(defn- as-entities-by-revision
-  "Extracts the change set per revision
-   from an Incanter dataset."
-  [ds]
-  (->>
-   ($ [:rev :entity] ds) ; minimal
-   (ds/-group-by :rev)
-   (map second)))
-
-(defn- within-threshold?
-  "Used to filter the results based on user options."
-  [{:keys [min-revs min-shared-revs min-coupling max-coupling]}
-   revs shared-revs coupling]
-  {:pre [(and min-revs min-shared-revs min-coupling max-coupling)]}
-  (and
-   (>= revs min-revs)
-   (>= shared-revs min-shared-revs)
-   (>= coupling min-coupling)
-   (<= (math/floor coupling) max-coupling)))
-
-(def entities-in-rev
-  (partial ds/-select-by :entity))
-
-(def modules-in-one-rev
-  "We receive pairs of co-changing modules in a
-   revision  and return a seq of all distinct modules."
-  (comp distinct flatten))
-
-(defn- module-by-revs
-  "Returns a map with each module as key and
-   its number of revisions as value.
-   This is used when calculating the degree
-   of coupling later."
-  [all-co-changing] 
-  (->
-   (mapcat modules-in-one-rev all-co-changing)
-   frequencies))
-
-(defn exceeds-max-changeset-size?
-  [max-size change-set]
-  (> (count change-set) max-size))
-
-(defn co-changing-by-revision
-  "Calculates a vector of all entities coupled
-  in the revision represented by the dataset."
-  [ds options]
-  (->>
-   (as-entities-by-revision ds)
-   (map entities-in-rev)
-   (remove (partial exceeds-max-changeset-size? (:max-changeset-size options)))
-   (map as-co-changing-modules)))
-
-(defn- coupling-frequencies
-  [co-changing]
-  "Returns a map with pairs of coupled
-   modules (pairs) as keyes and their
-   number of shared revisions as value."
-  (->
-   (apply concat co-changing)
-   drop-duplicates ; remember: included to get the right total revisions
-   frequencies
-   vec))
-   
 (defn- as-logical-coupling-measure
   "This is where the result is assembled.
    We already have all the data. Now we just pass through the
@@ -116,9 +30,9 @@
    revisions divided by the average number of revisions for
    the two coupled modules."
   [ds options within-threshold-fn?]
-  (let [co-changing (co-changing-by-revision ds options)
-        module-revs (module-by-revs co-changing)
-        coupling (coupling-frequencies co-changing)]
+  (let [co-changing (c/co-changing-by-revision ds options)
+        module-revs (c/module-by-revs co-changing)
+        coupling (c/coupling-frequencies co-changing)]
     (for [[[first-entity second-entity] shared-revs] coupling
           :let [average-revs (m/average (module-revs first-entity) (module-revs second-entity))
                 coupling (m/as-percentage (/ shared-revs average-revs))]
@@ -137,7 +51,7 @@
      (by-degree ds options :desc))
   ([ds options order-fn]
      (->>
-      (partial within-threshold? options)
+      (partial c/within-threshold? options)
       (as-logical-coupling-measure ds options)
       (ds/-dataset [:entity :coupled :degree :average-revs])
       ($order [:degree :average-revs] order-fn))))

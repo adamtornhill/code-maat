@@ -45,7 +45,7 @@
    (ds/-group-by :rev)
    (map second)))
 
-(defn- within-threshold?
+(defn within-threshold?
   "Used to filter the results based on user options."
   [{:keys [min-revs min-shared-revs min-coupling max-coupling]}
    revs shared-revs coupling]

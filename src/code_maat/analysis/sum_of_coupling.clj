@@ -4,10 +4,8 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.analysis.sum-of-coupling
-  (:require [clojure.math.combinatorics :as combo]
-            [code-maat.dataset.dataset :as ds]
-            [code-maat.analysis.coupling-algos :as c]
-            [clojure.math.numeric-tower :as math])
+  (:require [code-maat.dataset.dataset :as ds]
+            [code-maat.analysis.coupling-algos :as c])
   (:use incanter.core))
 
 ;;; This module calculates the sum of the temporal coupling for each module.
