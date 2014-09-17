@@ -32,3 +32,16 @@
                       [["A" "at" 1 3]
                        ["A" "xy" 1 3]
                        ["A" "zt" 1 3]]))))
+
+(deftest calculates-entity-fragmentation-for-single-author
+  "The fractal value is a measurement of how
+   distributed the effort on a specific entity is."
+  (is (= (effort/as-entity-fragmentation single-effort options)
+         (ds/-dataset [:entity :fractal-value :total-revs]
+                      [["B" 0.00 2]
+                       ["A" 0.00 1]]))))
+
+(deftest calculates-entity-fragmentation-for-multiple-authors
+  (is (= (effort/as-entity-fragmentation multi-effort options)
+         (ds/-dataset [:entity :fractal-value :total-revs]
+                      [["A" 0.67 3]]))))

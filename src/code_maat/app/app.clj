@@ -56,6 +56,7 @@
    "entity-churn" churn/by-entity
    "entity-ownership" churn/as-ownership
    "entity-effort" effort/as-revisions-per-author
+   "fragmentation" effort/as-entity-fragmentation
    "communication" communication/by-shared-entities})
    
 (defn- make-analysis

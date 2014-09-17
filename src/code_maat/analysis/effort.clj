@@ -5,7 +5,9 @@
 
 (ns code-maat.analysis.effort
   (:require [code-maat.dataset.dataset :as ds]
-            [incanter.core :as incanter]))
+            [incanter.core :as incanter]
+            [clojure.math.numeric-tower :as m]
+            [code-maat.analysis.math :as math]))
 
 ;;; The idea behind effort is to identify how much each author
 ;;; contributed to a module. The measure here is a bit more
@@ -55,3 +57,29 @@
    (mapcat normalize-effort)
    (ds/-dataset [:entity :author :author-revs :total-revs])
    (ds/-order-by :entity :asc)))
+
+(defn- as-author-fractals
+  [[_ ai nc]]
+  (m/expt (/ ai nc) 2))
+
+(defn- as-fractal-value
+  [[name effort]]
+  (let [[_1 _2 total-revs] (first effort) ; same as nc
+        fv1 (reduce + (map as-author-fractals effort))
+        fv (math/ratio->centi-float-precision (- 1 fv1))]
+    [name fv total-revs]))
+
+(defn as-entity-fragmentation
+  "Caclulates a fractal value for each entity.
+   The fractal value ranges from 0 (one author) to
+   1 (many authors, unreachable value).
+   The fractal value is a good complement to number of
+   authors analyses since here we reduce smaller contributions
+   more and get a chance to find the truly fragmented entities."
+  [ds options]
+  (->>
+   (ds/-group-by :entity ds)
+   sum-effort-by-author
+   (map as-fractal-value)
+   (ds/-dataset [:entity :fractal-value :total-revs])
+   (ds/-order-by [:fractal-value :total-revs] :desc)))
