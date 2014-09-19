@@ -20,6 +20,11 @@
    {:entity "Same" :rev 2 :author "single" :date "2013-11-11" :loc-added "20" :loc-deleted "2"}
    {:entity "Same" :rev 3 :author "single" :date "2013-11-11" :loc-added "2" :loc-deleted "0"}])
 
+;; Of course, an author doesn't have to add lines. In that case we
+;; need to  take care since we get a total of zero => special case.
+(ds/def-ds only-removed-lines
+  [{:entity "Same" :rev 1 :author "single" :date "2013-11-10" :loc-added "0" :loc-deleted "1"}])
+
 (ds/def-ds simple
   [{:entity "A" :rev 1 :author "at" :date "2013-11-10" :loc-added "10" :loc-deleted "1"}
    {:entity "B" :rev 2 :author "ta" :date "2013-11-11" :loc-added "20" :loc-deleted "2"}
@@ -89,14 +94,18 @@
 
 (defn- as-main-dev-ds
   [v]
-  (ds/-dataset [:entity :main-dev :added :total-added] v))
+  (ds/-dataset [:entity :main-dev :added :total-added :ownership] v))
 
 (deftest identifies-single-main-developer
   "A main developer is the one who conributed most code.
    If there's only one, single developer it's the obvious owner."
   (is (= (churn/by-main-developer single-author options)
-         (as-main-dev-ds [["Same" "single" 32 32]]))))
+         (as-main-dev-ds [["Same" "single" 32 32 1.0]]))))
 
 (deftest identifies-main-developer-on-shared-entities
   (is (= (churn/by-main-developer same-author options)
-         (as-main-dev-ds [["A" "xy" 15 27]]))))
+         (as-main-dev-ds [["A" "xy" 15 27 0.56]]))))
+
+(deftest ownership-is-none-without-added-lines
+  (is (= (churn/by-main-developer only-removed-lines options)
+         (as-main-dev-ds [["Same" "single" 0 0 0.00]]))))

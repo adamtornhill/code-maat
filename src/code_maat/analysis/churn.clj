@@ -5,7 +5,8 @@
 
 (ns code-maat.analysis.churn
   (:require [code-maat.dataset.dataset :as ds]
-            [incanter.core :as incanter]))
+            [incanter.core :as incanter]
+            [code-maat.analysis.math :as math]))
 
 ;;; This module contains functions for calculating churn metrics.
 ;;; Code churn is related to the quality of modules; the higher
@@ -134,6 +135,13 @@
 
 (def dev-added second)
 
+(defn- as-ownership-ratio
+  [own total]
+  (->>
+   (max total 1) ; some entities don't have any added lines (just removed)
+   (/ own)
+   math/ratio->centi-float-precision))
+
 (defn- pick-main-developer
   "Picks the developer that contributed most lines of
    code (sure, a rough measure).
@@ -144,8 +152,10 @@
     [Entity ta 20 2]"
   [[name contribs]]
   (let [total-added (reduce + (map added-lines contribs))
-        main-dev (first (reverse (sort-by added-lines contribs)))]
-    [name (developer main-dev) (dev-added main-dev) total-added]))
+        main-dev (first (reverse (sort-by added-lines contribs)))
+        main-dev-added (dev-added main-dev)
+        ownership-ratio (as-ownership-ratio main-dev-added total-added)]
+    [name (developer main-dev) main-dev-added total-added ownership-ratio]))
 
 (defn by-main-developer
   "Identifies the main developer of each entity.
@@ -158,6 +168,6 @@
    (ds/-group-by :entity ds)
    sum-by-author-contrib
    (map pick-main-developer)
-   (ds/-dataset [:entity :main-dev :added :total-added])
+   (ds/-dataset [:entity :main-dev :added :total-added :ownership])
    (ds/-order-by :entity :asc)))
   
