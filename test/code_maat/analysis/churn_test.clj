@@ -15,6 +15,11 @@
   [{:entity "A" :rev 1 :author "at" :date "2013-11-10"}
    {:entity "B" :rev 2 :author "ta" :date "2013-11-11"}])
 
+(ds/def-ds single-author
+  [{:entity "Same" :rev 1 :author "single" :date "2013-11-10" :loc-added "10" :loc-deleted "1"}
+   {:entity "Same" :rev 2 :author "single" :date "2013-11-11" :loc-added "20" :loc-deleted "2"}
+   {:entity "Same" :rev 3 :author "single" :date "2013-11-11" :loc-added "2" :loc-deleted "0"}])
+
 (ds/def-ds simple
   [{:entity "A" :rev 1 :author "at" :date "2013-11-10" :loc-added "10" :loc-deleted "1"}
    {:entity "B" :rev 2 :author "ta" :date "2013-11-11" :loc-added "20" :loc-deleted "2"}
@@ -79,3 +84,19 @@
          (ds/-dataset [:entity :author :added :deleted]
           [["A" "at" 12 6]
            ["A" "xy" 15 3]]))))
+
+;;; Tests of the main developer algorithm
+
+(defn- as-main-dev-ds
+  [v]
+  (ds/-dataset [:entity :main-dev :added :total-added] v))
+
+(deftest identifies-single-main-developer
+  "A main developer is the one who conributed most code.
+   If there's only one, single developer it's the obvious owner."
+  (is (= (churn/by-main-developer single-author options)
+         (as-main-dev-ds [["Same" "single" 32 32]]))))
+
+(deftest identifies-main-developer-on-shared-entities
+  (is (= (churn/by-main-developer same-author options)
+         (as-main-dev-ds [["A" "xy" 15 27]]))))

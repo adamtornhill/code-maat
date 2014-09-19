@@ -121,4 +121,43 @@
    (mapcat normalize-contrib)
    (ds/-dataset [:entity :author :added :deleted])
    (ds/-order-by :entity :asc)))
+
+;;
+;;; Algorithms to identify main developers from churn
+;;;
+
+(defn- added-lines
+  [[_author added _deleted]]
+  added)
+
+(def developer first)
+
+(def dev-added second)
+
+(defn- pick-main-developer
+  "Picks the developer that contributed most lines of
+   code (sure, a rough measure).
+   Returns [Entity Developer Added Total-Added]
+   Example on input:
+    [Entity [[ta 20 2] [at 2 0]]]
+  Should result in:
+    [Entity ta 20 2]"
+  [[name contribs]]
+  (let [total-added (reduce + (map added-lines contribs))
+        main-dev (first (reverse (sort-by added-lines contribs)))]
+    [name (developer main-dev) (dev-added main-dev) total-added]))
+
+(defn by-main-developer
+  "Identifies the main developer of each entity.
+   The main developer is the one who has contributed
+   most lines of code (another interesting definition
+   would be the one _removing_ most lines...coming soon)"
+  [ds options]
+  (throw-on-missing-data ds)
+  (->>
+   (ds/-group-by :entity ds)
+   sum-by-author-contrib
+   (map pick-main-developer)
+   (ds/-dataset [:entity :main-dev :added :total-added])
+   (ds/-order-by :entity :asc)))
   
