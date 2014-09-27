@@ -105,7 +105,7 @@
     "hg"  hg->modifications
     (throw (IllegalArgumentException.
             (str "Invalid --version-control specified: " version-control
-                 ". Supported options are: svn or git.")))))
+                 ". Supported options are: svn, git or hg.")))))
 
 (defn- aggregate-on-boundaries
   "The individual changes may be aggregated into layers
