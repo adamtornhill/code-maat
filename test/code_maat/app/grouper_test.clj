@@ -23,7 +23,10 @@
            [])))
    (testing "With backslash"
     (is (= (g/text->group-specification "/some\\path => G1")
-           [{:path "/some\\path" :name "G1"}]))))
+           [{:path "/some\\path" :name "G1"}])))
+   (testing "With dot in filename"
+     (is (= (g/text->group-specification "/some/path/with.dot => G1")
+            [{:path "/some/path/with.dot" :name "G1"}]))))
 
 (def ^:const entities-in-same-layer [{:entity "Top/A" :rev 1}
                                      {:entity "Top/B" :rev 2}])
