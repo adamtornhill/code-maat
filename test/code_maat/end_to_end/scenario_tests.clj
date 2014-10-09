@@ -110,12 +110,12 @@
 ;;; the behavior here.
 (deftest hg-identity-analysis
   (is (= (run-with-str-output hg-log-file (hg-options "identity"))
-         "author,rev,date,entity\nAPT,2,2013-02-08,/Infrastrucure/Network/Connection.cs\nAPT,2,2013-02-08,/Presentation/Status/ClientPresenter.cs\nXYZ,1,2013-02-07,/Infrastrucure/Network/Connection.cs\n")))
+         "author,rev,date,entity,message\nAPT,2,2013-02-08,/Infrastrucure/Network/Connection.cs,\nAPT,2,2013-02-08,/Presentation/Status/ClientPresenter.cs,\nXYZ,1,2013-02-07,/Infrastrucure/Network/Connection.cs,\n")))
 
 (deftest git-identity-analysis
   "Git included additional churn info."
   (is (= (run-with-str-output git-log-file (git-options "identity"))
-         "loc-deleted,loc-added,author,rev,date,entity\n2,1,APT,2,2013-02-08,/Infrastrucure/Network/Connection.cs\n4,3,APT,2,2013-02-08,/Presentation/Status/ClientPresenter.cs\n2,18,XYZ,1,2013-02-07,/Infrastrucure/Network/Connection.cs\n")))
+         "loc-deleted,loc-added,author,rev,date,entity,message\n2,1,APT,2,2013-02-08,/Infrastrucure/Network/Connection.cs, git: authors and revisions implemented\n4,3,APT,2,2013-02-08,/Presentation/Status/ClientPresenter.cs, git: authors and revisions implemented\n2,18,XYZ,1,2013-02-07,/Infrastrucure/Network/Connection.cs, Report connection status\n")))
 
 (deftest reports-invalid-arguments
   (testing "Non-existent input file"

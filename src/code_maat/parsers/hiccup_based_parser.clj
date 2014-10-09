@@ -55,15 +55,17 @@
   (map file-stats (changes z)))
 
 (defn- make-row-constructor
-  [{:keys [author rev date]} v]
+  [{:keys [author rev date message]} v]
   (let [author-value (author v)
         rev-value (rev v)
-        date-value (date v)]
+        date-value (date v)
+        message-value (message v)]
     (fn [{:keys [name added deleted]}]
       (let [mandatory  {:author author-value
                         :rev rev-value
                         :date date-value
-                        :entity name}
+                        :entity name
+                        :message message-value}
             optional {:loc-added added
                       :loc-deleted deleted}]
         (if (and added deleted)

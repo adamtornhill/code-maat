@@ -47,13 +47,15 @@
            :author "Adam Petersen"
            :rev "990442e"
            :date "2013-08-29"
-           :entity "project.clj"}
+           :entity "project.clj"
+           :message " Adapted the grammar after live tests (git)"}
           {:loc-deleted "4"
            :loc-added "2"
            :author "Adam Petersen"
            :rev "990442e"
            :date "2013-08-29"
-           :entity "src/code_maat/parsers/git.clj"}])))
+           :entity "src/code_maat/parsers/git.clj"
+           :message " Adapted the grammar after live tests (git)"}])))
 
 (deftest parses-entry-with-binary-to-dataset
   "The churn for binary entries are given as a dash (-)."
@@ -63,34 +65,42 @@
            :author "Adam Petersen"
            :rev "990442e"
            :date "2013-11-10"
-           :entity "project.bin"}
+           :entity "project.bin"
+           :message " Testing binary entries"}
           {:loc-deleted "40"
            :loc-added "2"
            :author "Adam Petersen"
            :rev "990442e"
            :date "2013-11-10"
-           :entity "src/code_maat/parsers/git.clj"}])))
+           :entity "src/code_maat/parsers/git.clj"
+           :message " Testing binary entries"}])))
 
 (deftest parses-multiple-entries-to-dataset
   (is (= (git/parse-log entries {})
          [{:loc-deleted "9" :loc-added "10"
            :author "Adam Petersen" :rev "b777738" :date "2013-08-29"
-           :entity "src/code_maat/parsers/git.clj"}
+           :entity "src/code_maat/parsers/git.clj"
+           :message " git: parse merges and reverts too (grammar change)"}
           {:loc-deleted "0" :loc-added "32"
            :author "Adam Petersen" :rev "b777738" :date "2013-08-29"
-           :entity "test/code_maat/parsers/git_test.clj"}
+           :entity "test/code_maat/parsers/git_test.clj"
+           :message " git: parse merges and reverts too (grammar change)"}
           {:loc-deleted "2" :loc-added "6"
            :author "Adam Petersen" :rev "a527b79" :date "2013-08-29"
-           :entity "src/code_maat/parsers/git.clj"}
+           :entity "src/code_maat/parsers/git.clj"
+           :message " git: proper error messages from instaparse"}
           {:loc-deleted "7" :loc-added "0"
            :author "Adam Petersen" :rev "a527b79" :date "2013-08-29"
-           :entity "test/code_maat/end_to_end/scenario_tests.clj"}
+           :entity "test/code_maat/end_to_end/scenario_tests.clj"
+           :message " git: proper error messages from instaparse"}
           {:loc-deleted "0" :loc-added "18",
            :author "Adam Petersen" :rev "a527b79" :date "2013-08-29"
-           :entity "test/code_maat/end_to_end/simple_git.txt"}
+           :entity "test/code_maat/end_to_end/simple_git.txt"
+           :message " git: proper error messages from instaparse"}
           {:loc-deleted "0" :loc-added "21"
            :author "Adam Petersen" :rev "a527b79" :date "2013-08-29"
-           :entity "test/code_maat/end_to_end/svn_live_data_test.clj"}])))
+           :entity "test/code_maat/end_to_end/svn_live_data_test.clj"
+           :message " git: proper error messages from instaparse"}])))
 
 (deftest parses-empty-log-to-empty-dataset
   (is (= (git/parse-log "" {})
