@@ -38,8 +38,16 @@
     nl        =  '\\n'
     ")
 
+(def positional-extractors
+  "Specify a set of functions to extract the parsed values."
+  {:rev #(get-in % [1 1])
+   :author #(get-in % [2 1])
+   :date #(get-in % [3 1])
+   :message (fn [_] "")
+   :changes #(rest (get-in % [4]))})
+
 (defn parse-log
   "Transforms the given input MErcurial log into an
    Incanter dataset suitable for the analysis modules." 
   [input parse-options]
-  (hbp/parse-log input hg-grammar parse-options))
+  (hbp/parse-log input hg-grammar parse-options positional-extractors))

@@ -36,20 +36,7 @@
 ;;;  [:changes
 ;;;   [:file ...]]]
 
-(defn- rev [z]
-  (get-in z [1 1]))
-
-(defn- author [z]
-  (get-in z [2 1]))
-
-(defn- date [z]
-  (get-in z [3 1]))
-
-(defn- changes [z]
-  (rest (get-in z [4])))
-
 (defn- churn-stats? [c]
-  
   (= :change (get-in c [0])))
 
 (defn- file-stats [change]
@@ -64,18 +51,18 @@
      :deleted (get-in change [2 1])}
     {:name (get-in change [1])}))
 
-(defn- files [z]
+(defn- files [{:keys [changes]} z]
   (map file-stats (changes z)))
 
 (defn- make-row-constructor
-  [v]
-  (let [author (author v)
-        rev (rev v)
-        date (date v)]
+  [{:keys [author rev date]} v]
+  (let [author-value (author v)
+        rev-value (rev v)
+        date-value (date v)]
     (fn [{:keys [name added deleted]}]
-      (let [mandatory  {:author author
-                        :rev rev
-                        :date date
+      (let [mandatory  {:author author-value
+                        :rev rev-value
+                        :date date-value
                         :entity name}
             optional {:loc-added added
                       :loc-deleted deleted}]
@@ -86,17 +73,17 @@
 (defn- entry-as-row
   "Transforms one entry (as a hiccup formated vector) into
    a map representing one row in the change information."
-  [v]
-  (let [row-ctor (make-row-constructor v)
-        files (files v)]
+  [field-extractors v]
+  (let [row-ctor (make-row-constructor field-extractors v)
+        files (files field-extractors v)]
     (map row-ctor files)))
 
 (defn parse-log
   "Transforms the given input git log into a
    seq of maps suitable for the analysis modules." 
-  [input grammar parse-options]
+  [input grammar parse-options field-extractors]
   (let [parser (insta/parser grammar)]
     (->>
      input
      (as-grammar-map parser)
-     (mapcat entry-as-row))))
+     (mapcat (partial entry-as-row field-extractors)))))

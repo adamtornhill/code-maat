@@ -31,7 +31,7 @@
    "
     <S>       =   entries
     <entries> =  (entry <nl*>)* | entry
-    entry     =  rev <ws> author <ws> date <message> <nl> changes
+    entry     =  rev <ws> author <ws> date message <nl> changes
     rev       =  <'['> #'[\\da-f]+' <']'>
     author    =  #'.+(?=\\s\\d{4}-)' (* match until the date field *)
     date      =  #'\\d{4}-\\d{2}-\\d{2}'
@@ -47,8 +47,17 @@
     nl        =  '\\n'
     hash      =  #'[\\da-f]+'")
 
+
+(def positional-extractors
+  "Specify a set of functions to extract the parsed values."
+  {:rev #(get-in % [1 1])
+   :author #(get-in % [2 1])
+   :date #(get-in % [3 1])
+   :message #(get-in % [4 1])
+   :changes #(rest (get-in % [5]))})
+
 (defn parse-log
   "Transforms the given input git log into an
    Incanter dataset suitable for the analysis modules." 
   [input parse-options]
-  (hbp/parse-log input git-grammar parse-options))
+  (hbp/parse-log input git-grammar parse-options positional-extractors))
