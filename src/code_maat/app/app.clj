@@ -18,6 +18,7 @@
             [code-maat.analysis.churn :as churn]
             [code-maat.analysis.effort :as effort]
             [code-maat.app.grouper :as grouper]
+            [code-maat.app.time-based-grouper :as time-grouper]
             [code-maat.analysis.communication :as communication]
             [code-maat.analysis.commit-messages :as commits]))
 
@@ -120,13 +121,22 @@
     (grouper/run grouping commits)
     commits))
 
+(defn- aggregate-on-temporal-period
+  "Groups individual commits into aggregates based on
+   the given temporal period. Allows the user to treat
+   all commits during one day as a single, logical change set.
+   NOTE: will probably not work with author's analyses!!!"
+  [options commits]
+  (if (:temporal-period options)
+    (time-grouper/run commits) ; NOTE: we only support group by day for now!
+    commits))
+
 (defn- make-output [options]
   (if-let [n-out-rows (:rows options)]
     #(csv-output/write-to :stream % n-out-rows)
     #(csv-output/write-to :stream %)))
 
 (defn- throw-internal-error [e]
-  (.printStackTrace e)
   (throw (IllegalArgumentException.
           (str "Internal error - please report it. Details = "
                (.getMessage e)))))
@@ -140,6 +150,14 @@
     (catch Exception e
       (throw-internal-error e))))
 
+(defn- parse-commits-to-dataset
+  [vcs-parser logfile-name options]
+  (->>
+   (vcs-parser logfile-name options)
+   (aggregate-on-boundaries options)
+   (aggregate-on-temporal-period options)
+   incanter/to-dataset))
+
 (defn run
   "Runs the application using the given options.
    The options are a map with the following elements:
@@ -148,11 +166,9 @@
     :rows - the max number of results to include"
   [logfile-name options]
   (let [vcs-parser (parser-from options)
-        changes (vcs-parser logfile-name options)
-        aggregated (aggregate-on-boundaries options changes)
-        changes-ds (incanter/to-dataset aggregated)
+        commits (parse-commits-to-dataset vcs-parser logfile-name options)
         analysis (make-analysis options)
         output! (make-output options)]
     (doseq [an-analysis analysis]
-      (run-with-recovery-point an-analysis changes-ds output!))))
+      (run-with-recovery-point an-analysis commits output!))))
   
