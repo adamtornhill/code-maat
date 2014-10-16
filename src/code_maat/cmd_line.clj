@@ -28,6 +28,7 @@
    ["-s" "--max-changeset-size MAX-CHANGESET-SIZE"
     "Maximum number of modules in a change set if it shall be included in a coupling analysis"
     :default 30 :parse-fn #(Integer/parseInt %)]
+   ["-e" "--expression-to-match MATCH-EXPRESSION" "A regex to match against commit messages. Used with -messages analyses"]
    ["-h" "--help"]])
 
 (defn- usage [options-summary]

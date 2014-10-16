@@ -18,7 +18,8 @@
             [code-maat.analysis.churn :as churn]
             [code-maat.analysis.effort :as effort]
             [code-maat.app.grouper :as grouper]
-            [code-maat.analysis.communication :as communication]))
+            [code-maat.analysis.communication :as communication]
+            [code-maat.analysis.commit-messages :as commits]))
 
 ;;; Principles:
 ;;;
@@ -58,7 +59,8 @@
    "main-dev" churn/by-main-developer
    "entity-effort" effort/as-revisions-per-author
    "fragmentation" effort/as-entity-fragmentation
-   "communication" communication/by-shared-entities})
+   "communication" communication/by-shared-entities
+   "messages" commits/by-word-frequency})
    
 (defn- make-analysis
   "Returns a seq of analysis methods closing over the options.
@@ -124,6 +126,7 @@
     #(csv-output/write-to :stream %)))
 
 (defn- throw-internal-error [e]
+  (.printStackTrace e)
   (throw (IllegalArgumentException.
           (str "Internal error - please report it. Details = "
                (.getMessage e)))))
