@@ -1,0 +1,6 @@
+[2] APT 2013-02-08 git: authors and revisions implemented
+1	2	/Infrastrucure/Network/Connection.cs
+3	4	/Presentation/Status/ClientPresenter.cs
+
+[1] XYZ 2013-02-08 Report connection status
+18	2	/Infrastrucure/Network/TcpConnection.cs

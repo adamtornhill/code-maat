@@ -7,7 +7,8 @@
   (:require [code-maat.app.app :as app]
             [code-maat.analysis.test-data :as test-data]
             [code-maat.test.data-driven :as dd])
-  (:use clojure.test))
+  (:use [clojure.test]
+        [code-maat.tools.test-tools]))
 
 ;;; This module contains end-to-end tests running the whole app
 ;;; from fron-end to back-end.
@@ -45,21 +46,6 @@
    test-data/options-with-low-thresholds
    {:version-control "hg"
     :analysis analysis}))
-
-(defn- run-with-str-output [log-file options]
-  (with-out-str
-    (app/run log-file options)))
-
-(defmacro def-data-driven-with-vcs-test
-  "Encapsulates the common pattern of iterating over a data driven
-   test providing a vector of [file options] for each item.
-   The body will execute with the symbols log-file and options bound to
-   the different options in the test-data."
-  [name test-data & body]
-  `(dd/def-dd-test ~name
-     [~'ddval# ~test-data]
-     (let [[~'log-file ~'options] ~'ddval#]
-       ~@body)))
 
 (def-data-driven-with-vcs-test analysis-of-authors
   [[svn-log-file (svn-csv-options "authors")]
