@@ -137,8 +137,6 @@
 
 (def developer first)
 
-(def dev-contrib second)
-
 (defn- as-ownership-ratio
   [own total]
   (->>
@@ -155,25 +153,45 @@
   Should result in:
     [Entity ta 20 2]"
   ([author-contrib]
-     (pick-main-developer author-contrib added-lines))
-  ([[name contribs] metric-fn]
+     (pick-main-developer added-lines author-contrib))
+  ([metric-fn [name contribs]]
      (let [total-contrib (reduce + (map metric-fn contribs))
            main-dev (first (reverse (sort-by metric-fn contribs)))
-           main-dev-contrib (dev-contrib main-dev)
+           main-dev-contrib (metric-fn main-dev)
            ownership-ratio (as-ownership-ratio main-dev-contrib total-contrib)]
        [name (developer main-dev) main-dev-contrib total-contrib ownership-ratio])))
+
+(defn- grouped-by-author-contrib
+  [ds]
+  (throw-on-missing-data ds)
+  (->
+   (ds/-group-by :entity ds)
+   sum-by-author-contrib))
+  
 
 (defn by-main-developer
   "Identifies the main developer of each entity.
    The main developer is the one who has contributed
-   most lines of code (another interesting definition
-   would be the one _removing_ most lines...coming soon)"
+   most lines of code (default case).
+   NOTE: see the alternative algorithm below!"
   [ds options]
-  (throw-on-missing-data ds)
   (->>
-   (ds/-group-by :entity ds)
-   sum-by-author-contrib
+   (grouped-by-author-contrib ds)
    (map pick-main-developer)
    (ds/-dataset [:entity :main-dev :added :total-added :ownership])
+   (ds/-order-by :entity :asc)))
+
+(defn by-refactoring-main-developer
+  "Identifies the main developer of each entity.
+   The main developer in this alternative calculation
+   is the developer that has _removed_ most lines.
+   The idea/speculation is that when you remove code,
+   you make a more active design choice than what can be
+   expected from addition alone. We speak refactoring here."
+  [ds options]
+  (->>
+   (grouped-by-author-contrib ds)
+   (map (partial pick-main-developer removed-lines))
+   (ds/-dataset [:entity :main-dev :removed :total-removed :ownership])
    (ds/-order-by :entity :asc)))
   

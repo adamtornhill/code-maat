@@ -25,6 +25,9 @@
 (ds/def-ds only-removed-lines
   [{:entity "Same" :rev 1 :author "single" :date "2013-11-10" :loc-added "0" :loc-deleted "1"}])
 
+(ds/def-ds only-added-lines
+  [{:entity "Same" :rev 1 :author "single" :date "2013-11-10" :loc-added "1" :loc-deleted "0"}])
+
 (ds/def-ds simple
   [{:entity "A" :rev 1 :author "at" :date "2013-11-10" :loc-added "10" :loc-deleted "1"}
    {:entity "B" :rev 2 :author "ta" :date "2013-11-11" :loc-added "20" :loc-deleted "2"}
@@ -109,3 +112,17 @@
 (deftest ownership-is-none-without-added-lines
   (is (= (churn/by-main-developer only-removed-lines options)
          (as-main-dev-ds [["Same" "single" 0 0 0.00]]))))
+
+;;; Tests of main developer algorithms for a refactoring developer
+
+(defn- as-refactor-ds
+  [v]
+  (ds/-dataset [:entity :main-dev :removed :total-removed :ownership] v))
+
+(deftest identifies-refactoring-developer-on-shared-entities
+  (is (= (churn/by-refactoring-main-developer same-author options)
+         (as-refactor-ds [["A" "at" 6 9 0.67]]))))
+
+(deftest ownership-is-none-without-removed-lines
+  (is (= (churn/by-refactoring-main-developer only-added-lines options)
+         (as-refactor-ds [["Same" "single" 0 0 0.00]]))))

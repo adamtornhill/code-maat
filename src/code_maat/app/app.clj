@@ -58,6 +58,7 @@
    "entity-churn" churn/by-entity
    "entity-ownership" churn/as-ownership
    "main-dev" churn/by-main-developer
+   "refactoring-main-dev" churn/by-refactoring-main-developer
    "entity-effort" effort/as-revisions-per-author
    "fragmentation" effort/as-entity-fragmentation
    "communication" communication/by-shared-entities
