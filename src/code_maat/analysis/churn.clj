@@ -131,9 +131,13 @@
   [[_author added _deleted]]
   added)
 
+(defn- removed-lines
+  [[_author _added deleted]]
+  deleted)
+
 (def developer first)
 
-(def dev-added second)
+(def dev-contrib second)
 
 (defn- as-ownership-ratio
   [own total]
@@ -150,12 +154,14 @@
     [Entity [[ta 20 2] [at 2 0]]]
   Should result in:
     [Entity ta 20 2]"
-  [[name contribs]]
-  (let [total-added (reduce + (map added-lines contribs))
-        main-dev (first (reverse (sort-by added-lines contribs)))
-        main-dev-added (dev-added main-dev)
-        ownership-ratio (as-ownership-ratio main-dev-added total-added)]
-    [name (developer main-dev) main-dev-added total-added ownership-ratio]))
+  ([author-contrib]
+     (pick-main-developer author-contrib added-lines))
+  ([[name contribs] metric-fn]
+     (let [total-contrib (reduce + (map metric-fn contribs))
+           main-dev (first (reverse (sort-by metric-fn contribs)))
+           main-dev-contrib (dev-contrib main-dev)
+           ownership-ratio (as-ownership-ratio main-dev-contrib total-contrib)]
+       [name (developer main-dev) main-dev-contrib total-contrib ownership-ratio])))
 
 (defn by-main-developer
   "Identifies the main developer of each entity.
