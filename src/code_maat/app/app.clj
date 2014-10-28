@@ -128,8 +128,8 @@
    all commits during one day as a single, logical change set.
    NOTE: will probably not work with author's analyses!!!"
   [options commits]
-  (if (:temporal-period options)
-    (time-grouper/run commits) ; NOTE: we only support group by day for now!
+  (if-let [time-period (:temporal-period options)]
+    (time-grouper/run commits time-period)
     commits))
 
 (defn- make-output [options]

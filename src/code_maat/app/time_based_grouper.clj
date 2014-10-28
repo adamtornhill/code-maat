@@ -21,10 +21,20 @@
   (let [date (:date commit)]
     (update-in commit [:rev] (fn [_old] date))))
 
+(defn- throw-on-invalid
+  [time-period]
+  (when (not (= "1" time-period)) ; Let's support more in the future...
+    (throw
+     (IllegalArgumentException.
+      (str "Invalid time-period: the current version only supports one (1) day")))))
+
 (defn run
   "Alright, this is a hack: we just set the commit ID to
    the current date. That makes the rest of the analyses treat
    our faked grouping as beloning to the same change set."
-  [raw-data]
-  (map date-as-commit-id raw-data))
+  ([raw-data]
+     (run raw-data "1"))
+  ([raw-data time-period]
+     (throw-on-invalid time-period)
+     (map date-as-commit-id raw-data)))
   
