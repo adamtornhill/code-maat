@@ -45,3 +45,18 @@
   (is (= (effort/as-entity-fragmentation multi-effort options)
          (ds/-dataset [:entity :fractal-value :total-revs]
                       [["A" 0.67 3]]))))
+
+(ds/def-ds shared-effort
+  [{:entity "A" :rev 1 :author "zt" :date "2013-11-10"}
+   {:entity "A" :rev 2 :author "at" :date "2013-11-11"}
+   {:entity "A" :rev 3 :author "at" :date "2013-11-15"}
+   {:entity "B" :rev 4 :author "xx" :date "2013-11-15"}
+   {:entity "C" :rev 5 :author "x1" :date "2013-11-16"}
+   {:entity "C" :rev 6 :author "x2" :date "2013-11-16"}])
+
+(deftest identifies-main-developer-by-revisions
+  (is (= (effort/as-main-developer-by-revisions shared-effort options)
+         (ds/-dataset [:entity :main-dev :revs :total-revs :ownership]
+                      [["A" "zt" 1  3 0.33]
+                       ["B" "xx" 1  1 1.0]
+                       ["C" "x1" 1  2 0.5]]))))

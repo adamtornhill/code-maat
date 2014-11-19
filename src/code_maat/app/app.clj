@@ -60,6 +60,7 @@
    "main-dev" churn/by-main-developer
    "refactoring-main-dev" churn/by-refactoring-main-developer
    "entity-effort" effort/as-revisions-per-author
+   "main-dev-by-revs" effort/as-main-developer-by-revisions
    "fragmentation" effort/as-entity-fragmentation
    "communication" communication/by-shared-entities
    "messages" commits/by-word-frequency})

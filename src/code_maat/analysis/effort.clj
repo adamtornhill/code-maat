@@ -58,6 +58,30 @@
    (ds/-dataset [:entity :author :author-revs :total-revs])
    (ds/-order-by :entity :asc)))
 
+(defn- contributed-revs
+  [author-changes]
+  (let [[_author added _total] author-changes]
+    added))
+
+(defn- pick-main-dev-by-rev
+  [entity-ds]
+  (let [[entity entity-changes] entity-ds
+        main-dev-changes (first (sort-by contributed-revs entity-changes))
+        [author added total] main-dev-changes
+        ownership (math/ratio->centi-float-precision (/ added total))]
+    [entity author added total ownership]))
+
+(defn as-main-developer-by-revisions
+  "Identifies the main developers, together with their
+   ownership percentage, of each module."
+  [ds options]
+  (->>
+   (ds/-group-by :entity ds)
+   sum-effort-by-author
+   (map pick-main-dev-by-rev)
+   (ds/-dataset [:entity :main-dev :revs :total-revs :ownership])
+   (ds/-order-by :entity :asc)))
+
 (defn- as-author-fractals
   [[_ ai nc]]
   (m/expt (/ ai nc) 2))
