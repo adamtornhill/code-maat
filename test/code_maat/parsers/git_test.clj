@@ -36,6 +36,13 @@
 21	0	test/code_maat/end_to_end/svn_live_data_test.clj
 ")
 
+(def ^:const pull-requests
+  "[0d3de0c] Mr X 2013-01-04 Merge pull request #1841 from adriaanm/rebase-6827-2.10.x
+[77c8751] Mr Y 2013-01-04 SI-6915 Updates copyright properties to 2002-2013
+1	1	build.xml
+1	1	project/Versions.scala
+")
+
 (deftest throws-on-invalid-input
   (is (thrown? IllegalArgumentException
                (git/parse-log "simply not a valid git log here..." {}))))
@@ -48,14 +55,14 @@
            :rev "990442e"
            :date "2013-08-29"
            :entity "project.clj"
-           :message " Adapted the grammar after live tests (git)"}
+           :message "Adapted the grammar after live tests (git)"}
           {:loc-deleted "4"
            :loc-added "2"
            :author "Adam Petersen"
            :rev "990442e"
            :date "2013-08-29"
            :entity "src/code_maat/parsers/git.clj"
-           :message " Adapted the grammar after live tests (git)"}])))
+           :message "Adapted the grammar after live tests (git)"}])))
 
 (deftest parses-entry-with-binary-to-dataset
   "The churn for binary entries are given as a dash (-)."
@@ -66,42 +73,62 @@
            :rev "990442e"
            :date "2013-11-10"
            :entity "project.bin"
-           :message " Testing binary entries"}
+           :message "Testing binary entries"}
           {:loc-deleted "40"
            :loc-added "2"
            :author "Adam Petersen"
            :rev "990442e"
            :date "2013-11-10"
            :entity "src/code_maat/parsers/git.clj"
-           :message " Testing binary entries"}])))
+           :message "Testing binary entries"}])))
 
 (deftest parses-multiple-entries-to-dataset
   (is (= (git/parse-log entries {})
          [{:loc-deleted "9" :loc-added "10"
            :author "Adam Petersen" :rev "b777738" :date "2013-08-29"
            :entity "src/code_maat/parsers/git.clj"
-           :message " git: parse merges and reverts too (grammar change)"}
+           :message "git: parse merges and reverts too (grammar change)"}
           {:loc-deleted "0" :loc-added "32"
            :author "Adam Petersen" :rev "b777738" :date "2013-08-29"
            :entity "test/code_maat/parsers/git_test.clj"
-           :message " git: parse merges and reverts too (grammar change)"}
+           :message "git: parse merges and reverts too (grammar change)"}
           {:loc-deleted "2" :loc-added "6"
            :author "Adam Petersen" :rev "a527b79" :date "2013-08-29"
            :entity "src/code_maat/parsers/git.clj"
-           :message " git: proper error messages from instaparse"}
+           :message "git: proper error messages from instaparse"}
           {:loc-deleted "7" :loc-added "0"
            :author "Adam Petersen" :rev "a527b79" :date "2013-08-29"
            :entity "test/code_maat/end_to_end/scenario_tests.clj"
-           :message " git: proper error messages from instaparse"}
+           :message "git: proper error messages from instaparse"}
           {:loc-deleted "0" :loc-added "18",
            :author "Adam Petersen" :rev "a527b79" :date "2013-08-29"
            :entity "test/code_maat/end_to_end/simple_git.txt"
-           :message " git: proper error messages from instaparse"}
+           :message "git: proper error messages from instaparse"}
           {:loc-deleted "0" :loc-added "21"
            :author "Adam Petersen" :rev "a527b79" :date "2013-08-29"
            :entity "test/code_maat/end_to_end/svn_live_data_test.clj"
-           :message " git: proper error messages from instaparse"}])))
+           :message "git: proper error messages from instaparse"}])))
 
 (deftest parses-empty-log-to-empty-dataset
   (is (= (git/parse-log "" {})
          [])))
+
+(deftest parses-pull-requests
+  "Regression test for a parse bug: there was ambiguity in the grammar and
+  we failed to parse a message correctly when it contained a date on the
+  same format as the one we expect in the real date field."
+  (is (= (git/parse-log pull-requests {})
+         [{:loc-deleted "1"
+           :loc-added "1"
+           :author "Mr Y"
+           :rev "77c8751"
+           :date "2013-01-04"
+           :entity "build.xml"
+           :message "SI-6915 Updates copyright properties to 2002-2013"}
+          {:loc-deleted "1"
+           :loc-added "1"
+           :author "Mr Y"
+           :rev "77c8751"
+           :date "2013-01-04"
+           :entity "project/Versions.scala"
+           :message "SI-6915 Updates copyright properties to 2002-2013"}])))

@@ -16,7 +16,7 @@
                  [clj-time "0.8.0"]
                  [org.clojure/math.numeric-tower "0.0.4"]
                  [org.clojure/math.combinatorics "0.0.8"]
-                 [instaparse "1.3.3"]]
+                 [instaparse "1.3.4"]]
   :main code-maat.cmd-line
   :aot [code-maat.cmd-line]
   :jvm-opts ["-Xmx4g" "-Djava.awt.headless=true" "-Xss512M"])
