@@ -87,13 +87,17 @@
    Returns an Incanter dataset with the number of lines
    added and deleted each day (note that only dates wich
    involved commits are considered)."
-  [ds options]
-  (churn-by :date ds options))
+  [commits options]
+  (->>
+  (churn-by :date commits options)
+  (ds/-order-by [:date :added :deleted] :asc)))
 
 (defn by-author
   "Sums the total churn for each contributing author."
-  [ds options]
-  (churn-by :author ds options))
+  [commits options]
+  (->>
+   (churn-by :author commits options)
+   (ds/-order-by [:author :added] :asc)))
 
 (defn by-entity
   "Returns the absolute churn of each entity.

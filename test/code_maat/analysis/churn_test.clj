@@ -29,8 +29,8 @@
   [{:entity "Same" :rev 1 :author "single" :date "2013-11-10" :loc-added "1" :loc-deleted "0"}])
 
 (ds/def-ds simple
-  [{:entity "A" :rev 1 :author "at" :date "2013-11-10" :loc-added "10" :loc-deleted "1"}
-   {:entity "B" :rev 2 :author "ta" :date "2013-11-11" :loc-added "20" :loc-deleted "2"}
+  [{:entity "B" :rev 2 :author "ta" :date "2013-11-11" :loc-added "20" :loc-deleted "2"}
+   {:entity "A" :rev 1 :author "at" :date "2013-11-10" :loc-added "10" :loc-deleted "1"}
    {:entity "B" :rev 3 :author "at" :date "2013-11-11" :loc-added "2" :loc-deleted "0"}])
 
 (ds/def-ds same-author
