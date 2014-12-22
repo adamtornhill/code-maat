@@ -2,11 +2,11 @@
 
 Code Maat is a command line tool used to mine and analyze data from version-control systems (VCS).
 
+Code Maat was developed to accompany the discussions in my book [Your Code as a Crime Scene](http://pragprog.com/book/atcrime/code-as-a-crime-scene). In case you're interested in repository mining, check-out the book [here](http://pragprog.com/book/atcrime/code-as-a-crime-scene).
+
 ## The ideas behind Code Maat
 
 To understand large-scale software systems we need to look at their evolution. The history of our system provides us with data we cannot derive from a single snapshot of the source code. Instead VCS data blends technical, social and organizational information along a temporal axis that let us map out our interaction patterns in the code. Analyzing these patterns gives us early warnings on potential design issues and development bottlenecks, as well as suggesting new modularities based on actual interactions with the code. Addressing these issues saves costs, simplifies maintenance and let us evolve our systems in the direction of how we actually work with the code.
-
-Code Maat was developed to accompany the discussions in my upcoming book [Code as a Crime Scene](http://pragprog.com/book/atcrime/code-as-a-crime-scene).
 
 ### About the name
 
@@ -76,6 +76,10 @@ When invoked with `-h`, Code Maat prints its usage:
              -i, --min-coupling MIN-COUPLING        50       Minimum degree of coupling (in percentage) to consider
              -x, --max-coupling MAX-COUPLING        100      Maximum degree of coupling (in percentage) to consider
              -h, --help
+
+### Optional: specify an encoding
+
+By default, Code Maat expects your log files to be UTF-8. If you use another encoding, override the default with `--input-encoding`, for example `--input-encoding UTF-16BE`.
 
 #### Generating a summary
 
