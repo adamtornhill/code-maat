@@ -13,7 +13,7 @@
   [["-l" "--log LOG" "Log file with input data"]
    ["-c" "--version-control VCS" "Input vcs module type: supports svn, git or hg"]
    ["-a" "--analysis ANALYSIS"
-    "The analysis to run (authors, revisions, coupling, soc, summary, churn, identity)"
+    "The analysis to run (authors, revisions, coupling, soc, summary, churn, identity, etc)"
     :default "authors"]
    ["-r" "--rows ROWS" "Max rows in output" :parse-fn #(Integer/parseInt %)]
    ["-g" "--group GROUP" "A file with a pre-defined set of layers. The data will be aggregated according to the group of layers."]
@@ -36,7 +36,7 @@
 (defn- usage [options-summary]
   (->> ["This is Code Maat, a program used to collect statistics from a VCS."
         ""
-        "Usage: program-name log-file [options]"
+        "Usage: program-name -l log-file [options]"
         ""
         "Options:"
         options-summary
