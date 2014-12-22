@@ -84,10 +84,18 @@
       (throw (IllegalArgumentException.
               (str vcs-name ": Failed to parse the given file - is it a valid logfile?"))))))
 
+(defn- slurp-encoded
+  [logfile-name options]
+  (if-let [encoding (:input-encoding options)]
+    (slurp logfile-name :encoding encoding)
+    (slurp logfile-name)))
+  
 (defn- hg->modifications
   [logfile-name options]
   (run-parser-in-error-handling-context
-   #(-> logfile-name slurp (hg/parse-log options))
+   #(->
+     (slurp-encoded logfile-name options)
+     (hg/parse-log options))
    "Mercurial"))
 
 (defn- svn-xml->modifications
@@ -99,7 +107,9 @@
 (defn- git->modifications
   [logfile-name options]
   (run-parser-in-error-handling-context
-   #(-> logfile-name slurp (git/parse-log options))
+   #(->
+     (slurp-encoded logfile-name options)
+     (git/parse-log options))
    "git"))
   
 (defn- parser-from
