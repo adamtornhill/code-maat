@@ -1,4 +1,4 @@
-;;; Copyright (C) 2013 Adam Tornhill
+;;; Copyright (C) 2013-2015 Adam Tornhill
 ;;;
 ;;; Distributed under the GNU General Public License v3.0,
 ;;; see http://www.gnu.org/licenses/gpl.html
@@ -67,13 +67,12 @@
    "messages" commits/by-word-frequency})
    
 (defn- make-analysis
-  "Returns a seq of analysis methods closing over the options.
-   Each analysis method takes a single data set as argument."
+  "Returns the analysis to run while closing over the options.
+   Each returned analysis method takes a single data set as argument."
   [options]
   (if-let [analysis (supported-analysis (options :analysis))]
-    [#(analysis % options)]
-    (map (fn [a] #(a % options))
-         (vals supported-analysis)))) ; :all
+    #(analysis % options)
+    #(supported-analysis "authors")))
 
 (defn- run-parser-in-error-handling-context
   [parse-fn vcs-name]
@@ -104,7 +103,6 @@
    #(-> logfile-name xml/file->zip (svn/zip->modification-sets options))
    "svn"))
 
-;;; TODO: encoding
 (defn- git->modifications
   [logfile-name options]
   (run-parser-in-error-handling-context
@@ -189,6 +187,5 @@
         commits (parse-commits-to-dataset vcs-parser logfile-name options)
         analysis (make-analysis options)
         output! (make-output options)]
-    (doseq [an-analysis analysis]
-      (run-with-recovery-point an-analysis commits output!))))
+      (run-with-recovery-point analysis commits output!)))
   
