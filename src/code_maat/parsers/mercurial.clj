@@ -15,7 +15,8 @@
 ;;; The command above uses Mercurial's templating system to format an
 ;;; output with each file in the changeset separated by newlines.
 ;;;
-;;; Ouput: An incanter dataset with the following columns:
+;;; Ouput: An sequence of maps where each map represents a change
+;;;        entry with the following keyes:
 ;;;   :entity :date :author :rev
 ;;; where
 ;;;  :entity -> the changed entity as a string
@@ -24,10 +25,9 @@
 ;;;  :rev -> revision from Mercurial
 
 (def ^:const hg-grammar
-  "Here's the instaparse grammar for a Mercurial log-file."
+  "Here's the instaparse grammar for a Mercurial log entry.
+   Note that we parse the entries one by one (Instaparse memory optimization)."
    "
-    <S>       =   entries
-    <entries> =  (entry <nl*>)* | entry
     entry     =  rev <ws> author <ws> date <ws> changes
     rev       =  <'rev: '> #'\\d+'
     author    =  <'author: '> #'.+(?=\\sdate:\\s\\d{4}-)' (* match until the date field *)
@@ -46,8 +46,12 @@
    :message (fn [_] "")
    :changes #(rest (get-in % [4]))})
 
+(defn is-prelude
+  [line]
+  (re-find #"rev: \d+ author: .+(?=\sdate:\s\d{4}-)" line))
+
 (defn parse-log
   "Transforms the given input MErcurial log into an
    Incanter dataset suitable for the analysis modules." 
-  [input parse-options]
-  (hbp/parse-log input hg-grammar parse-options positional-extractors))
+  [input-file-name options]
+  (hbp/parse-log input-file-name options hg-grammar positional-extractors is-prelude))

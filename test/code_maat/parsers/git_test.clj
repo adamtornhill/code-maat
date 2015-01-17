@@ -43,12 +43,12 @@
 1	1	project/Versions.scala
 ")
 
-(deftest throws-on-invalid-input
-  (is (thrown? IllegalArgumentException
-               (git/parse-log "simply not a valid git log here..." {}))))
+(defn- parse
+  [text]
+  (git/parse-read-log text {}))
 
 (deftest parses-single-entry-to-dataset
-  (is (= (git/parse-log entry {})
+  (is (= (parse entry)
          [{:loc-deleted "0"
            :loc-added "1"
            :author "Adam Petersen"
@@ -66,7 +66,7 @@
 
 (deftest parses-entry-with-binary-to-dataset
   "The churn for binary entries are given as a dash (-)."
-  (is (= (git/parse-log binary-entry {})
+  (is (= (parse binary-entry)
          [{:loc-deleted "-"
            :loc-added "-"
            :author "Adam Petersen"
@@ -83,7 +83,7 @@
            :message "Testing binary entries"}])))
 
 (deftest parses-multiple-entries-to-dataset
-  (is (= (git/parse-log entries {})
+  (is (= (parse entries)
          [{:loc-deleted "9" :loc-added "10"
            :author "Adam Petersen" :rev "b777738" :date "2013-08-29"
            :entity "src/code_maat/parsers/git.clj"
@@ -110,25 +110,25 @@
            :message "git: proper error messages from instaparse"}])))
 
 (deftest parses-empty-log-to-empty-dataset
-  (is (= (git/parse-log "" {})
+  (is (= (parse "")
          [])))
 
 (deftest parses-pull-requests
   "Regression test for a parse bug: there was ambiguity in the grammar and
   we failed to parse a message correctly when it contained a date on the
   same format as the one we expect in the real date field."
-  (is (= (git/parse-log pull-requests {})
+  (is (= (parse pull-requests)
          [{:loc-deleted "1"
            :loc-added "1"
-           :author "Mr Y"
-           :rev "77c8751"
+           :author "Mr X"
+           :rev "0d3de0c"
            :date "2013-01-04"
            :entity "build.xml"
-           :message "SI-6915 Updates copyright properties to 2002-2013"}
+           :message "Merge pull request #1841 from adriaanm/rebase-6827-2.10.x"}
           {:loc-deleted "1"
            :loc-added "1"
-           :author "Mr Y"
-           :rev "77c8751"
+           :author "Mr X"
+           :rev "0d3de0c"
            :date "2013-01-04"
            :entity "project/Versions.scala"
-           :message "SI-6915 Updates copyright properties to 2002-2013"}])))
+           :message "Merge pull request #1841 from adriaanm/rebase-6827-2.10.x"}])))
