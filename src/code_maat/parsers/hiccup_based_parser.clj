@@ -175,13 +175,19 @@
       (as-entry-tokens parse-fn token-filter-fn)
       (mapcat (partial entry-as-row field-extractors)))))
 
+(defn- encoding-from
+  [options]
+  (get options :input-encoding "UTF-8"))
+
 (defn parse-log
   "Transforms the given input git log into a
    seq of maps suitable for the analysis modules."
   ([input-file-name options grammar field-extractors]
      (parse-log input-file-name options grammar field-extractors identity))
   ([input-file-name options grammar field-extractors token-filter-fn]
-     (with-open [rdr (clojure.java.io/reader input-file-name)] ; TODO: encoding!
+     (with-open [rdr (clojure.java.io/reader
+                      input-file-name
+                      :encoding (encoding-from options))]
        (parse-from rdr grammar field-extractors token-filter-fn))))
 
 (defn parse-read-log
