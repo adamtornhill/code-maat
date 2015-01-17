@@ -89,13 +89,12 @@
   (if-let [encoding (:input-encoding options)]
     (slurp logfile-name :encoding encoding)
     (slurp logfile-name)))
-  
+
+;;; TODO: encoding
 (defn- hg->modifications
   [logfile-name options]
   (run-parser-in-error-handling-context
-   #(->
-     (slurp-encoded logfile-name options)
-     (hg/parse-log options))
+   #(hg/parse-log logfile-name options)
    "Mercurial"))
 
 (defn- svn-xml->modifications
@@ -104,12 +103,11 @@
    #(-> logfile-name xml/file->zip (svn/zip->modification-sets options))
    "svn"))
 
+;;; TODO: encoding
 (defn- git->modifications
   [logfile-name options]
   (run-parser-in-error-handling-context
-   #(->
-     (slurp-encoded logfile-name options)
-     (git/parse-log options))
+   #(git/parse-log logfile-name options)
    "git"))
   
 (defn- parser-from

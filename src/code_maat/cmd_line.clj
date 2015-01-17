@@ -62,6 +62,7 @@
     (try
       (app/run (:log options) options)
       (flush)
-      (catch Exception e ; this is our main recovery point, errors propagate transparently to here
+      (catch Exception e ; this is our main recovery point
+        (.printStackTrace e)
         (println "Error: " (.getMessage e))
         (exit 1 (usage summary))))))
