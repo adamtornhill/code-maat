@@ -120,15 +120,16 @@
   (is (= (parse pull-requests)
          [{:loc-deleted "1"
            :loc-added "1"
-           :author "Mr X"
-           :rev "0d3de0c"
+           :author "Mr Y"
+           :rev "77c8751"
            :date "2013-01-04"
            :entity "build.xml"
-           :message "Merge pull request #1841 from adriaanm/rebase-6827-2.10.x"}
+           :message "SI-6915 Updates copyright properties to 2002-2013"}
           {:loc-deleted "1"
            :loc-added "1"
-           :author "Mr X"
-           :rev "0d3de0c"
+           :author "Mr Y"
+           :rev "77c8751"
            :date "2013-01-04"
            :entity "project/Versions.scala"
-           :message "Merge pull request #1841 from adriaanm/rebase-6827-2.10.x"}])))
+           :message "SI-6915 Updates copyright properties to 2002-2013"}])))
+
