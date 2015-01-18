@@ -46,12 +46,8 @@
    :message (fn [_] "")
    :changes #(rest (get-in % [4]))})
 
-(defn is-prelude
-  [line]
-  (re-find #"rev: \d+ author: .+(?=\sdate:\s\d{4}-)" line))
-
 (defn parse-log
   "Transforms the given input MErcurial log into an
    Incanter dataset suitable for the analysis modules." 
   [input-file-name options]
-  (hbp/parse-log input-file-name options hg-grammar positional-extractors is-prelude))
+  (hbp/parse-log input-file-name options hg-grammar positional-extractors))

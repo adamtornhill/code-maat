@@ -48,58 +48,41 @@
    (entry-seq-as-string entry-token)
    parse-fn))
 
-(defn- remove-dup-preludes-matching
-  "Some log entries (i.e. Git pull requests) may
-   contain several preludes to the same changes.
-   We could handle those in different ways. I chose
-   to just keep the first of those preludes and
-   drop the rest.
-   FYI a prelude typically refers to the commit and
-   author infor."
-  [token-filter-fn line-as-seq]
-  (let [[maybe-duplicates the-rest]
-        (split-with (fn [[line]]
-                      (token-filter-fn line))
-                    line-as-seq)]
-    (into [(first maybe-duplicates)] the-rest)))
-
 (defn- parse-entry-from
-  [line-as-seq parse-fn token-filter-fn]
+  [line-as-seq parse-fn]
   (->
-   (remove-dup-preludes-matching token-filter-fn line-as-seq)
-   as-entry-token
+   (as-entry-token line-as-seq)
    (parse-entry parse-fn)))
 
 (defn- extend-when-complete
   "Keep each line wrapped in its own vector so that
    we're able to join them with a delimiter for the grammar."
-  [entries next-line entry-acc parse-fn token-filter-fn]
+  [entries next-line entry-acc parse-fn]
   (if (s/blank? next-line)
-    [(conj entries (parse-entry-from entry-acc parse-fn token-filter-fn)) []]
+    [(conj entries (parse-entry-from entry-acc parse-fn)) []]
     [entries (conj entry-acc [next-line])]))
 
 (defn- complete-the-rest-in
   "Constructs the final entry in the version-control log.
    The entries are separated by a blank line _except_ for
    the last one that doesn't get a trailing newline."
-  [entry-acc entries parse-fn token-filter-fn]
+  [entry-acc entries parse-fn]
   (if (empty? entry-acc)
     entries
-    (conj entries (parse-entry-from entry-acc parse-fn token-filter-fn))))
+    (conj entries (parse-entry-from entry-acc parse-fn))))
 
 (defn as-entry-tokens
-  [parse-fn token-filter-fn lines]
+  [parse-fn lines]
   (loop [lines-left lines
          entry-acc []
          entries []]
     (if (empty? lines-left)
-      (complete-the-rest-in entry-acc entries parse-fn token-filter-fn)
+      (complete-the-rest-in entry-acc entries parse-fn)
       (let [next-line (first lines-left)
             [updated-entries updated-acc]  (extend-when-complete entries
                                                                  next-line
                                                                  entry-acc
-                                                                 parse-fn
-                                                                 token-filter-fn)]
+                                                                 parse-fn)]
         (recur (rest lines-left) updated-acc updated-entries)))))
   
 ;;
@@ -167,12 +150,12 @@
 
 (defn- parse-from
   "Expected to be invoked in a with-open context."
-  [rdr grammar field-extractors token-filter-fn]
+  [rdr grammar field-extractors]
    (let [specific-parser (insta/parser grammar)
          parse-fn (partial parse-with specific-parser)]
      (->>
       (line-seq rdr)
-      (as-entry-tokens parse-fn token-filter-fn)
+      (as-entry-tokens parse-fn)
       (mapcat (partial entry-as-row field-extractors)))))
 
 (defn- encoding-from
@@ -182,17 +165,13 @@
 (defn parse-log
   "Transforms the given input git log into a
    seq of maps suitable for the analysis modules."
-  ([input-file-name options grammar field-extractors]
-     (parse-log input-file-name options grammar field-extractors identity))
-  ([input-file-name options grammar field-extractors token-filter-fn]
-     (with-open [rdr (clojure.java.io/reader
-                      input-file-name
-                      :encoding (encoding-from options))]
-       (parse-from rdr grammar field-extractors token-filter-fn))))
+  [input-file-name options grammar field-extractors]
+  (with-open [rdr (clojure.java.io/reader
+                   input-file-name
+                   :encoding (encoding-from options))]
+    (parse-from rdr grammar field-extractors)))
 
 (defn parse-read-log
-  ([log-text options grammar field-extractors]
-     (parse-read-log log-text options grammar field-extractors identity))
-  ([log-text options grammar field-extractors token-filter-fn]
-     (with-open [rdr (BufferedReader. (StringReader. log-text))]
-       (parse-from rdr grammar field-extractors token-filter-fn))))
+  [log-text options grammar field-extractors]
+  (with-open [rdr (BufferedReader. (StringReader. log-text))]
+    (parse-from rdr grammar field-extractors)))

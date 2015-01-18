@@ -31,7 +31,7 @@
    To calculate churn, we parse the lines added/deleted too.
    That info is added b the numstat argument."
   "
-    entry     = prelude changes
+    entry     = <prelude*> prelude changes (* covers pull requests *)
     <prelude> = rev <ws> author <ws> date <ws> message <nl>
     rev       =  <'['> #'[\\da-f]+' <']'>
     author    =  #'.+(?=\\s\\d{4}-\\d{2}-\\d{2})' (* match until the date field *)
@@ -55,10 +55,6 @@
    :message #(get-in % [4 1])
    :changes #(rest (get-in % [5]))})
 
-(defn is-prelude
-  [line]
-  (re-find #"\[[\da-f]+\]\s.+(?=\s\d{4}-\d{2}-\d{2})" line))
-
 (defn parse-log
   "Transforms the given input git log into an
    Incanter dataset suitable for the analysis modules." 
@@ -66,13 +62,11 @@
   (hbp/parse-log input-file-name
                  options
                  git-grammar
-                 positional-extractors
-                 is-prelude))
+                 positional-extractors))
 
 (defn parse-read-log
   [input-text options]
   (hbp/parse-read-log input-text
                       options
                       git-grammar
-                      positional-extractors
-                      is-prelude))
+                      positional-extractors))
