@@ -7,7 +7,7 @@
   (:require [code-maat.parsers.svn :as svn]
             [code-maat.parsers.git :as git]
             [code-maat.parsers.mercurial :as hg]
-            [code-maat.parsers.perforce :as perforce]
+            [code-maat.parsers.perforce :as p4]
             [code-maat.parsers.xml :as xml]
             [incanter.core :as incanter]
             [code-maat.output.csv :as csv-output]
@@ -113,13 +113,13 @@
      (git/parse-log options))
    "git"))
 
-(defn- perforce->modifications
+(defn- p4->modifications
   [logfile-name options]
   (run-parser-in-error-handling-context
    #(->
      (slurp-encoded logfile-name options)
-     (perforce/parse-log options))
-   "perforce"))
+     (p4/parse-log options))
+   "Perforce"))
   
 (defn- parser-from
   [{:keys [version-control]}]
@@ -127,10 +127,10 @@
     "svn" svn-xml->modifications
     "git" git->modifications
     "hg"  hg->modifications
-    "perforce"  perforce->modifications
+    "p4"  p4->modifications
     (throw (IllegalArgumentException.
             (str "Invalid --version-control specified: " version-control
-                 ". Supported options are: svn, git, hg or perforce.")))))
+                 ". Supported options are: svn, git, hg, or p4.")))))
 
 (defn- aggregate-on-boundaries
   "The individual changes may be aggregated into layers
