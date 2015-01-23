@@ -52,7 +52,7 @@ To analyze our VCS data we need to define a temporal period of interest. Over ti
 
 #### Generate a Perforce log file using the following command:
 
-          p4 changes -s submitted -m 5000 //depot/project/... | cut -d ' ' -f 2 | xargs -n1 p4 describe -s
+          p4 changes -s submitted -m 5000 //depot/project/... | cut -d ' ' -f 2 | xargs -I commitid -n1 sh -c 'p4 describe -s commitid | grep -v "^\s*$" && echo ""'
 
 ### Running Code Maat
 

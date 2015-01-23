@@ -112,9 +112,7 @@
 (defn- p4->modifications
   [logfile-name options]
   (run-parser-in-error-handling-context
-   #(->
-     (slurp-encoded logfile-name options)
-     (p4/parse-log options))
+   #(p4/parse-log logfile-name options)
    "Perforce"))
   
 (defn- parser-from

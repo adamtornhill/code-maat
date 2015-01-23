@@ -10,37 +10,30 @@
 
 (def ^:const entry
   "Change 1108116 by user1@client on 2014/12/19 14:40:17
-
 	Fix Stuff.
 	       More comments
-
 Affected files ...
-
-... //depot/project/Makefile#3 edit
-")
+... //depot/project/Makefile#3 edit")
 
 (def ^:const entries
   "Change 1108116 by user1@client on 2014/12/19 14:40:17
-
 	Fix Stuff.
 	       More comments
-
 Affected files ...
-
 ... //depot/project/Makefile#3 edit
 
 Change 1108117 by user2@client on 2014/12/19 15:41:18
-
 	Fix More Stuff.
 	       More comments
-
 Affected files ...
+... //depot/project/meta/recipes-core/udev/udev-extraconf/mount.blacklist#2 edit")
 
-... //depot/project/meta/recipes-core/udev/udev-extraconf/mount.blacklist#2 edit
-")
+(defn- parse
+  [text]
+  (p4/parse-read-log text {}))
 
 (deftest parses-single-entry-to-dataset
-  (is (= (p4/parse-log entry {})
+  (is (= (parse entry)
         [{:author "user1"
           :rev "1108116"
           :date "2014/12/19"
@@ -49,7 +42,7 @@ Affected files ...
          ])))
 
 (deftest parses-multiple-entries-to-dataset
-  (is (= (p4/parse-log entries {})
+  (is (= (parse entries)
         [{:author "user1"
           :rev "1108116"
           :date "2014/12/19"
@@ -62,10 +55,6 @@ Affected files ...
           :message ""}
          ])))
 
-(deftest throws-on-invalid-input
-  (is (thrown? IllegalArgumentException
-        (p4/parse-log "simply not a valid perforce log here..." {}))))
-
 (deftest parses-empty-log-to-empty-dataset
-  (is (= (p4/parse-log "" {})
+  (is (= (parse "")
         [])))
