@@ -1,0 +1,20 @@
+Change 1113831 by user@client on 2015/01/20 16:15:09
+	HM-2797 Some comment +review HMR
+Affected files ...
+... //depot/stream/src/something/else/Command.cpp#9 edit
+... //depot/stream/src/something/else/animal/Fwd.hpp#15 edit
+... //depot/stream/src/something/else/mineral/BeginCmd.cpp#9 edit
+... //depot/stream/src/something/else/mineral/Xml.cpp#29 edit
+... //depot/stream/src/something/else/mineral/Xml.hpp#25 edit
+... //depot/stream/test/something/else/mineral/Test_Begin.cpp#9 edit
+
+Change 1113724 by user@client on 2015/01/20 10:37:58
+	HM-2728 white space +review HMR-319
+Affected files ...
+... //depot/stream/src/something/else/mineral/SweepCmd.cpp#13 edit
+... //depot/stream/src/something/else/mineral/SweepCmd.hpp#9 edit
+
+Change 1113715 by user@client on 2015/01/20 10:07:03
+	HM-2728 Removed unnecessary include
+Affected files ...
+... //depot/stream/src/something/else/animal/Init.cpp#44 edit
