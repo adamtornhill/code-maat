@@ -1,0 +1,10 @@
+Change 2 by APT@client on 2013/02/08 16:15:09
+	Comments for 2
+Affected files ...
+... //depot/project/Infrastrucure/Network/Connection.cs#9 edit
+... //depot/project/Presentation/Status/ClientPresenter.cs#15 edit
+
+Change 1 by XYZ@client on 2013/02/07 10:37:58
+	HM-2728 white space +review HMR-319
+Affected files ...
+... //depot/project/Infrastrucure/Network/Connection.cs#13 edit

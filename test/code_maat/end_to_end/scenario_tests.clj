@@ -21,10 +21,12 @@
 (def ^:const svn-log-file "./test/code_maat/end_to_end/simple.xml")
 (def ^:const git-log-file "./test/code_maat/end_to_end/simple_git.txt")
 (def ^:const hg-log-file "./test/code_maat/end_to_end/simple_hg.txt")
+(def ^:const p4-log-file "./test/code_maat/end_to_end/simple_p4.txt")
 
 (def ^:const empty-log-file "./test/code_maat/end_to_end/empty.xml")
 (def ^:const empty-git-file "./test/code_maat/end_to_end/empty.git")
 (def ^:const empty-hg-file "./test/code_maat/end_to_end/empty.hg")
+(def ^:const empty-p4-file "./test/code_maat/end_to_end/empty.p4")
 
 (defn- svn-csv-options
   [analysis]
@@ -47,9 +49,17 @@
    {:version-control "hg"
     :analysis analysis}))
 
+(defn- p4-options
+  [analysis]
+   (merge
+   test-data/options-with-low-thresholds
+   {:version-control "p4"
+    :analysis analysis}))
+
 (def-data-driven-with-vcs-test analysis-of-authors
   [[svn-log-file (svn-csv-options "authors")]
    [git-log-file (git-options "authors")]
+   [p4-log-file (p4-options "authors")]
    [hg-log-file (hg-options "authors")]]
   (is (= (run-with-str-output log-file options)
          "entity,n-authors,n-revs\n/Infrastrucure/Network/Connection.cs,2,2\n/Presentation/Status/ClientPresenter.cs,1,1\n")))
@@ -57,6 +67,7 @@
 (def-data-driven-with-vcs-test analysis-of-revisions
   [[svn-log-file (svn-csv-options "revisions")]
    [git-log-file (git-options "revisions")]
+   [p4-log-file (p4-options "revisions")]
    [hg-log-file (hg-options "revisions")]]
   (is (= (run-with-str-output log-file options)
          "entity,n-revs\n/Infrastrucure/Network/Connection.cs,2\n/Presentation/Status/ClientPresenter.cs,1\n")))
@@ -64,6 +75,7 @@
 (def-data-driven-with-vcs-test analysis-of-coupling
   [[svn-log-file (svn-csv-options "coupling")]
    [git-log-file (git-options "coupling")]
+   [p4-log-file (p4-options "coupling")]
    [hg-log-file (hg-options "coupling")]]
   (is (= (run-with-str-output log-file options)
          "entity,coupled,degree,average-revs\n/Infrastrucure/Network/Connection.cs,/Presentation/Status/ClientPresenter.cs,66,2\n")))
@@ -71,6 +83,7 @@
 (def-data-driven-with-vcs-test analysis-of-effort
   [[svn-log-file (svn-csv-options "entity-effort")]
    [git-log-file (git-options "entity-effort")]
+   [p4-log-file (p4-options "entity-effort")]
    [hg-log-file (hg-options "entity-effort")]]
   (is (= (run-with-str-output log-file options)
          "entity,author,author-revs,total-revs\n/Infrastrucure/Network/Connection.cs,APT,1,2\n/Infrastrucure/Network/Connection.cs,XYZ,1,2\n/Presentation/Status/ClientPresenter.cs,APT,1,1\n")))
@@ -78,6 +91,7 @@
 (def-data-driven-with-vcs-test analysis-of-communication
   [[svn-log-file (svn-csv-options "communication")]
    [git-log-file (git-options "communication")]
+   [p4-log-file (p4-options "communication")]
    [hg-log-file (hg-options "communication")]]
   (is (= (run-with-str-output log-file options)
          "author,peer,shared,average,strength\nXYZ,APT,1,2,50\nAPT,XYZ,1,2,50\n")))
@@ -90,13 +104,17 @@
   (is (= (run-with-str-output svn-log-file (svn-csv-options "identity"))
          "entity,date,author,action,rev\n/Infrastrucure/Network/Connection.cs,2013-02-08T11:46:13.844538Z,APT,M,2\n/Presentation/Status/ClientPresenter.cs,2013-02-08T11:46:13.844538Z,APT,M,2\n/Infrastrucure/Network/Connection.cs,2013-02-07T11:46:13.844538Z,XYZ,M,1\n")))
 
-;;; The git and Mercurical parsers do not include the
+;;; The git, Mercurical, and Perforce parsers do not include the
 ;;; 'action' tag that we have in the current SVN data.
 ;;; I'm likely to add it later. For now, just document
 ;;; the behavior here.
 (deftest hg-identity-analysis
   (is (= (run-with-str-output hg-log-file (hg-options "identity"))
          "author,rev,date,entity,message\nAPT,2,2013-02-08,/Infrastrucure/Network/Connection.cs,\nAPT,2,2013-02-08,/Presentation/Status/ClientPresenter.cs,\nXYZ,1,2013-02-07,/Infrastrucure/Network/Connection.cs,\n")))
+
+(deftest p4-identity-analysis
+  (is (= (run-with-str-output p4-log-file (p4-options "identity"))
+         "author,rev,date,entity,message\nAPT,2,2013/02/08,/Infrastrucure/Network/Connection.cs,\nAPT,2,2013/02/08,/Presentation/Status/ClientPresenter.cs,\nXYZ,1,2013/02/07,/Infrastrucure/Network/Connection.cs,\n")))
 
 (deftest git-identity-analysis
   "Git included additional churn info."
@@ -112,6 +130,7 @@
 (def-data-driven-with-vcs-test analysis-of-authors-with-empty-log
   [[empty-log-file (svn-csv-options "authors")]
    [empty-git-file (git-options "authors")]
+   [empty-p4-file (p4-options "authors")]
    [empty-hg-file (hg-options "authors")]]
   (is (= (run-with-str-output log-file options)
          "entity,n-authors,n-revs\n")))
@@ -119,6 +138,7 @@
 (def-data-driven-with-vcs-test analysis-of-coupling-with-empty-log
   [[empty-log-file (svn-csv-options "coupling")]
    [empty-git-file (git-options "coupling")]
+   [empty-p4-file (p4-options "coupling")]
    [empty-hg-file (hg-options "coupling")]]
   (is (= (run-with-str-output log-file options)
          "entity,coupled,degree,average-revs\n")))
@@ -126,6 +146,7 @@
 (def-data-driven-with-vcs-test analysis-of-revisions-with-empty-log
   [[empty-log-file (svn-csv-options "revisions")]
    [empty-git-file (git-options "revisions")]
+   [empty-p4-file (p4-options "revisions")]
    [empty-hg-file (hg-options "revisions")]]
   (is (= (run-with-str-output log-file options)
          "entity,n-revs\n")))
@@ -133,6 +154,7 @@
 (def-data-driven-with-vcs-test analysis-of-effort-with-empty-log
   [[empty-log-file (svn-csv-options "entity-effort")]
    [empty-git-file (git-options "entity-effort")]
+   [empty-p4-file (p4-options "entity-effort")]
    [empty-hg-file (hg-options "entity-effort")]]
   (is (= (run-with-str-output log-file options)
          "entity,author,author-revs,total-revs\n")))
@@ -140,6 +162,7 @@
 (def-data-driven-with-vcs-test analysis-of-communication-with-empty-log
   [[empty-log-file (svn-csv-options "communication")]
    [empty-git-file (git-options "communication")]
+   [empty-p4-file (p4-options "communication")]
    [empty-hg-file (hg-options "communication")]]
   (is (= (run-with-str-output log-file options)
          "author,peer,shared,average,strength\n")))
