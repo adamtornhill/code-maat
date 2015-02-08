@@ -10,7 +10,7 @@
             :url "http://www.gnu.org/licenses/gpl.html"}
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/data.zip "0.1.1"]
-		 [incanter "1.5.6"]
+		 [incanter/incanter-core "1.5.6"]
                  [org.clojure/tools.cli "0.3.1"]
                  [org.clojure/data.csv "0.1.2"]
                  [clj-time "0.9.0"]
