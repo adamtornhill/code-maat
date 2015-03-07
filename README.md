@@ -2,7 +2,7 @@
 
 Code Maat is a command line tool used to mine and analyze data from version-control systems (VCS).
 
-Code Maat was developed to accompany the discussions in my book [Your Code as a Crime Scene](http://pragprog.com/book/atcrime/code-as-a-crime-scene). In case you're interested in repository mining, check-out the book [here](http://pragprog.com/book/atcrime/code-as-a-crime-scene).
+Code Maat was developed to accompany the discussions in my book [Your Code as a Crime Scene](https://pragprog.com/book/atcrime/your-code-as-a-crime-scene). In case you're interested in repository mining, check-out the book [here](https://pragprog.com/book/atcrime/your-code-as-a-crime-scene).
 
 ## The ideas behind Code Maat
 
@@ -14,7 +14,7 @@ Maat was a goddess in ancient Egyptian myth. She was the one who gave us order o
 
 ## License
 
-Copyright © 2013 Adam Tornhill
+Copyright © 2013-2015 Adam Tornhill
 
 Distributed under the [GNU General Public License v3.0](http://www.gnu.org/licenses/gpl.html).
 
