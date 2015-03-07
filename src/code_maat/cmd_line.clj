@@ -62,6 +62,9 @@
     (try
       (app/run (:log options) options)
       (flush)
+      (catch IllegalArgumentException e
+        (println "Invalid argument: " (.getMessage e))
+        (exit 1 (usage summary)))
       (catch Exception e ; this is our main recovery point
         (.printStackTrace e)
         (println "Error: " (.getMessage e))

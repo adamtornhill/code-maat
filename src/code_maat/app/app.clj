@@ -10,6 +10,7 @@
             [code-maat.parsers.perforce :as p4]
             [code-maat.parsers.xml :as xml]
             [incanter.core :as incanter]
+            [clojure.string :as string]
             [code-maat.output.csv :as csv-output]
             [code-maat.analysis.authors :as authors]
             [code-maat.analysis.entities :as entities]
@@ -65,14 +66,22 @@
    "fragmentation" effort/as-entity-fragmentation
    "communication" communication/by-shared-entities
    "messages" commits/by-word-frequency})
-   
+
+(defn- fail-for-invalid-analysis
+  [requested-analysis]
+  (let [valid-analyses (keys supported-analysis)
+        printable-analyses (string/join ", " valid-analyses)]
+    (throw (IllegalArgumentException.
+            (str "Invalid analysis requested: " requested-analysis ". "
+                 "Valid options are: " printable-analyses)))))
+
 (defn- make-analysis
   "Returns the analysis to run while closing over the options.
    Each returned analysis method takes a single data set as argument."
   [options]
   (if-let [analysis (supported-analysis (options :analysis))]
     #(analysis % options)
-    #(supported-analysis "authors")))
+    (fail-for-invalid-analysis (options :analysis))))
 
 (defn- run-parser-in-error-handling-context
   [parse-fn vcs-name]
@@ -90,7 +99,6 @@
     (slurp logfile-name :encoding encoding)
     (slurp logfile-name)))
 
-;;; TODO: encoding
 (defn- hg->modifications
   [logfile-name options]
   (run-parser-in-error-handling-context
