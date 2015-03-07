@@ -133,7 +133,9 @@ In the example above, the first column (`entity`) gives us the name of the modul
 
 ### Visualizing the result
 
-Future versions of Code Maat are likely to include direct visualization support. For now, I work with a set of standalone tools. I've open sourced one of those as [Metrics Tree Map](https://github.com/adamtornhill/MetricsTreeMap):
+I've chosen to keep the visualizations separate from the analysis engine itself. It just gives you more flexibility. After all, CSV gives you a nice format to transform and experiment with.
+
+I present a whole suite of different visualization techniques and options in [Your Code as a Crime Scene](https://pragprog.com/book/atcrime/your-code-as-a-crime-scene), so do check out the book if you want to dive deeper. You can also look at some of the tools I've open sources such as [Metrics Tree Map](https://github.com/adamtornhill/MetricsTreeMap):
 
 ![coupling visualized](doc/imgs/tree_map_sample.png).
 
