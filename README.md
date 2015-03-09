@@ -44,7 +44,7 @@ To analyze our VCS data we need to define a temporal period of interest. Over ti
 
 #### Generate a git log file using the following command:
 
-          git log --pretty=format:'[%h] %an %ad %s' --date=short --numstat --after=YYYY-MM-DD
+          git log --pretty=format:'[%h] %aN %ad %s' --date=short --numstat --after=YYYY-MM-DD
 
 #### Generate a Mercurial log file using the following command:
 
