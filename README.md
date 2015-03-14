@@ -32,7 +32,7 @@ Code Maat operates on log files from version-control systems. The supported vers
 
 #### Preparations
 
-To analyze our VCS data we need to define a temporal period of interest. Over time, many design issues do get fixed and we don't want old data to infer with our current analysis of the code. To limit the data Code Maat will consider, use one of the following flags depending on your version-control system:
+To analyze our VCS data we need to define a temporal period of interest. Over time, many design issues do get fixed and we don't want old data to interfere with our current analysis of the code. To limit the data Code Maat will consider, use one of the following flags depending on your version-control system:
 + *git:* Use the `--after=<date>` to specify the last date of interest. The `<date>` is given as `YYYY-MM-DD`.
 + *hg:* Ue the `--date` swith to specify the last date of interest. The value is given as `">YYYY-MM-DD"`.
 + *svn:* Use the `-r` option to specify a range of interest, for example `-r {20130820}:HEAD`.
