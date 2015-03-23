@@ -32,12 +32,11 @@
    rev       =  <'Change' ws> #'[\\d]+'
    author    =  <'by' ws> #'[^@]+' <#'[^\\s]+'>
    date      =  <'on' ws> #'\\d{4}/\\d{2}/\\d{2}' <ws #'\\d{2}:\\d{2}:\\d{2}'>
-   message   =  (tab ws* #'.+' nl)+
+   message   =  (ws* #'.+' nl)+
    header    =  'Affected files ...' nl
    changes   =  (file <nl>)+
    file      =  <'... //' #'[^/]+/' #'[^/]+'> #'[^#]+' <#'.+'>
    ws        =  #'\\s'
-   tab       =  #'\\t'
    nl        =  #'(\\r)?\\n'
    ")
 

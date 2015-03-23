@@ -28,6 +28,19 @@ Change 1108117 by user2@client on 2014/12/19 15:41:18
 Affected files ...
 ... //depot/project/meta/recipes-core/udev/udev-extraconf/mount.blacklist#2 edit")
 
+;;; The following log sample is covered by tests as part of a bug fix.
+;;; A Perforce log may have multiple job sections and we need to be
+;;; able to parse them all.
+;;; See Code Maat Issue 10 for more details.
+(def ^:const entry-with-multiple-jobs
+"Change 399449 by lpi001@lpi001-home-fimbul on 2015/02/17 13:26:45
+	Ups, army bliver aldrig reduceret, har altid fuld g-dags antal
+Jobs fixed ...
+FIM-127 on 2015/03/02 by sysgen closed
+	Ændringe i belægningen af g-dage
+Affected files ...
+... //depot/fiks/fimbul/cerkl.cxx#100 edit")
+
 (defn- parse
   [text]
   (p4/parse-read-log text {}))
@@ -57,4 +70,12 @@ Affected files ...
 
 (deftest parses-empty-log-to-empty-dataset
   (is (= (parse "")
-        [])))
+         [])))
+
+(deftest parses-entries-with-multiple-jobs
+  (is (= (parse entry-with-multiple-jobs)
+         [{:author "lpi001"
+           :rev "399449"
+           :date "2015/02/17"
+           :entity "/fimbul/cerkl.cxx"
+           :message ""}])))
