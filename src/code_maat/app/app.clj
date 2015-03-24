@@ -22,7 +22,8 @@
             [code-maat.app.grouper :as grouper]
             [code-maat.app.time-based-grouper :as time-grouper]
             [code-maat.analysis.communication :as communication]
-            [code-maat.analysis.commit-messages :as commits]))
+            [code-maat.analysis.commit-messages :as commits]
+            [code-maat.analysis.code-age :as age]))
 
 ;;; Principles:
 ;;;
@@ -65,7 +66,8 @@
    "main-dev-by-revs" effort/as-main-developer-by-revisions
    "fragmentation" effort/as-entity-fragmentation
    "communication" communication/by-shared-entities
-   "messages" commits/by-word-frequency})
+   "messages" commits/by-word-frequency
+   "age" age/by-age})
 
 (defn- fail-for-invalid-analysis
   [requested-analysis]
