@@ -26,8 +26,6 @@
   
 (defn- as-time
   [time-as-string]
-  (println time-as-string)
-  (println (tf/parse time-format time-as-string))
   (tf/parse time-format time-as-string))
 
 (defn- time-now
@@ -44,7 +42,7 @@
    last))
 
 (defn- entities-by-latest-modification
-  [grouped now]
+  [now grouped]
   (for [[entity-entry changes] grouped
         :let [entity (:entity entity-entry)
               latest (as-time (latest-modification changes))
@@ -53,7 +51,9 @@
 
 (defn by-age
   [ds options]
-  (->
+  (->>
    (ds/-group-by :entity ds)
-   (entities-by-latest-modification (time-now options))))
+   (entities-by-latest-modification (time-now options))
+   (ds/-dataset [:entity :age-months])
+   (ds/-order-by [:age-months] :asc)))
   
