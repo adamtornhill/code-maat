@@ -37,4 +37,11 @@
   (testing "A year into the future"
     (is (= (analysis/by-age vcsd (as-now "2015-04-06"))
            (as-age-ds [["A" 12] ["B" 15]])))))
+
+;;; This is tricky - if we move back in time we need to
+;;; ignore all commits that happened after the given time.
+(deftest code-was-younger-in-the-past
+  (testing "One month in the past"
+    (is (= (analysis/by-age vcsd (as-now "2014-03-06"))
+           (as-age-ds [["A" 0] ["B" 2]])))))
          

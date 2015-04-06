@@ -34,6 +34,12 @@
     (as-time given-time)
     (tc/now)))
 
+(defn- changes-within-time-span
+  [changes now]
+  (ds/-where {:date {:$fn
+                     (fn [d] (tc/before? (as-time d) now))}}
+             changes))
+
 (defn- latest-modification
   [changes]
   (->
@@ -45,7 +51,8 @@
   [now grouped]
   (for [[entity-entry changes] grouped
         :let [entity (:entity entity-entry)
-              latest (as-time (latest-modification changes))
+              relevant-changes (changes-within-time-span changes now)
+              latest (as-time (latest-modification relevant-changes))
               age-of-latest (tc/in-months (tc/interval latest now))]]
     [entity age-of-latest]))
 
