@@ -28,33 +28,33 @@
 (def ^:const empty-hg-file "./test/code_maat/end_to_end/empty.hg")
 (def ^:const empty-p4-file "./test/code_maat/end_to_end/empty.p4")
 
-(defn- svn-csv-options
-  [analysis]
+(def shared-options
   (merge
    test-data/options-with-low-thresholds
-   {:version-control "svn"
+   {:age-time-now "2015-03-01"}))
+
+(defn- make-options-for
+  [vcs analysis]
+  (merge
+   shared-options
+   {:version-control vcs
     :analysis analysis}))
+
+(defn- svn-csv-options
+  [analysis]
+  (make-options-for "svn" analysis))
 
 (defn- git-options
   [analysis]
-   (merge
-   test-data/options-with-low-thresholds
-   {:version-control "git"
-    :analysis analysis}))
+  (make-options-for "git" analysis))
 
 (defn- hg-options
   [analysis]
-   (merge
-   test-data/options-with-low-thresholds
-   {:version-control "hg"
-    :analysis analysis}))
+  (make-options-for "hg" analysis))
 
 (defn- p4-options
   [analysis]
-   (merge
-   test-data/options-with-low-thresholds
-   {:version-control "p4"
-    :analysis analysis}))
+  (make-options-for "p4" analysis))
 
 (def-data-driven-with-vcs-test analysis-of-authors
   [[svn-log-file (svn-csv-options "authors")]
