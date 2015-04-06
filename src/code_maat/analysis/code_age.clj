@@ -29,7 +29,7 @@
                   (tc/default-time-zone)
                   "YYYY-MM-dd" ; git, hg
                   "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'" ; svn
-                  "YYYY/MM/DD")) ;; p4
+                  "YYYY/MM/dd")) ;; p4
                   
 (defn- as-time
   [time-as-string]

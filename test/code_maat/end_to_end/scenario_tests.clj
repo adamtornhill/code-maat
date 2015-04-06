@@ -121,6 +121,15 @@
   (is (= (run-with-str-output git-log-file (git-options "identity"))
          "loc-deleted,loc-added,author,rev,date,entity,message\n2,1,APT,2,2013-02-08,/Infrastrucure/Network/Connection.cs,git: authors and revisions implemented\n4,3,APT,2,2013-02-08,/Presentation/Status/ClientPresenter.cs,git: authors and revisions implemented\n2,18,XYZ,1,2013-02-07,/Infrastrucure/Network/Connection.cs,Report connection status\n")))
 
+;; All age tests are run against a fixed 'now' time specified in the options.
+(def-data-driven-with-vcs-test analysis-of-code-age
+  [[svn-log-file (svn-csv-options "age")]
+   [git-log-file (git-options "age")]
+   [p4-log-file (p4-options "age")]
+   [hg-log-file (hg-options "age")]]
+  (is (= (run-with-str-output log-file options)
+         "entity,age-months\n/Infrastrucure/Network/Connection.cs,24\n/Presentation/Status/ClientPresenter.cs,24\n")))
+
 (deftest reports-invalid-arguments
   (testing "Non-existent input file"
     (is (thrown? IllegalArgumentException (app/run "I/do/not/exist"))))
@@ -166,3 +175,11 @@
    [empty-hg-file (hg-options "communication")]]
   (is (= (run-with-str-output log-file options)
          "author,peer,shared,average,strength\n")))
+
+(def-data-driven-with-vcs-test analysis-of-code-age-with-empty-log
+  [[empty-log-file (svn-csv-options "age")]
+   [empty-git-file (git-options "age")]
+   [empty-p4-file (p4-options "age")]
+   [empty-hg-file (hg-options "age")]]
+  (is (= (run-with-str-output log-file options)
+         "entity,age-months\n")))
