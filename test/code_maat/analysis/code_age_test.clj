@@ -16,16 +16,25 @@
                   {:entity "A" :rev 3 :date "2014-04-05"}])
 (def ^:const vcsd (incanter/to-dataset vcs))
 
-;;; To make the tests deterministic we need to specify what
-;;; "now" really means.
-(def ^:const fixed-date-options
-  {:age-time-now "2014-04-06"})
+(defn- as-now
+  "To make the tests deterministic we need to specify what
+   _now_ really means. This is done by a comand line argument."
+  [fixed-date]
+  {:age-time-now fixed-date})
 
 (defn- as-age-ds
   [result]
   (ds/-dataset [:entity :age-months] result))
 
 (deftest calculates-age-by-last-modification-date
-  (is (= (analysis/by-age vcsd fixed-date-options)
+  (is (= (analysis/by-age vcsd (as-now "2014-04-06"))
          (as-age-ds [["A" 0] ["B" 3]]))))
+
+(deftest code-gets-older-as-time-passes-by
+  (testing "One month into the future"
+    (is (= (analysis/by-age vcsd (as-now "2014-05-06"))
+           (as-age-ds [["A" 1] ["B" 4]]))))
+  (testing "A year into the future"
+    (is (= (analysis/by-age vcsd (as-now "2015-04-06"))
+           (as-age-ds [["A" 12] ["B" 15]])))))
          
