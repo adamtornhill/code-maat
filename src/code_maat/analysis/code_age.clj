@@ -28,8 +28,9 @@
 (def time-format (tf/formatter
                   (tc/default-time-zone)
                   "YYYY-MM-dd" ; git, hg
-                  "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'")) ; svn
-  
+                  "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'" ; svn
+                  "YYYY/MM/DD")) ;; p4
+                  
 (defn- as-time
   [time-as-string]
   (tf/parse time-format time-as-string))
