@@ -22,7 +22,13 @@
 ;;; entity in months with respect to the last time the code was
 ;;; modified. It's then up to us to visualize it in a sensible way.
 
-(def time-format (tf/formatters :year-month-day))
+;; A somewhat leaky abstraction - if we add support for a new
+;; parser we need to ensure its format is parseable here.
+;; A better solution is to convert during parsing.
+(def time-format (tf/formatter
+                  (tc/default-time-zone)
+                  "YYYY-MM-dd" ; git, hg
+                  "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'")) ; svn
   
 (defn- as-time
   [time-as-string]
