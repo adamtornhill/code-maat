@@ -43,5 +43,8 @@
 (deftest code-was-younger-in-the-past
   (testing "One month in the past"
     (is (= (analysis/by-age vcsd (as-now "2014-03-06"))
-           (as-age-ds [["A" 0] ["B" 2]])))))
+           (as-age-ds [["A" 0] ["B" 2]]))))
+  (testing "Before the B module was introduced (should be ignored)"
+     (is (= (analysis/by-age vcsd (as-now "2013-12-26"))
+           (as-age-ds [["A" 0]])))))
          

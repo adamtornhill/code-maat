@@ -47,14 +47,23 @@
    sort
    last))
 
+(defn- age-of-latest-in
+  [changes now]
+  (->
+   (latest-modification changes)
+   as-time
+   (tc/interval now)
+   tc/in-months))
+
+(def has-content (complement ds/-empty?))
+
 (defn- entities-by-latest-modification
   [now grouped]
   (for [[entity-entry changes] grouped
         :let [entity (:entity entity-entry)
-              relevant-changes (changes-within-time-span changes now)
-              latest (as-time (latest-modification relevant-changes))
-              age-of-latest (tc/in-months (tc/interval latest now))]]
-    [entity age-of-latest]))
+              relevant-changes (changes-within-time-span changes now)]
+        :when (has-content relevant-changes)]
+    [entity (age-of-latest-in relevant-changes now)]))
 
 (defn by-age
   [ds options]
