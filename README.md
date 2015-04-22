@@ -2,6 +2,8 @@
 
 Code Maat is a command line tool used to mine and analyze data from version-control systems (VCS).
 
+![crime scene book](doc/imgs/crime_cover.jpg).
+
 Code Maat was developed to accompany the discussions in my book [Your Code as a Crime Scene](https://pragprog.com/book/atcrime/your-code-as-a-crime-scene). In case you're interested in repository mining, check-out the book [here](https://pragprog.com/book/atcrime/your-code-as-a-crime-scene).
 
 ## The ideas behind Code Maat
@@ -133,7 +135,7 @@ In the example above, the first column (`entity`) gives us the name of the modul
 
 ### Calculate code age
 
-The change frequency of code is a factor that should (but rarely do) drive the evolution of a software architecture. In general, ou want to stabilize as much code as possible. A failure to stabilize means that you need to maintain a working knowledge of those parts of the code for the life-time of the system.
+The change frequency of code is a factor that should (but rarely do) drive the evolution of a software architecture. In general, you want to stabilize as much code as possible. A failure to stabilize means that you need to maintain a working knowledge of those parts of the code for the life-time of the system.
 
 One way to measure the stability of a software architecture is by a code age analysis:
 
@@ -151,7 +153,7 @@ By default, Code Maat uses the current date as starting point for a code age ana
 
 By using the techniques from [Your Code as a Crime Scene](https://pragprog.com/book/atcrime/your-code-as-a-crime-scene) we visualize the system with each module marked-up by its age (the more `red`, the more recent changes to the code):
 
-![coupling visualized](doc/imgs/code_age_sample.png).
+![code age visualized](doc/imgs/code_age_sample.png).
 
 ### Visualizing the result
 
@@ -241,7 +243,7 @@ Note that when running Code Maat through [leiningen](https://github.com/technoma
 
 ## Limitations
 
-The current version of Code Maat processes all its content in memory. Thus, it doesn't scale to large input files. The recommendation is to limit the input by specifying a sensible start date (as discussed initially, you want to do that anyway to avoid confounds in the analysis).
+The current version of Code Maat processes all its content in memory. Thus, it may not scale to large input files (however, it depends a lot on the combination of parser and analysis). The recommendation is to limit the input by specifying a sensible start date (as discussed initially, you want to do that anyway to avoid confounds in the analysis).
 
 ## Future directions
 
