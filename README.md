@@ -62,11 +62,11 @@ You can run Code Maat directly from leiningen:
 
 If you've built a standalone jar (`lein uberjar`), run it with a simple java invocation:
 
-     	  java -jar code-maat-0.5.1.jar -l logfile.log -c <vcs>
+     	  java -jar code-maat-0.8.6.jar -l logfile.log -c <vcs>
 
 When invoked with `-h`, Code Maat prints its usage:
 
-             adam$ java -jar code-maat-0.5.1.jar
+             adam$ java -jar code-maat-0.8.6.jar
              This is Code Maat, a program used to collect statistics from a VCS.
              
              Usage: program-name log-file [options]
@@ -90,7 +90,7 @@ By default, Code Maat expects your log files to be UTF-8. If you use another enc
 
 When starting out, I find it useful to get an overview of the mined data. With the `summary` analysis, Code Maat produces such an overview:
 
-   	   java -jar code-maat-0.5.1.jar -l logfile.log -c git -a summary
+   	   java -jar code-maat-0.8.6.jar -l logfile.log -c git -a summary
 
 The resulting output is on csv format:
 
@@ -104,7 +104,7 @@ The resulting output is on csv format:
 
 By default, Code Maat runs an analysis on the number of authors per module. The authors analysis is based on the idea that the more developers working on a module, the larger the communication challenges. The analysis is invoked with the following command:
 
-   	   java -jar code-maat-0.5.1.jar -l logfile.log -c git
+   	   java -jar code-maat-0.8.6.jar -l logfile.log -c git
 
 The resulting output is on CSV format:
 
@@ -120,7 +120,7 @@ In example above, the first column gives us the name of module, the second the t
 
 Logical coupling refers to modules that tend to change together. Modules that are logically coupled have a hidden, implicit dependency between them such that a change to one of them leads to a predictable change in the coupled module. To analyze the logical coupling in a system, invoke Code Maat with the following arguments:
 
-              java -jar code-maat-0.5.1.jar -l logfile.log -c git -a coupling
+              java -jar code-maat-0.8.6.jar -l logfile.log -c git -a coupling
 
 The resulting output is on CSV format:
 
@@ -130,6 +130,28 @@ The resulting output is on CSV format:
               ...
 
 In the example above, the first column (`entity`) gives us the name of the module, the second (`coupled`) gives us the name of a logically coupled module, the third column (`degree`) gives us the coupling as a percentage (0-100), and finally `average-revs` gives us the average number of revisions of the two modules. To interpret the data, consider the `InfoUtils.java` module in the example output above. The coupling tells us that each time it's modified, it's a 78% risk/chance that we'll have to change our `Page.java` module too. Since there's probably no reason they should change together, the analysis points to a part of the code worth investigating as a potential target for a future refactoring.
+
+### Calculate code age
+
+The change frequency of code is a factor that should (but rarely do) drive the evolution of a software architecture. In general, ou want to stabilize as much code as possible. A failure to stabilize means that you need to maintain a working knowledge of those parts of the code for the life-time of the system.
+
+One way to measure the stability of a software architecture is by a code age analysis:
+
+              java -jar code-maat-0.8.6.jar -l logfile.log -c git -a age
+
+The `age` analysis grades each module based on the date of last change. The measurement unit is age in months. Here's how the result may look:
+
+              entity,age-months
+              src/code_maat/app/app.clj,2
+              project.clj,4
+              src/code_maat/parsers/perforce.clj,5
+              ...
+
+By default, Code Maat uses the current date as starting point for a code age analysis. You specify a different start time with the command line argument `--age-time-now`.
+
+By using the techniques from [Your Code as a Crime Scene](https://pragprog.com/book/atcrime/your-code-as-a-crime-scene) we visualize the system with each module marked-up by its age (the more `red`, the more recent changes to the code):
+
+![coupling visualized](doc/imgs/code_age_sample.png).
 
 ### Visualizing the result
 
