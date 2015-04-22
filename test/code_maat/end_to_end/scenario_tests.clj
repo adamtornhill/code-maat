@@ -102,19 +102,20 @@
 ;;; the output.
 (deftest svn-identity-analysis-contains-additional-info
   (is (= (run-with-str-output svn-log-file (svn-csv-options "identity"))
-         "entity,date,author,action,rev\n/Infrastrucure/Network/Connection.cs,2013-02-08T11:46:13.844538Z,APT,M,2\n/Presentation/Status/ClientPresenter.cs,2013-02-08T11:46:13.844538Z,APT,M,2\n/Infrastrucure/Network/Connection.cs,2013-02-07T11:46:13.844538Z,XYZ,M,1\n")))
+         "entity,date,author,action,rev\n/Infrastrucure/Network/Connection.cs,2013-02-08,APT,M,2\n/Presentation/Status/ClientPresenter.cs,2013-02-08,APT,M,2\n/Infrastrucure/Network/Connection.cs,2013-02-07,XYZ,M,1\n")))
 
 ;;; The git, Mercurical, and Perforce parsers do not include the
 ;;; 'action' tag that we have in the current SVN data.
 ;;; I'm likely to add it later. For now, just document
 ;;; the behavior here.
+
 (deftest hg-identity-analysis
   (is (= (run-with-str-output hg-log-file (hg-options "identity"))
          "author,rev,date,entity,message\nAPT,2,2013-02-08,/Infrastrucure/Network/Connection.cs,\nAPT,2,2013-02-08,/Presentation/Status/ClientPresenter.cs,\nXYZ,1,2013-02-07,/Infrastrucure/Network/Connection.cs,\n")))
 
 (deftest p4-identity-analysis
   (is (= (run-with-str-output p4-log-file (p4-options "identity"))
-         "author,rev,date,entity,message\nAPT,2,2013/02/08,/Infrastrucure/Network/Connection.cs,\nAPT,2,2013/02/08,/Presentation/Status/ClientPresenter.cs,\nXYZ,1,2013/02/07,/Infrastrucure/Network/Connection.cs,\n")))
+         "author,rev,date,entity,message\nAPT,2,2013-02-08,/Infrastrucure/Network/Connection.cs,\nAPT,2,2013-02-08,/Presentation/Status/ClientPresenter.cs,\nXYZ,1,2013-02-07,/Infrastrucure/Network/Connection.cs,\n")))
 
 (deftest git-identity-analysis
   "Git included additional churn info."

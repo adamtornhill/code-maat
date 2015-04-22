@@ -7,6 +7,7 @@
   (:use [clojure.data.zip.xml :only (attr text xml-> xml1->)]) ; dep: see below
   (:require [clojure.xml :as xml]
             [clojure.zip :as zip]
+            [code-maat.parsers.time-parser :as tp]
             [clojure.string :as s]))
 
 ;;; This module contains functionality for parsing a generated SVN log
@@ -34,6 +35,8 @@
   (let [paths (xml-> logentry :paths :path)]
     (map group-file-with-action paths)))
 
+(def as-common-time-format (tp/time-string-converter-from "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"))
+
 (defn as-rows
   "Transforms the given svn logentry to a seq of rows containing
    the modification data for each entity."
@@ -45,7 +48,7 @@
         revision (extractor (attr :revision))]
     (map (fn [[entity action]]
            {:entity entity
-            :date date
+            :date (as-common-time-format date)
             :author author
             :action action
             :rev revision})

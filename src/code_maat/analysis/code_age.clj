@@ -5,8 +5,8 @@
 
 (ns code-maat.analysis.code-age
   (:require [code-maat.dataset.dataset :as ds]
+            [code-maat.parsers.time-parser :as tp]
             [clj-time.core :as tc]
-            [clj-time.format :as tf]
             [clojure.string :as str]
             [code-maat.analysis.math :as math]))
 
@@ -22,18 +22,11 @@
 ;;; entity in months with respect to the last time the code was
 ;;; modified. It's then up to us to visualize it in a sensible way.
 
-;; A somewhat leaky abstraction - if we add support for a new
-;; parser we need to ensure its format is parseable here.
-;; A better solution is to convert during parsing.
-(def time-format (tf/formatter
-                  (tc/default-time-zone)
-                  "YYYY-MM-dd" ; git, hg
-                  "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'" ; svn
-                  "YYYY/MM/dd")) ;; p4
-                  
+(def time-parser (tp/time-parser-from "YYYY-MM-dd"))
+
 (defn- as-time
   [time-as-string]
-  (tf/parse time-format time-as-string))
+  (time-parser time-as-string))
 
 (defn- time-now
   [options]
@@ -44,7 +37,7 @@
 (defn- changes-within-time-span
   [changes now]
   (ds/-where {:date {:$fn
-                     (fn [d] (tc/before? (as-time d) now))}}
+                     (fn [date] (tc/before? (as-time date) now))}}
              changes))
 
 (defn- latest-modification

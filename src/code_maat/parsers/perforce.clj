@@ -5,6 +5,7 @@
 
 (ns code-maat.parsers.perforce
   (:require [instaparse.core :as insta]
+            [code-maat.parsers.time-parser :as tp]
             [code-maat.parsers.hiccup-based-parser :as hbp]))
 
 ;;; This module is responsible for parsing a perforce log file.
@@ -40,11 +41,13 @@
    nl        =  #'(\\r)?\\n'
    ")
 
+(def as-common-time-format (tp/time-string-converter-from "YYYY/MM/dd"))
+
 (def positional-extractors
   "Specify a set of functions to extract the parsed values."
   {:rev #(get-in % [1 1])
    :author #(get-in % [2 1])
-   :date #(get-in % [3 1])
+   :date #(as-common-time-format (get-in % [3 1]))
    :message (fn [_] "")
    :changes #(rest (get-in % [4]))
    })

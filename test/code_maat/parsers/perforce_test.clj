@@ -49,7 +49,7 @@ Affected files ...
   (is (= (parse entry)
         [{:author "user1"
           :rev "1108116"
-          :date "2014/12/19"
+          :date "2014-12-19"
           :entity "/Makefile"
           :message ""}
          ])))
@@ -58,12 +58,12 @@ Affected files ...
   (is (= (parse entries)
         [{:author "user1"
           :rev "1108116"
-          :date "2014/12/19"
+          :date "2014-12-19"
           :entity "/Makefile"
           :message ""}
          {:author "user2"
           :rev "1108117"
-          :date "2014/12/19"
+          :date "2014-12-19"
           :entity "/meta/recipes-core/udev/udev-extraconf/mount.blacklist"
           :message ""}
          ])))
@@ -76,6 +76,6 @@ Affected files ...
   (is (= (parse entry-with-multiple-jobs)
          [{:author "lpi001"
            :rev "399449"
-           :date "2015/02/17"
+           :date "2015-02-17"
            :entity "/fimbul/cerkl.cxx"
            :message ""}])))
