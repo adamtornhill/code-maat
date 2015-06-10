@@ -69,13 +69,18 @@
    "messages" commits/by-word-frequency
    "age" age/by-age})
 
+(defn analysis-names
+  []
+  (->>
+   (keys supported-analysis)
+   sort
+   (string/join ", ")))
+
 (defn- fail-for-invalid-analysis
   [requested-analysis]
-  (let [valid-analyses (keys supported-analysis)
-        printable-analyses (string/join ", " valid-analyses)]
-    (throw (IllegalArgumentException.
-            (str "Invalid analysis requested: " requested-analysis ". "
-                 "Valid options are: " printable-analyses)))))
+  (throw (IllegalArgumentException.
+          (str "Invalid analysis requested: " requested-analysis ". "
+               "Valid options are: " (analysis-names)))))
 
 (defn- make-analysis
   "Returns the analysis to run while closing over the options.
