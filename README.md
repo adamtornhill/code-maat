@@ -68,21 +68,28 @@ If you've built a standalone jar (`lein uberjar`), run it with a simple java inv
 
 When invoked with `-h`, Code Maat prints its usage:
 
-             adam$ java -jar code-maat-0.8.6.jar
+             adam$ java -jar code-maat-0.9.0.jar
              This is Code Maat, a program used to collect statistics from a VCS.
+             Version: 0.9.0-SNAPSHOT
              
-             Usage: program-name log-file [options]
+             Usage: program-name -l log-file [options]
              
              Options:
-             -l, --log LOG                                   Log file with input data
-             -c, --version-control VCS                       Input vcs module type: supports svn, git, hg, or p4
-             -a, --analysis ANALYSIS                authors  The analysis to run (authors, revisions, coupling, summary, churn, identity)
-             -r, --rows ROWS                        10       Max rows in output
-             -n, --min-revs MIN-REVS                5        Minimum number of revisions to include an entity in the analysis
-             -m, --min-shared-revs MIN-SHARED-REVS  5        Minimum number of shared revisions to include an entity in the analysis
-             -i, --min-coupling MIN-COUPLING        50       Minimum degree of coupling (in percentage) to consider
-             -x, --max-coupling MAX-COUPLING        100      Maximum degree of coupling (in percentage) to consider
-             -h, --help
+               -l, --log LOG                                         Log file with input data
+               -c, --version-control VCS                             Input vcs module type: supports svn, git, hg, or p4
+               -a, --analysis ANALYSIS                      authors  The analysis to run (abs-churn, age, author-churn, authors, communication, coupling, entity-churn, entity-effort, entity-ownership, fragmentation, identity, main-dev, main-dev-by-revs, messages, refactoring-main-dev, revisions, soc, summary)
+              --input-encoding INPUT-ENCODING                   Specify an encoding other than UTF-8 for the log file
+               -r, --rows ROWS                                       Max rows in output
+               -g, --group GROUP                                     A file with a pre-defined set of layers. The data will be aggregated according to the group of layers.
+               -n, --min-revs MIN-REVS                      5        Minimum number of revisions to include an entity in the analysis
+               -m, --min-shared-revs MIN-SHARED-REVS        5        Minimum number of shared revisions to include an entity in the analysis
+               -i, --min-coupling MIN-COUPLING              30       Minimum degree of coupling (in percentage) to consider
+               -x, --max-coupling MAX-COUPLING              100      Maximum degree of coupling (in percentage) to consider
+               -s, --max-changeset-size MAX-CHANGESET-SIZE  30       Maximum number of modules in a change set if it shall be included in a coupling analysis
+               -e, --expression-to-match MATCH-EXPRESSION            A regex to match against commit messages. Used with -messages analyses
+               -t, --temporal-period TEMPORAL-PERIOD                 Instructs Code Maat to consider all commits during the same day as a single, logical commit
+               -d, --age-time-now AGE-TIME_NOW                       Specify a date as YYYY-MM-dd that counts as time zero when doing a code age analysis
+               -h, --help
 
 ### Optional: specify an encoding
 
