@@ -78,7 +78,7 @@ When invoked with `-h`, Code Maat prints its usage:
                -l, --log LOG                                         Log file with input data
                -c, --version-control VCS                             Input vcs module type: supports svn, git, hg, or p4
                -a, --analysis ANALYSIS                      authors  The analysis to run (abs-churn, age, author-churn, authors, communication, coupling, entity-churn, entity-effort, entity-ownership, fragmentation, identity, main-dev, main-dev-by-revs, messages, refactoring-main-dev, revisions, soc, summary)
-              --input-encoding INPUT-ENCODING                   Specify an encoding other than UTF-8 for the log file
+              --input-encoding INPUT-ENCODING                        Specify an encoding other than UTF-8 for the log file
                -r, --rows ROWS                                       Max rows in output
                -g, --group GROUP                                     A file with a pre-defined set of layers. The data will be aggregated according to the group of layers.
                -n, --min-revs MIN-REVS                      5        Minimum number of revisions to include an entity in the analysis
