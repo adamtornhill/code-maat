@@ -13,7 +13,7 @@
   [["-l" "--log LOG" "Log file with input data"]
    ["-c" "--version-control VCS" "Input vcs module type: supports svn, git, hg, or p4"]
    ["-a" "--analysis ANALYSIS"
-    "The analysis to run (authors, revisions, coupling, soc, summary, churn, identity, etc)"
+    (str "The analysis to run (" (app/analysis-names)  ")")
     :default "authors"]
    [nil "--input-encoding INPUT-ENCODING" "Specify an encoding other than UTF-8 for the log file"]
    ["-r" "--rows ROWS" "Max rows in output" :parse-fn #(Integer/parseInt %)]
