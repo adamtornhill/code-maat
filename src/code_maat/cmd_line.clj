@@ -17,6 +17,7 @@
     :default "authors"]
    [nil "--input-encoding INPUT-ENCODING" "Specify an encoding other than UTF-8 for the log file"]
    ["-r" "--rows ROWS" "Max rows in output" :parse-fn #(Integer/parseInt %)]
+   ["-o" "--outfile OUTFILE" "Write the result to the given file name"]
    ["-g" "--group GROUP" "A file with a pre-defined set of layers. The data will be aggregated according to the group of layers."]
    ["-n" "--min-revs MIN-REVS" "Minimum number of revisions to include an entity in the analysis"
     :default 5 :parse-fn #(Integer/parseInt %)]

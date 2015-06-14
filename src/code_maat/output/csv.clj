@@ -6,6 +6,7 @@
 (ns code-maat.output.csv
   (:require [code-maat.output.filters :as filters]
             [clojure.data.csv :as csv]
+            [clojure.java.io :as io]
             [incanter.core :as incanter]))
 
 ;;; An output module presenting its given Incanter dataset on CSV format.
@@ -20,3 +21,9 @@
      (csv/write-csv *out* (incanter/to-list ds)))
   ([s ds n-rows]
      (write-to s (filters/n-rows ds n-rows))))
+
+(defn write-to-file
+  [file-name s ds]
+  (with-open [out-file (io/writer file-name)]
+    (binding [*out* out-file]
+      (write-to s ds))))

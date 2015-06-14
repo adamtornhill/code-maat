@@ -162,10 +162,15 @@
     (time-grouper/run commits time-period)
     commits))
 
-(defn- make-output [options]
+(defn- make-stdout-output [options]
   (if-let [n-out-rows (:rows options)]
     #(csv-output/write-to :stream % n-out-rows)
     #(csv-output/write-to :stream %)))
+
+(defn- make-output [options]
+  (if-let [output-file (:outfile options)]
+    #(csv-output/write-to-file output-file :stream %)
+    (make-stdout-output options)))
 
 (defn- throw-internal-error [e]
   (throw (IllegalArgumentException.
