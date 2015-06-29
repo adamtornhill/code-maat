@@ -20,6 +20,7 @@
 
 (def ^:const svn-log-file "./test/code_maat/end_to_end/simple.xml")
 (def ^:const git-log-file "./test/code_maat/end_to_end/simple_git.txt")
+(def ^:const git2-log-file "./test/code_maat/end_to_end/simple_git2.txt")
 (def ^:const hg-log-file "./test/code_maat/end_to_end/simple_hg.txt")
 (def ^:const p4-log-file "./test/code_maat/end_to_end/simple_p4.txt")
 
@@ -48,6 +49,10 @@
   [analysis]
   (make-options-for "git" analysis))
 
+(defn- git2-options
+  [analysis]
+  (make-options-for "git2" analysis))
+
 (defn- hg-options
   [analysis]
   (make-options-for "hg" analysis))
@@ -59,6 +64,7 @@
 (def-data-driven-with-vcs-test analysis-of-authors
   [[svn-log-file (svn-csv-options "authors")]
    [git-log-file (git-options "authors")]
+   [git2-log-file (git2-options "authors")]
    [p4-log-file (p4-options "authors")]
    [hg-log-file (hg-options "authors")]]
   (is (= (run-with-str-output log-file options)
@@ -67,6 +73,7 @@
 (def-data-driven-with-vcs-test analysis-of-revisions
   [[svn-log-file (svn-csv-options "revisions")]
    [git-log-file (git-options "revisions")]
+   [git2-log-file (git2-options "revisions")]
    [p4-log-file (p4-options "revisions")]
    [hg-log-file (hg-options "revisions")]]
   (is (= (run-with-str-output log-file options)
@@ -75,6 +82,7 @@
 (def-data-driven-with-vcs-test analysis-of-coupling
   [[svn-log-file (svn-csv-options "coupling")]
    [git-log-file (git-options "coupling")]
+   [git2-log-file (git2-options "coupling")]
    [p4-log-file (p4-options "coupling")]
    [hg-log-file (hg-options "coupling")]]
   (is (= (run-with-str-output log-file options)
@@ -83,6 +91,7 @@
 (def-data-driven-with-vcs-test analysis-of-effort
   [[svn-log-file (svn-csv-options "entity-effort")]
    [git-log-file (git-options "entity-effort")]
+   [git2-log-file (git2-options "entity-effort")]
    [p4-log-file (p4-options "entity-effort")]
    [hg-log-file (hg-options "entity-effort")]]
   (is (= (run-with-str-output log-file options)
@@ -91,6 +100,7 @@
 (def-data-driven-with-vcs-test analysis-of-communication
   [[svn-log-file (svn-csv-options "communication")]
    [git-log-file (git-options "communication")]
+   [git2-log-file (git2-options "communication")]
    [p4-log-file (p4-options "communication")]
    [hg-log-file (hg-options "communication")]]
   (is (= (run-with-str-output log-file options)
@@ -126,6 +136,7 @@
 (def-data-driven-with-vcs-test analysis-of-code-age
   [[svn-log-file (svn-csv-options "age")]
    [git-log-file (git-options "age")]
+   [git2-log-file (git2-options "age")]
    [p4-log-file (p4-options "age")]
    [hg-log-file (hg-options "age")]]
   (is (= (run-with-str-output log-file options)

@@ -11,7 +11,7 @@
 
 (def cli-options
   [["-l" "--log LOG" "Log file with input data"]
-   ["-c" "--version-control VCS" "Input vcs module type: supports svn, git, hg, or p4"]
+   ["-c" "--version-control VCS" "Input vcs module type: supports svn, git, git2, hg, or p4"]
    ["-a" "--analysis ANALYSIS"
     (str "The analysis to run (" (app/analysis-names)  ")")
     :default "authors"]

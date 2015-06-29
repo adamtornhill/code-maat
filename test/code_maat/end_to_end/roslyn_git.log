@@ -1,0 +1,25 @@
+--8648e6c--2015-06-04--Jonathon Marolf
+--0d20709--2015-06-04--Dustin Campbell
+--25f1cf0--2015-06-04--Dustin Campbell
+--3634956--2015-06-04--Charles Stoner
+--b770795--2015-06-04--Manish Vasani
+--6bdb9d6--2015-06-04--AlekseyTs
+--f40efcf--2015-06-04--Tomáš Matoušek
+--dec9863--2015-06-04--Evan Hauck
+--9df62c6--2015-06-04--Charles Stoner
+34	43	src/InteractiveWindow/VisualStudio/InteractiveWindow.vsct
+-	-	src/InteractiveWindow/VisualStudio/Resources/InteractiveToolbarImages.png
+0	1	src/InteractiveWindow/VisualStudio/VisualStudioInteractiveWindow.csproj
+
+--9bac786--2015-06-04--Evan Hauck
+2	2	src/Tools/Source/RunTests/TestRunner.cs
+
+--b643b08--2015-06-04--Charles Stoner
+--044c169--2015-06-04--Tomas Matousek
+39	0	src/EditorFeatures/CSharpTest/EditAndContinue/ActiveStatementTests.cs
+1	0	src/EditorFeatures/Test/EditAndContinue/RudeEditDiagnosticTests.cs
+36	0	src/EditorFeatures/VisualBasicTest/EditAndContinue/ActiveStatementTests.vb
+3	2	src/Features/Core/EditAndContinue/AbstractEditAndContinueAnalyzer.cs
+7	0	src/Features/Core/EditAndContinue/ActiveStatementFlags.cs
+2	0	src/Features/Core/EditAndContinue/RudeEditDiagnosticDescriptors.cs
+1	0	src/Features/Core/EditAndContinue/RudeEditKind.cs
