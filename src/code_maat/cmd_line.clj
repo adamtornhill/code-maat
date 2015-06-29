@@ -1,4 +1,4 @@
-;;; Copyright (C) 2013 Adam Tornhill
+;;; Copyright (C) 2013-2015 Adam Tornhill
 ;;;
 ;;; Distributed under the GNU General Public License v3.0,
 ;;; see http://www.gnu.org/licenses/gpl.html
@@ -38,7 +38,7 @@
 
 (defn- usage [options-summary]
   (->> ["This is Code Maat, a program used to collect statistics from a VCS."
-        "Version: 0.9.0-SNAPSHOT"
+        "Version: 0.9.0"
         ""
         "Usage: program-name -l log-file [options]"
         ""
