@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/adamtornhill/code-maat.png)](https://travis-ci.org/adamtornhill/code-maat)
+
 # Code Maat
 
 Code Maat is a command line tool used to mine and analyze data from version-control systems (VCS).
