@@ -4,7 +4,7 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.parsers.mercurial-test
-  (:require [code-maat.parsers.mercurial :as hg]
+  (:require [code-maat.parsers.mercurial :as hg])
   (:use clojure.test incanter.core))
 
 (def ^:const entry
