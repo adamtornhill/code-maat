@@ -66,7 +66,7 @@
 (defn- pick-main-dev-by-rev
   [entity-ds]
   (let [[entity entity-changes] entity-ds
-        main-dev-changes (first (sort-by contributed-revs entity-changes))
+        main-dev-changes (first (sort-by contributed-revs > entity-changes))
         [author added total] main-dev-changes
         ownership (math/ratio->centi-float-precision (/ added total))]
     [entity author added total ownership]))

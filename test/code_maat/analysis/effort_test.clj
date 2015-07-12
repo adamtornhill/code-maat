@@ -57,6 +57,6 @@
 (deftest identifies-main-developer-by-revisions
   (is (= (effort/as-main-developer-by-revisions shared-effort options)
          (ds/-dataset [:entity :main-dev :added :total-added :ownership]
-                      [["A" "zt" 1  3 0.33]
+                      [["A" "at" 2  3 0.67]
                        ["B" "xx" 1  1 1.0]
                        ["C" "x1" 1  2 0.5]]))))
