@@ -130,7 +130,7 @@
 (deftest git-identity-analysis
   "Git included additional churn info."
   (is (= (run-with-str-output git-log-file (git-options "identity"))
-         "loc-deleted,loc-added,author,rev,date,entity,message\n2,1,APT,2,2013-02-08,/Infrastrucure/Network/Connection.cs,git: authors and revisions implemented\n4,3,APT,2,2013-02-08,/Presentation/Status/ClientPresenter.cs,git: authors and revisions implemented\n2,18,XYZ,1,2013-02-07,/Infrastrucure/Network/Connection.cs,Report connection status\n")))
+         "author,rev,date,entity,message,loc-added,loc-deleted\nAPT,2,2013-02-08,/Infrastrucure/Network/Connection.cs,git: authors and revisions implemented,1,2\nAPT,2,2013-02-08,/Presentation/Status/ClientPresenter.cs,git: authors and revisions implemented,3,4\nXYZ,1,2013-02-07,/Infrastrucure/Network/Connection.cs,Report connection status,18,2\n")))
 
 ;; All age tests are run against a fixed 'now' time specified in the options.
 (def-data-driven-with-vcs-test analysis-of-code-age
