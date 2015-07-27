@@ -38,7 +38,7 @@
 
 (defn- usage [options-summary]
   (->> ["This is Code Maat, a program used to collect statistics from a VCS."
-        "Version: 0.9.1-SNAPSHOT"
+        "Version: 0.9.1"
         ""
         "Usage: program-name -l log-file [options]"
         ""
