@@ -1,4 +1,4 @@
-;;; Copyright (C) 2014 Adam Tornhill
+;;; Copyright (C) 2014-2015 Adam Tornhill
 ;;;
 ;;; Distributed under the GNU General Public License v3.0,
 ;;; see http://www.gnu.org/licenses/gpl.html
@@ -20,25 +20,36 @@
 ;;;   :entity => the name of the module
 ;;;   :soc    => the sum of the coupling
 
-(defn- soc-of
-  "Returns the sum of coupling for the given entity.
-    all-couplings is a seq of [couple frequency] where
-    couplig => [A B]."
-  [entity all-couplings]
+(defn- entities-by-revision
+  [ds]
   (->>
-   (filter #(some #{entity} (first %)) all-couplings)
-   (map second)
-   (reduce +)))
+   (c/as-entities-by-revision ds)
+   (map c/entities-in-rev)))
 
-(defn as-sum-of-coupling-measure
-  [ds options]
-  (let [co-changing (c/co-changing-by-revision ds options)
-        module-revs (c/module-by-revs co-changing)
-        coupled (c/coupling-frequencies co-changing)
-        modules (keys module-revs)]
-    (for [m modules
-          :let [soc (soc-of m coupled)]]
-      [m soc])))
+(defn- counted-entities
+  [entities-in-rev]
+  (let [n-couples (- (count entities-in-rev) 1)]
+    (map (fn [e] [e n-couples]) entities-in-rev)))
+
+(defn- entities-with-coupling-count-by-rev
+  [ds]
+  (->> ds
+   entities-by-revision
+   (mapcat counted-entities)))
+
+(defn as-soc
+  "Calculates a Sum of Coupling for each entity in 
+   the dataset that passes the threshold for minimum 
+   number of revisions."
+  [ds {:keys [min-revs]}]
+  (->> ds
+       entities-with-coupling-count-by-rev
+       (reduce (fn [acc [e n]]
+                 (update-in acc [e] (fnil + 0) n))
+               {})
+       (into [])
+       (filter (fn [[e n]] 
+                 (> n min-revs)))))
 
 (defn by-degree
   "Calculates the sum of coupling. Returns a seq
@@ -48,6 +59,6 @@
      (by-degree ds options :desc))
   ([ds options order-fn]
      (->>
-      (as-sum-of-coupling-measure ds options)
+      (as-soc ds options)
       (ds/-dataset [:entity :soc])
       ($order [:soc :entity] order-fn))))

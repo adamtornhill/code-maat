@@ -36,7 +36,7 @@
    (combo/selections entities 2)
    drop-mirrored-modules))
    
-(defn- as-entities-by-revision
+(defn as-entities-by-revision
   "Extracts the change set per revision
    from an Incanter dataset."
   [ds]

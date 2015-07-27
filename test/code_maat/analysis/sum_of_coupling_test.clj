@@ -18,8 +18,8 @@
 
 (def ^:const multiple (incanter/to-dataset coupled))
 
-(deftest sums-coupling-by-module
-  (is (= (coupling/as-sum-of-coupling-measure
+(deftest measures-coupling-by-entity
+  (is (= (coupling/as-soc
           multiple
           test-data/options-with-low-thresholds)
          [["A" 3] ["B" 3] ["C" 2]])))
