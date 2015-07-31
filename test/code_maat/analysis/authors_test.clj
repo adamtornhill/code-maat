@@ -10,7 +10,7 @@
   (:use clojure.test))
 
 (deftest deduces-all-authors
-  (is (= (authors/all test-data/vcsd)
+  (is (= (into #{} (authors/all test-data/vcsd))
          #{"apt" "jt"})))
 
 (deftest gives-all-authors-of-specified-module
