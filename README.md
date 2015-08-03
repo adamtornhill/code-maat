@@ -52,7 +52,7 @@ To analyze our VCS data we need to define a temporal period of interest. Over ti
 
 Note that there's a second supported Git format as well, imaginatively named `git2`. This format is more tolerant and faster to parse, so please prefer it over the plain `git` format described above:
 
-          git log --all -M -C --numstat --date=short --pretty=format:'--%h--%cd--%cn'
+          git log --all -M -C --numstat --date=short --pretty=format:'--%h--%ad--%an' --no-renames
 
 #### Generate a Mercurial log file using the following command:
 
