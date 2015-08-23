@@ -34,24 +34,19 @@
 ;; of entries that can be parsed one by one.
 ;;
 
-(defn- entry-seq-as-string
-  [e]
-  (apply str e))
-
 (defn as-entry-token
   [line-as-seq]
-  (map #(str (first %) "\n") line-as-seq))
+  (map #(str % "\n") line-as-seq))
 
 (defn- parse-entry
   [entry-token parse-fn]
-  (->
-   (entry-seq-as-string entry-token)
-   parse-fn))
+  (parse-fn entry-token))
 
 (defn- parse-entry-from
   [line-as-seq parse-fn]
   (->
-   (as-entry-token line-as-seq)
+   (s/join "\n" line-as-seq)
+   (str "\n")
    (parse-entry parse-fn)))
 
 (defn as-entry-tokens
@@ -72,7 +67,7 @@
               (vreset! acc [])
               (rf result remaining))
             (do
-              (vswap! acc conj [input])
+              (vswap! acc conj input)
               result))))))))
 
 ;;
