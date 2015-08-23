@@ -35,10 +35,6 @@
 ;; of entries that can be parsed one by one.
 ;;
 
-(defn as-entry-token
-  [line-as-seq]
-  (map #(str % "\n") line-as-seq))
-
 (defn- parse-entry
   [entry-token parse-fn]
   (parse-fn entry-token))
