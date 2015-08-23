@@ -57,32 +57,31 @@
 (defn- extend-when-complete
   "Keep each line wrapped in its own vector so that
    we're able to join them with a delimiter for the grammar."
-  [entries next-line entry-acc parse-fn]
+  [entries next-line entry-acc]
   (if (s/blank? next-line)
-    [(conj entries (parse-entry-from entry-acc parse-fn)) []]
+    [(conj entries entry-acc) []]
     [entries (conj entry-acc [next-line])]))
 
 (defn- complete-the-rest-in
   "Constructs the final entry in the version-control log.
    The entries are separated by a blank line _except_ for
    the last one that doesn't get a trailing newline."
-  [entry-acc entries parse-fn]
+  [entry-acc entries]
   (if (empty? entry-acc)
     entries
-    (conj entries (parse-entry-from entry-acc parse-fn))))
+    (conj entries entry-acc)))
 
 (defn as-entry-tokens
-  [parse-fn lines]
+  [lines]
   (loop [lines-left lines
          entry-acc []
          entries []]
     (if (empty? lines-left)
-      (complete-the-rest-in entry-acc entries parse-fn)
+      (complete-the-rest-in entry-acc entries)
       (let [next-line (first lines-left)
             [updated-entries updated-acc]  (extend-when-complete entries
                                                                  next-line
-                                                                 entry-acc
-                                                                 parse-fn)]
+                                                                 entry-acc)]
         (recur (rest lines-left) updated-acc updated-entries)))))
   
 ;;
@@ -155,7 +154,8 @@
          parse-fn (partial parse-with specific-parser)]
      (->>
       (line-seq rdr)
-      (as-entry-tokens parse-fn)
+      (as-entry-tokens)
+      (pmap #(parse-entry-from % parse-fn))
       (mapcat (partial entry-as-row field-extractors)))))
 
 (defn- encoding-from
