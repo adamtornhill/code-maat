@@ -54,36 +54,27 @@
    (as-entry-token line-as-seq)
    (parse-entry parse-fn)))
 
-(defn- extend-when-complete
-  "Keep each line wrapped in its own vector so that
-   we're able to join them with a delimiter for the grammar."
-  [entries next-line entry-acc]
-  (if (s/blank? next-line)
-    [(conj entries entry-acc) []]
-    [entries (conj entry-acc [next-line])]))
-
-(defn- complete-the-rest-in
-  "Constructs the final entry in the version-control log.
-   The entries are separated by a blank line _except_ for
-   the last one that doesn't get a trailing newline."
-  [entry-acc entries]
-  (if (empty? entry-acc)
-    entries
-    (conj entries entry-acc)))
-
 (defn as-entry-tokens
-  [lines]
-  (loop [lines-left lines
-         entry-acc []
-         entries []]
-    (if (empty? lines-left)
-      (complete-the-rest-in entry-acc entries)
-      (let [next-line (first lines-left)
-            [updated-entries updated-acc]  (extend-when-complete entries
-                                                                 next-line
-                                                                 entry-acc)]
-        (recur (rest lines-left) updated-acc updated-entries)))))
-  
+  ([lines]
+   (sequence (as-entry-tokens) lines))
+  ([]
+   (fn [rf]
+     (let [acc (volatile! [])]
+       (fn
+         ([] (rf))
+         ([result]
+          (if-let [remaining (seq @acc)]
+            (rf result remaining)
+            (rf result)))
+         ([result input]
+          (if (s/blank? input)
+            (let [remaining @acc]
+              (vreset! acc [])
+              (rf result remaining))
+            (do
+              (vswap! acc conj [input])
+              result))))))))
+
 ;;
 ;; Transform the Instaparse Hiccup vectors to our own representation (maps)
 ;;
@@ -156,7 +147,8 @@
       (line-seq rdr)
       (as-entry-tokens)
       (pmap #(parse-entry-from % parse-fn))
-      (mapcat (partial entry-as-row field-extractors)))))
+      (mapcat (partial entry-as-row field-extractors))
+      (doall))))
 
 (defn- encoding-from
   [options]
