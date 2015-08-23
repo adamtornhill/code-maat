@@ -6,6 +6,7 @@
 (ns code-maat.parsers.hiccup-based-parser
   (:import [java.io BufferedReader StringReader])
   (:require [instaparse.core :as insta]
+            [clojure.core.reducers :as r]
             [clojure.string :as s]))
 
 ;;; This module encapsulates the common functionality of parsing a
@@ -50,25 +51,23 @@
    (parse-entry parse-fn)))
 
 (defn as-entry-tokens
-  ([lines]
-   (sequence (as-entry-tokens) lines))
-  ([]
-   (fn [rf]
-     (let [acc (volatile! [])]
-       (fn
-         ([] (rf))
-         ([result]
-          (if-let [remaining (seq @acc)]
-            (rf result remaining)
-            (rf result)))
-         ([result input]
-          (if (s/blank? input)
-            (let [remaining @acc]
-              (vreset! acc [])
-              (rf result remaining))
-            (do
-              (vswap! acc conj input)
-              result))))))))
+  []
+  (fn [rf]
+    (let [acc (volatile! [])]
+      (fn
+        ([] (rf))
+        ([result]
+         (if-let [remaining (seq @acc)]
+           (rf result remaining)
+           (rf result)))
+        ([result input]
+         (if (s/blank? input)
+           (let [remaining @acc]
+             (vreset! acc [])
+             (rf result remaining))
+           (do
+             (vswap! acc conj input)
+             result)))))))
 
 ;;
 ;; Transform the Instaparse Hiccup vectors to our own representation (maps)
@@ -140,10 +139,14 @@
          parse-fn (partial parse-with specific-parser)]
      (->>
       (line-seq rdr)
-      (as-entry-tokens)
-      (pmap #(parse-entry-from % parse-fn))
-      (mapcat (partial entry-as-row field-extractors))
-      (doall))))
+      (into [] (as-entry-tokens))
+      (r/fold 32
+              (fn
+                ([] [])
+                ([a b] (r/cat a b)))
+              (fn [acc entry]
+                (conj acc (parse-entry-from entry parse-fn))))
+      (mapcat (partial entry-as-row field-extractors)))))
 
 (defn- encoding-from
   [options]
