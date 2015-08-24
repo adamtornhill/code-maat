@@ -6,6 +6,7 @@
 (ns code-maat.parsers.hiccup-based-parser
   (:import [java.io BufferedReader StringReader])
   (:require [instaparse.core :as insta]
+            [clojure.core.reducers :as r]
             [clojure.string :as s]))
 
 ;;; This module encapsulates the common functionality of parsing a
@@ -34,57 +35,36 @@
 ;; of entries that can be parsed one by one.
 ;;
 
-(defn- entry-seq-as-string
-  [e]
-  (apply str e))
-
-(defn as-entry-token
-  [line-as-seq]
-  (map #(str (first %) "\n") line-as-seq))
-
 (defn- parse-entry
   [entry-token parse-fn]
-  (->
-   (entry-seq-as-string entry-token)
-   parse-fn))
+  (parse-fn entry-token))
 
 (defn- parse-entry-from
   [line-as-seq parse-fn]
   (->
-   (as-entry-token line-as-seq)
+   (s/join "\n" line-as-seq)
+   (str "\n")
    (parse-entry parse-fn)))
 
-(defn- extend-when-complete
-  "Keep each line wrapped in its own vector so that
-   we're able to join them with a delimiter for the grammar."
-  [entries next-line entry-acc parse-fn]
-  (if (s/blank? next-line)
-    [(conj entries (parse-entry-from entry-acc parse-fn)) []]
-    [entries (conj entry-acc [next-line])]))
-
-(defn- complete-the-rest-in
-  "Constructs the final entry in the version-control log.
-   The entries are separated by a blank line _except_ for
-   the last one that doesn't get a trailing newline."
-  [entry-acc entries parse-fn]
-  (if (empty? entry-acc)
-    entries
-    (conj entries (parse-entry-from entry-acc parse-fn))))
-
 (defn as-entry-tokens
-  [parse-fn lines]
-  (loop [lines-left lines
-         entry-acc []
-         entries []]
-    (if (empty? lines-left)
-      (complete-the-rest-in entry-acc entries parse-fn)
-      (let [next-line (first lines-left)
-            [updated-entries updated-acc]  (extend-when-complete entries
-                                                                 next-line
-                                                                 entry-acc
-                                                                 parse-fn)]
-        (recur (rest lines-left) updated-acc updated-entries)))))
-  
+  []
+  (fn [rf]
+    (let [acc (volatile! [])]
+      (fn
+        ([] (rf))
+        ([result]
+         (if-let [remaining (seq @acc)]
+           (rf result remaining)
+           (rf result)))
+        ([result input]
+         (if (s/blank? input)
+           (let [remaining @acc]
+             (vreset! acc [])
+             (rf result remaining))
+           (do
+             (vswap! acc conj input)
+             result)))))))
+
 ;;
 ;; Transform the Instaparse Hiccup vectors to our own representation (maps)
 ;;
@@ -155,7 +135,13 @@
          parse-fn (partial parse-with specific-parser)]
      (->>
       (line-seq rdr)
-      (as-entry-tokens parse-fn)
+      (into [] (as-entry-tokens))
+      (r/fold 32
+              (fn
+                ([] [])
+                ([a b] (r/cat a b)))
+              (fn [acc entry]
+                (conj acc (parse-entry-from entry parse-fn))))
       (mapcat (partial entry-as-row field-extractors)))))
 
 (defn- encoding-from
