@@ -35,7 +35,7 @@
     entry     = <prelude*> prelude changes (* covers pull requests *)
     <prelude> = rev <ws> author <ws> date <ws> message <nl>
     rev       =  <'['> #'[\\da-f]+' <']'>
-    author    =  #'.+(?=\\s\\d{4}-\\d{2}-\\d{2})' (* match until the date field *)
+    author    =  #'.+?(?=\\s\\d{4}-\\d{2}-\\d{2})' (* match until the date field *)
     date      =  #'\\d{4}-\\d{2}-\\d{2}'
     message   =  #'[^\\n]*'
     changes   =  change*
