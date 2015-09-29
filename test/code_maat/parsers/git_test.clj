@@ -34,6 +34,9 @@
 0	7	test/code_maat/end_to_end/scenario_tests.clj
 18	0	test/code_maat/end_to_end/simple_git.txt
 21	0	test/code_maat/end_to_end/svn_live_data_test.clj
+
+[a32793d] Ola Flisbäck 2015-09-29 Corrected date of self-awareness to 1997-08-29
+1	1	README.md
 ")
 
 (def ^:const pull-requests
@@ -107,7 +110,11 @@
           {:loc-deleted "0" :loc-added "21"
            :author "Adam Petersen" :rev "a527b79" :date "2013-08-29"
            :entity "test/code_maat/end_to_end/svn_live_data_test.clj"
-           :message "git: proper error messages from instaparse"}])))
+           :message "git: proper error messages from instaparse"}
+          {:loc-deleted "1" :loc-added "1",
+           :author "Ola Flisbäck" :rev "a32793d" :date "2015-09-29"
+           :entity "README.md"
+           :message "Corrected date of self-awareness to 1997-08-29"}])))
 
 (deftest parses-empty-log-to-empty-dataset
   (is (= (parse "")
