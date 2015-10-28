@@ -206,7 +206,7 @@ Visualizing the result allows us to spot general trends over time:
 
 ### Churn by author
 
-The idea behind this analysis is to get an idea of the overal contributions by each individual. The analysis is invoked with the `-a author-churn"` option. The result will be given as CSV:
+The idea behind this analysis is to get an idea of the overal contributions by each individual. The analysis is invoked with the `-a author-churn` option. The result will be given as CSV:
 
              author,        added, deleted
              Adam Tornhill, 13826,    1670
