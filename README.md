@@ -172,15 +172,17 @@ By using the techniques from [Your Code as a Crime Scene](https://pragprog.com/b
 
 ![code age visualized](doc/imgs/code_age_sample.png).
 
-### Visualizing the result
+### Visualise your Results
 
-I've chosen to keep the visualizations separate from the analysis engine itself. It just gives you more flexibility. After all, CSV gives you a nice format to transform and experiment with.
+Code Maat doesn't include any visualizations itself. However, you do have a bunch of options.
 
-I present a whole suite of different visualization techniques and options in [Your Code as a Crime Scene](https://pragprog.com/book/atcrime/your-code-as-a-crime-scene), so do check out the book if you want to dive deeper. You can also look at some of the tools I've open sourced such as [Metrics Tree Map](https://github.com/adamtornhill/MetricsTreeMap):
+First there's [Empear Developer](http://empear.com/empear-developer-edition/). This is a complete application with automated repository mining and visualizations. [Empear Developer](http://empear.com/empear-developer-edition/) is built around the ideas prototyped in Code Maat.
+
+I also present a whole suite of different visualization techniques and options in [Your Code as a Crime Scene](https://pragprog.com/book/atcrime/your-code-as-a-crime-scene), so do check out the book if you want to dive deeper. You can also look at some of the basic tools I've open sourced such as [Metrics Tree Map](https://github.com/adamtornhill/MetricsTreeMap):
 
 ![coupling visualized](doc/imgs/tree_map_sample.png).
 
-An alternative is to save the generated CSV to a file and import it into a spreadsheet program such as OpenOffice or Excel. That allows us to generate charts such as the ones below:
+Yet another alternative is to save the generated CSV to a file and import it into a spreadsheet program such as OpenOffice or Excel. That allows us to generate charts such as the ones below:
 
 ![coupling visualized](doc/imgs/coupling_sample.png).
 
