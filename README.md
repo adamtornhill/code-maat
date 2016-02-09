@@ -18,7 +18,7 @@ Maat was a goddess in ancient Egyptian myth. She was the one who gave us order o
 
 ## License
 
-Copyright © 2013-2015 Adam Tornhill
+Copyright © 2013-2016 Adam Tornhill
 
 Distributed under the [GNU General Public License v3.0](http://www.gnu.org/licenses/gpl.html).
 
@@ -53,6 +53,8 @@ To analyze our VCS data we need to define a temporal period of interest. Over ti
 Note that there's a second supported Git format as well, imaginatively named `git2`. This format is more tolerant and faster to parse, so please prefer it over the plain `git` format described above:
 
           git log --all -M -C --numstat --date=short --pretty=format:'--%h--%ad--%an' --no-renames
+
+Please note that you need to invoke Code Maat differently if your input is generated on the `git2` format. You do that by specifying the `-c git2` parse option described in the section [Running Code Maat](#running-code-maat) below.
 
 #### Generate a Mercurial log file using the following command:
 
