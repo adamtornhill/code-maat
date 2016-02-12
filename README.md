@@ -52,7 +52,7 @@ To analyze our VCS data we need to define a temporal period of interest. Over ti
 
 Note that there's a second supported Git format as well, imaginatively named `git2`. This format is more tolerant and faster to parse, so please prefer it over the plain `git` format described above:
 
-          git log --all -M -C --numstat --date=short --pretty=format:'--%h--%ad--%an' --no-renames
+          git log --all --numstat --date=short --pretty=format:'--%h--%ad--%aN' --no-renames
 
 Please note that you need to invoke Code Maat differently if your input is generated on the `git2` format. You do that by specifying the `-c git2` parse option described in the section [Running Code Maat](#running-code-maat) below.
 
