@@ -48,13 +48,13 @@ To analyze our VCS data we need to define a temporal period of interest. Over ti
 
 #### Generate a git log file using the following command:
 
+This is the original log format used in the book. Use the `-c git` parse option when [Running Code Maat](#running-code-maat).
+
           git log --pretty=format:'[%h] %aN %ad %s' --date=short --numstat --after=YYYY-MM-DD
 
-Note that there's a second supported Git format as well, imaginatively named `git2`. This format is more tolerant and faster to parse, so please prefer it over the plain `git` format described above:
+There's a second supported Git format as well. It's more tolerant and faster to parse, so please prefer it over the plain `git` format described above. Use the `-c git2` parse option when [Running Code Maat](#running-code-maat).
 
           git log --all --numstat --date=short --pretty=format:'--%h--%ad--%aN' --no-renames
-
-Please note that you need to invoke Code Maat differently if your input is generated on the `git2` format. You do that by specifying the `-c git2` parse option described in the section [Running Code Maat](#running-code-maat) below.
 
 #### Generate a Mercurial log file using the following command:
 
