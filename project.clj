@@ -7,7 +7,7 @@
   :description "A toolset to mine and analyze version control data"
   :url "http://www.adamtornhill.com/code/codemaat.htm"
   :license {:name "GNU General Public License v3.0" :url "http://www.gnu.org/licenses/gpl.html"}
-  :dependencies [[org.clojure/clojure "1.7.0"]
+  :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/data.zip "0.1.1"]
 		 [incanter/incanter-core "1.5.6"]
                  [org.clojure/tools.cli "0.3.1"]
