@@ -37,6 +37,9 @@
   [selector ds]
   (reduce +
           (map as-int (ds/-select-by selector ds))))
+(defn- total-count
+  [ds]
+  (ds/-nrows ds))
 
 (defn- sum-by-group
   "Sums the given dataset by a given group and churn.
@@ -49,9 +52,10 @@
   [group grouped]
   (for [[group-entry changes] grouped
         :let [grouping (group group-entry)
+              count (total-count changes)
               added (total-churn :loc-added changes)
               deleted (total-churn :loc-deleted changes)]]
-    [grouping added deleted]))
+    [grouping added deleted count]))
 
 (defn- sum-by-author-contrib
   [grouped]
@@ -80,7 +84,7 @@
   (->>
    (ds/-group-by group ds)
    (sum-by-group group)
-   (ds/-dataset [group :added :deleted])))
+   (ds/-dataset [group :added :deleted :commits])))
 
 (defn absolutes-trend
   "Calculates the absolute code churn measures per date.
@@ -117,7 +121,7 @@
   "Returns a table specifying the ownership of
    each module. Ownership is defined as the
    amount of churn contributed by each author
-   to each entity." 
+   to each entity."
   [ds options]
   (throw-on-missing-data ds)
   (->>
@@ -171,7 +175,7 @@
   (->
    (ds/-group-by :entity ds)
    sum-by-author-contrib))
-  
+
 
 (defn by-main-developer
   "Identifies the main developer of each entity.
@@ -198,4 +202,3 @@
    (map (partial pick-main-developer removed-lines))
    (ds/-dataset [:entity :main-dev :removed :total-removed :ownership])
    (ds/-order-by :entity :asc)))
-  
