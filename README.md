@@ -63,6 +63,10 @@ There's a second supported Git format as well. It's more tolerant and faster to 
 #### Generate a Perforce log file using the following command:
 
           p4 changes -s submitted -m 5000 //depot/project/... | cut -d ' ' -f 2 | xargs -I commitid -n1 sh -c 'p4 describe -s commitid | grep -v "^\s*$" && echo ""'
+          
+#### Generate a TFS log file using the following command from a Developer command-prompt:
+
+          tf hist {workspace} /noprompt /format:detailed /recursive
 
 ### Running Code Maat
 
