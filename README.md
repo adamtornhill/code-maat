@@ -41,6 +41,7 @@ To analyze our VCS data we need to define a temporal period of interest. Over ti
 + *hg:* Ue the `--date` swith to specify the last date of interest. The value is given as `">YYYY-MM-DD"`.
 + *svn:* Use the `-r` option to specify a range of interest, for example `-r {20130820}:HEAD`.
 + *p4:* Use the `-m` option to specify the last specified number of changelists, for example `-m 1000`.
++ *tfs:* Use the `/stopafter` option to specify the number of changesets, for example `/stopafter:1000`
 
 #### Generate a Subversion log file using the following command:
 
@@ -66,7 +67,7 @@ There's a second supported Git format as well. It's more tolerant and faster to 
           
 #### Generate a TFS log file using the following command from a Developer command-prompt:
 
-          tf hist {workspace} /noprompt /format:detailed /recursive
+          tf hist /path/to/workspace /noprompt /format:detailed /recursive
 
 ### Running Code Maat
 
