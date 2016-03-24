@@ -1,0 +1,24 @@
+-----------------------------------------------------------------------------------------------------------------------
+Changeset: 71
+User: Ryan Coy
+Date: Wednesday, March 9, 2016 3:13:45 PM
+
+Comment:
+  Additional Tinkering
+
+Items:
+  edit $/Project/Project/Project/View/MainWindow.xaml
+  edit $/Project/Project/Project/ViewModel/MainViewModel.cs
+
+-----------------------------------------------------------------------------------------------------------------------
+Changeset: 70
+User: Ryan Coy
+Date: Monday, March 7, 2016 9:55:33 PM
+
+Comment:
+  Quick UI Tweaks
+
+Items:
+  edit $/Project/Project/Project/View/MainWindow.xaml
+  edit $/Project/Project/Project/ViewModel/MainViewModel.cs
+  

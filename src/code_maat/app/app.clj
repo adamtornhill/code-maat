@@ -9,6 +9,7 @@
             [code-maat.parsers.git2 :as git2]
             [code-maat.parsers.mercurial :as hg]
             [code-maat.parsers.perforce :as p4]
+            [code-maat.parsers.tfs :as tfs]
             [code-maat.parsers.xml :as xml]
             [incanter.core :as incanter]
             [clojure.string :as string]
@@ -138,6 +139,12 @@
   (run-parser-in-error-handling-context
    #(p4/parse-log logfile-name options)
    "Perforce"))
+
+(defn- tfs->modifications
+   [logfile-name options]
+   (run-parser-in-error-handling-context
+    #(tfs/parse-log logfile-name options)
+    "TFS"))
   
 (defn- parser-from
   [{:keys [version-control]}]
@@ -147,9 +154,10 @@
     "git2" git2->modifications
     "hg"   hg->modifications
     "p4"   p4->modifications
+    "tfs"  tfs->modifications
     (throw (IllegalArgumentException.
             (str "Invalid --version-control specified: " version-control
-                 ". Supported options are: svn, git, git2, hg, or p4.")))))
+                 ". Supported options are: svn, git, git2, hg, p4, or tfs.")))))
 
 (defn- aggregate-on-boundaries
   "The individual changes may be aggregated into layers
@@ -216,4 +224,3 @@
         analysis (make-analysis options)
         output! (make-output options)]
       (run-with-recovery-point analysis commits output!)))
-  
