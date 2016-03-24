@@ -4,10 +4,10 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.parsers.tfs
-	(:require [instaparse.core :as insta]
-        [clojure.string :as str]
-			  [code-maat.parsers.time-parser :as tp]
-			  [code-maat.parsers.hiccup-based-parser :as hbp]))
+  (:require [instaparse.core :as insta]
+            [clojure.string :as str]
+            [code-maat.parsers.time-parser :as tp]
+            [code-maat.parsers.hiccup-based-parser :as hbp]))
 
 ;;; This module is responsible for parsing a TFS log file.
 ;;;
@@ -49,7 +49,7 @@
     <userinfo>    = <'User: '> author <nl>
     author        = #'.+'
     <timestamp>   = <'Date: '> date <nl>
-    date          = #'\\w+day, \\w+ \\d+, \\d{4} \\d+:\\d+:\\d+ [AP]M'
+    date          = #'.+'
     message       = <'Comment:'> <nl> <'  '> #'[\\S ]+' <nl>
     changes       = <'Items:'> <nl> file*
     file          = <ws+> <action+> <'$'> #'.+' <nl?>
@@ -70,16 +70,21 @@
                              #"\r?\n\r?\n(?!-)"
                              "\r\n")))
 
-;;; TFS sample: Monday, November 2, 2015 8:16:41 AM
+;;; This matches the default EN-US format:
+;;; Wednesday, March 23, 2016 7:34:43 PM
 (def as-common-time-format (tp/time-string-converter-from "E, MMMM d, yyyy H:m:s a"))
 
+;;; The date parsing attempts to parse some common formats
 (def positional-extractors
 	"Specify a set of functions to extract the parsed values."
-  {:rev #(get-in % [1 1])
-   :date #(as-common-time-format (get-in % [3 1]))
-   :author #(get-in % [2 1])
-	 :changes #(rest (get-in % [5]))
-	 :message #(get-in % [4 1])})
+  {:rev     #(get-in % [1 1])
+   :date    (fn [entry] (let [date-string (get-in entry [3 1])]
+                (try
+                  (as-common-time-format date-string)
+                  (catch Exception e (throw (IllegalArgumentException. (str "Unsupported TFS Date Format: " date-string)))))))
+   :author  #(get-in % [2 1])
+   :changes #(rest (get-in % [5]))
+   :message #(get-in % [4 1])})
 
 (defn parse-log
 	"Transforms the given input TFS log into an 
