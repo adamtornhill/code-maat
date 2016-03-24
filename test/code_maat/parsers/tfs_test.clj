@@ -7,11 +7,25 @@
   (:require [code-maat.parsers.tfs :as tfs])
   (:use clojure.test incanter.core))
 
-(def ^:const entry
+(def ^:const en-us-entry
   "-----------------------------------------------------------------------------------------------------------------------
 Changeset: 5
 User: Ryan Coy
 Date: Thursday, July 23, 2015 4:34:31 PM
+
+Comment:
+  Created team project folder /Project via the Team Project Creation Wizard
+
+Items:
+  add $/Project
+
+")
+
+(def ^:const en-gb-entry
+  "-----------------------------------------------------------------------------------------------------------------------
+Changeset: 5
+User: Ryan Coy
+Date: 23 July 2015 16:34:31
 
 Comment:
   Created team project folder /Project via the Team Project Creation Wizard
@@ -64,13 +78,17 @@ Items:
   [text]
   (tfs/parse-read-log text {}))
 
-(deftest parses-single-entry-to-dataset
-  (is (= (parse entry)
+(deftest parses-en-us-entry-to-dataset
+  (is (= (parse en-us-entry)
          [{:author "Ryan Coy"
            :rev "5"
            :date "2015-07-23"
            :entity "/Project"
            :message "Created team project folder /Project via the Team Project Creation Wizard"}])))
+
+(deftest unparsable-date-throws-exception
+  (is (thrown? IllegalArgumentException
+        (parse en-gb-entry))))
 
 (deftest parses-multiple-entries-to-dataset
   (is (= (parse entries)
@@ -108,3 +126,4 @@ Items:
 (deftest parses-empty-log-to-empty-dataset
   (is (= (parse "")
          [])))
+
