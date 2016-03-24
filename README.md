@@ -66,6 +66,7 @@ There's a second supported Git format as well. It's more tolerant and faster to 
           p4 changes -s submitted -m 5000 //depot/project/... | cut -d ' ' -f 2 | xargs -I commitid -n1 sh -c 'p4 describe -s commitid | grep -v "^\s*$" && echo ""'
           
 #### Generate a TFS log file using the following command from a Developer command-prompt:
+###### Note:  The TFS CLI tool does not support custom date formatting.  The parser currently only supports the en-us default:  Friday, January 1, 2016 1:12:35 PM - you may need to adjust your system locale settings before using the following command.
 
           tf hist /path/to/workspace /noprompt /format:detailed /recursive
 
