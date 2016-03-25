@@ -42,12 +42,13 @@
 	 Things get parsed one-by-one for memory optimization
 	 TFS doesn't give us lines added/deleted, so we only get the core metrics"
 	"
-    changeset     = <sep> changelog userinfo timestamp message changes <nl*>
+    changeset     = <sep> changelog userinfo <proxy?> timestamp message changes <nl*>
     sep           = '-'* <nl>
     <changelog>   = <'Changeset: '> id <nl>
     id            = #'[\\d]+'
     <userinfo>    = <'User: '> author <nl>
     author        = #'.+'
+    <proxy>       = <'Checked in by: '> #'.+' <nl>
     <timestamp>   = <'Date: '> date <nl>
     date          = #'.+'
     message       = <'Comment:'> <nl> <'  '> #'[\\S ]+' <nl>
