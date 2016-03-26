@@ -122,7 +122,7 @@ Items:
            :rev "5"
            :date "2015-07-23"
            :entity "/Project"
-           :message "Created team project folder /Project via the Team Project Creation Wizard\n  ***NO_CI***"}])))
+           :message "Created team project folder /Project via the Team Project Creation Wizard\n***NO_CI***"}])))
 
 (deftest parses-proxy-checkin-to-dataset
   (is (= (parse proxy-checkin-entry)

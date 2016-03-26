@@ -88,7 +88,7 @@
    :author  #(get-in % [2 1])
    :changes #(rest (get-in % [5]))
    :message (fn [entry] (let [message (get-in entry [4])]
-                          (str/join "\n  " (rest message))))})
+                          (str/join "\n" (rest message))))})
 
 (defn parse-log
 	"Transforms the given input TFS log into an 
@@ -105,4 +105,3 @@
                       options
                       tfs-grammar
                       positional-extractors))
-
