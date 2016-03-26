@@ -21,6 +21,21 @@ Items:
 
 ")
 
+(def ^:const long-comment-entry
+  "-----------------------------------------------------------------------------------------------------------------------
+Changeset: 5
+User: Ryan Coy
+Date: Thursday, July 23, 2015 4:34:31 PM
+
+Comment:
+  Created team project folder /Project via the Team Project Creation Wizard
+  ***NO_CI***
+
+Items:
+  add $/Project
+
+")
+
 (def ^:const proxy-checkin-entry
   "-----------------------------------------------------------------------------------------------------------------------
 Changeset: 5
@@ -100,6 +115,14 @@ Items:
            :date "2015-07-23"
            :entity "/Project"
            :message "Created team project folder /Project via the Team Project Creation Wizard"}])))
+
+(deftest parses-long-comment-to-dataset
+  (is (= (parse long-comment-entry)
+         [{:author "Ryan Coy"
+           :rev "5"
+           :date "2015-07-23"
+           :entity "/Project"
+           :message "Created team project folder /Project via the Team Project Creation Wizard\n  ***NO_CI***"}])))
 
 (deftest parses-proxy-checkin-to-dataset
   (is (= (parse proxy-checkin-entry)
