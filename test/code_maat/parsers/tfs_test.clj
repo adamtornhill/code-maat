@@ -54,6 +54,29 @@ Items:
 
 ")
 
+(def ^:const policy-warning-entry
+  "-----------------------------------------------------------------------------------------------------------------------
+Changeset: 5
+User: Ryan Coy
+Date: Thursday, July 23, 2015 4:34:31 PM
+
+Comment:
+  Created team project folder /Project via the Team Project Creation Wizard
+
+Items:
+  add $/Project
+
+Policy Warnings:
+  Override Reason:
+    We don't need no comments
+
+    Not at all
+  Messages:
+    Provide a comment for the check-in.
+
+    ...or Else
+")
+
 (def ^:const en-gb-entry
   "-----------------------------------------------------------------------------------------------------------------------
 Changeset: 5
@@ -113,6 +136,14 @@ Items:
 
 (deftest parses-en-us-entry-to-dataset
   (is (= (parse en-us-entry)
+         [{:author "Ryan Coy"
+           :rev "5"
+           :date "2015-07-23"
+           :entity "/Project"
+           :message "Created team project folder /Project via the Team Project Creation Wizard"}])))
+
+(deftest parses-policy-warning-to-dataset
+  (is (= (parse policy-warning-entry)
          [{:author "Ryan Coy"
            :rev "5"
            :date "2015-07-23"
