@@ -21,6 +21,23 @@ Items:
 
 ")
 
+(def ^:const checkin-notes-entry
+  "-----------------------------------------------------------------------------------------------------------------------
+Changeset: 5
+User: Ryan Coy
+Date: Thursday, July 23, 2015 4:34:31 PM
+
+Comment:
+  Created team project folder /Project via the Team Project Creation Wizard
+
+Items:
+  add $/Project
+
+Check-in Notes:
+  Documentation:
+    An important new part of our codebase.
+")
+
 (def ^:const long-comment-entry
   "-----------------------------------------------------------------------------------------------------------------------
 Changeset: 5
@@ -136,6 +153,14 @@ Items:
 
 (deftest parses-en-us-entry-to-dataset
   (is (= (parse en-us-entry)
+         [{:author "Ryan Coy"
+           :rev "5"
+           :date "2015-07-23"
+           :entity "/Project"
+           :message "Created team project folder /Project via the Team Project Creation Wizard"}])))
+
+(deftest parses-checkin-notes-to-dataset
+  (is (= (parse checkin-notes-entry)
          [{:author "Ryan Coy"
            :rev "5"
            :date "2015-07-23"

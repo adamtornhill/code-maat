@@ -42,7 +42,7 @@
 	 Things get parsed one-by-one for memory optimization
 	 TFS doesn't give us lines added/deleted, so we only get the core metrics"
 	"
-    changeset     = <sep> changelog userinfo <proxy?> timestamp comment changes <policy?> <nl*>
+    changeset     = <sep> changelog userinfo <proxy?> timestamp comment changes <notes?> <policy?> <nl*>
     sep           = '-'* <nl>
     <changelog>   = <'Changeset: '> id <nl>
     id            = #'[\\d]+'
@@ -57,6 +57,7 @@
     changes       = <'Items:'> <nl> file*
     file          = <ws+> <action+> <'$'> #'.+' <nl?>
     action        = #'[a-zA-Z, ]+'
+    <notes>       = <'Check-in Notes:'> <nl> line*
     <policy>      = <'Policy Warnings:'> <nl> line*
     ws            = #'\\s'
     nl            = '\\r'?'\\n'")
