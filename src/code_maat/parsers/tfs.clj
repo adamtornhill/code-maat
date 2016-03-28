@@ -70,7 +70,7 @@
    be giving it an actual file"
   [input-file-text]
   (char-array  (str/replace  input-file-text
-                             #"\r?\n\r?\n(?!-)"
+                             #"\r?\n\s*\r?\n(?!-)"
                              "\r\n")))
 
 ;;; This matches the default EN-US format:

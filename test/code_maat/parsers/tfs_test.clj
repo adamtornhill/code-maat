@@ -29,6 +29,9 @@ Date: Thursday, July 23, 2015 4:34:31 PM
 
 Comment:
   Created team project folder /Project via the Team Project Creation Wizard
+  Gave project a unique and colorful name
+
+  It really is the best project.
   ***NO_CI***
 
 Items:
@@ -122,7 +125,7 @@ Items:
            :rev "5"
            :date "2015-07-23"
            :entity "/Project"
-           :message "Created team project folder /Project via the Team Project Creation Wizard\n***NO_CI***"}])))
+           :message "Created team project folder /Project via the Team Project Creation Wizard\nGave project a unique and colorful name\nIt really is the best project.\n***NO_CI***"}])))
 
 (deftest parses-proxy-checkin-to-dataset
   (is (= (parse proxy-checkin-entry)
