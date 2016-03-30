@@ -42,15 +42,18 @@
 	 Things get parsed one-by-one for memory optimization
 	 TFS doesn't give us lines added/deleted, so we only get the core metrics"
 	"
-    changeset     = <sep> changelog userinfo timestamp message changes <nl*>
+    changeset     = <sep> changelog userinfo <proxy?> timestamp comment changes <nl*>
     sep           = '-'* <nl>
     <changelog>   = <'Changeset: '> id <nl>
     id            = #'[\\d]+'
     <userinfo>    = <'User: '> author <nl>
     author        = #'.+'
+    <proxy>       = <'Checked in by: '> #'.+' <nl>
     <timestamp>   = <'Date: '> date <nl>
     date          = #'.+'
-    message       = <'Comment:'> <nl> <'  '> #'[\\S ]+' <nl>
+    <comment>     = <'Comment:'> <nl> message
+    message       = line*
+    <line>        = <'  '> #'[\\S ]+' <nl>
     changes       = <'Items:'> <nl> file*
     file          = <ws+> <action+> <'$'> #'.+' <nl?>
     action        = #'[a-zA-Z, ]+'
@@ -84,7 +87,8 @@
                   (catch Exception e (throw (IllegalArgumentException. (str "Unsupported TFS Date Format: " date-string)))))))
    :author  #(get-in % [2 1])
    :changes #(rest (get-in % [5]))
-   :message #(get-in % [4 1])})
+   :message (fn [entry] (let [message (get-in entry [4])]
+                          (str/join "\n" (rest message))))})
 
 (defn parse-log
 	"Transforms the given input TFS log into an 
@@ -101,4 +105,3 @@
                       options
                       tfs-grammar
                       positional-extractors))
-
