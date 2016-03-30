@@ -13,12 +13,15 @@ Items:
 -----------------------------------------------------------------------------------------------------------------------
 Changeset: 70
 User: Ryan Coy
+Checked in by: bld.srvr
 Date: Monday, March 7, 2016 9:55:33 PM
 
 Comment:
   Quick UI Tweaks
 
+  Better ViewModel Layout
+
 Items:
   edit $/Project/Project/Project/View/MainWindow.xaml
   edit $/Project/Project/Project/ViewModel/MainViewModel.cs
-  
+

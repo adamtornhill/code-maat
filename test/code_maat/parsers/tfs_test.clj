@@ -21,6 +21,23 @@ Items:
 
 ")
 
+(def ^:const checkin-notes-entry
+  "-----------------------------------------------------------------------------------------------------------------------
+Changeset: 5
+User: Ryan Coy
+Date: Thursday, July 23, 2015 4:34:31 PM
+
+Comment:
+  Created team project folder /Project via the Team Project Creation Wizard
+
+Items:
+  add $/Project
+
+Check-in Notes:
+  Documentation:
+    An important new part of our codebase.
+")
+
 (def ^:const long-comment-entry
   "-----------------------------------------------------------------------------------------------------------------------
 Changeset: 5
@@ -29,6 +46,9 @@ Date: Thursday, July 23, 2015 4:34:31 PM
 
 Comment:
   Created team project folder /Project via the Team Project Creation Wizard
+  Gave project a unique and colorful name
+
+  It really is the best project.
   ***NO_CI***
 
 Items:
@@ -49,6 +69,29 @@ Comment:
 Items:
   add $/Project
 
+")
+
+(def ^:const policy-warning-entry
+  "-----------------------------------------------------------------------------------------------------------------------
+Changeset: 5
+User: Ryan Coy
+Date: Thursday, July 23, 2015 4:34:31 PM
+
+Comment:
+  Created team project folder /Project via the Team Project Creation Wizard
+
+Items:
+  add $/Project
+
+Policy Warnings:
+  Override Reason:
+    We don't need no comments
+
+    Not at all
+  Messages:
+    Provide a comment for the check-in.
+
+    ...or Else
 ")
 
 (def ^:const en-gb-entry
@@ -116,13 +159,29 @@ Items:
            :entity "/Project"
            :message "Created team project folder /Project via the Team Project Creation Wizard"}])))
 
+(deftest parses-checkin-notes-to-dataset
+  (is (= (parse checkin-notes-entry)
+         [{:author "Ryan Coy"
+           :rev "5"
+           :date "2015-07-23"
+           :entity "/Project"
+           :message "Created team project folder /Project via the Team Project Creation Wizard"}])))
+
+(deftest parses-policy-warning-to-dataset
+  (is (= (parse policy-warning-entry)
+         [{:author "Ryan Coy"
+           :rev "5"
+           :date "2015-07-23"
+           :entity "/Project"
+           :message "Created team project folder /Project via the Team Project Creation Wizard"}])))
+
 (deftest parses-long-comment-to-dataset
   (is (= (parse long-comment-entry)
          [{:author "Ryan Coy"
            :rev "5"
            :date "2015-07-23"
            :entity "/Project"
-           :message "Created team project folder /Project via the Team Project Creation Wizard\n***NO_CI***"}])))
+           :message "Created team project folder /Project via the Team Project Creation Wizard\nGave project a unique and colorful name\nIt really is the best project.\n***NO_CI***"}])))
 
 (deftest parses-proxy-checkin-to-dataset
   (is (= (parse proxy-checkin-entry)
