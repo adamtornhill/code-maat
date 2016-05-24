@@ -31,6 +31,7 @@
 (ds/def-ds simple
   [{:entity "B" :rev 2 :author "ta" :date "2013-11-11" :loc-added "20" :loc-deleted "2"}
    {:entity "A" :rev 1 :author "at" :date "2013-11-10" :loc-added "10" :loc-deleted "1"}
+   {:entity "B" :rev 1 :author "at" :date "2013-11-10" :loc-added "1" :loc-deleted "1"}
    {:entity "B" :rev 3 :author "at" :date "2013-11-11" :loc-added "2" :loc-deleted "0"}])
 
 (ds/def-ds same-author
@@ -52,7 +53,7 @@
 (deftest calculates-absolute-churn-by-date
   (is (= (churn/absolutes-trend simple options)
          (ds/-dataset [:date :added :deleted :commits]
-          [{:date "2013-11-10" :added 10 :deleted 1 :commits 1}
+          [{:date "2013-11-10" :added 11 :deleted 2 :commits 1}
            {:date "2013-11-11" :added 22 :deleted 2 :commits 2}]))))
 
 (deftest binaries-are-counted-as-zero-churn
@@ -65,14 +66,14 @@
   "Get an overview of individual contributions."
   (is (= (churn/by-author simple options)
          (ds/-dataset [:author :added :deleted :commits]
-                      [{:author "at" :added 12 :deleted 1 :commits 2}
+                      [{:author "at" :added 13 :deleted 2 :commits 2}
                        {:author "ta" :added 20 :deleted 2 :commits 1}]))))
 
 (deftest calculates-churn-by-entity
   "Identify entities with the highest churn rate."
   (is (= (churn/by-entity simple options)
          (ds/-dataset [:entity :added :deleted :commits]
-                      [{:entity "B" :added 22 :deleted 2 :commits 2}
+                      [{:entity "B" :added 23 :deleted 3 :commits 3}
                        {:entity "A" :added 10 :deleted 1 :commits 1}]))))
 
 (deftest calculates-author-ownership-from-churn
@@ -80,7 +81,7 @@
           (ds/-dataset [:entity :author :added :deleted]
            [["A" "at" 10 1]
             ["B" "ta" 20 2]
-            ["B" "at" 2 0]]))))
+            ["B" "at" 3 1]]))))
 
 (deftest sums-ownership-churn-for-same-author
   "We want an aggregated number when the same author makes multiple mods."

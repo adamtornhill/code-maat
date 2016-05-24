@@ -37,9 +37,10 @@
   [selector ds]
   (reduce +
           (map as-int (ds/-select-by selector ds))))
-(defn- total-count
+
+(defn- revisions-in
   [ds]
-  (ds/-nrows ds))
+  (->> ds (ds/-select-by :rev) distinct count))
 
 (defn- sum-by-group
   "Sums the given dataset by a given group and churn.
@@ -52,7 +53,7 @@
   [group grouped]
   (for [[group-entry changes] grouped
         :let [grouping (group group-entry)
-              count (total-count changes)
+              count (revisions-in changes)
               added (total-churn :loc-added changes)
               deleted (total-churn :loc-deleted changes)]]
     [grouping added deleted count]))
