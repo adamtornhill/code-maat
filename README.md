@@ -76,7 +76,7 @@ You can run Code Maat directly from leiningen:
 
     	  lein run -l logfile.log -c <vcs>
 
-If you've built a standalone jar (`lein uberjar`), run it with a simple java invocation:
+If you've built a standalone jar (`lein uberjar`), run it with a simple java invocation. Please note that you need at least Java 8 installed:
 
      	  java -jar code-maat-0.8.6.jar -l logfile.log -c <vcs>
 
