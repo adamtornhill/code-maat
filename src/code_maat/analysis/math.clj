@@ -16,4 +16,4 @@
 
 (defn ratio->centi-float-precision
   [v]
-  (* 0.01 (m/round (* 100 (float v)))))
+  (double (with-precision 2 (bigdec v))))
