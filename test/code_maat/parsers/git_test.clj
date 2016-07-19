@@ -140,3 +140,25 @@
            :entity "project/Versions.scala"
            :message "SI-6915 Updates copyright properties to 2002-2013"}])))
 
+(def ^:private message-with-date ; Issue #35: Invalid argument/parse error with dates in Git commit messages
+  "[611a2fe] User2 2016-03-11 (JIRA-789) Some text (see mails of 2016-03-11).
+12\t3\tProject.UnitTests/Spec.cs
+3\t3\tOtherProject.UnitTests/OtherSpec.cs
+")
+
+(deftest ignores-dates-in-commit-messages
+  (is (= (parse message-with-date)
+         [{:author      "User2"
+           :date        "2016-03-11"
+           :entity      "Project.UnitTests/Spec.cs"
+           :loc-added   "12"
+           :loc-deleted "3"
+           :message     "(JIRA-789) Some text (see mails of 2016-03-11)."
+           :rev         "611a2fe"}
+           {:author      "User2"
+            :date        "2016-03-11"
+            :entity      "OtherProject.UnitTests/OtherSpec.cs"
+            :loc-added   "3"
+            :loc-deleted "3"
+            :message     "(JIRA-789) Some text (see mails of 2016-03-11)."
+            :rev         "611a2fe"}])))
