@@ -66,14 +66,6 @@
               (re-pattern (str "^" p "/")))
     :name (as-name v)}))
 
-(defn- group-specification
-  [input grammar group-map]
-  (let [parser (insta/parser grammar)]
-    (->>
-     input
-     (as-grammar-map parser)
-     (map group-map))))
-
 (defn text->group-specification
   "Transforms the given text or regular expression into a
    seq of maps specifying the grouping.
