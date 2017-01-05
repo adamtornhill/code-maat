@@ -2,7 +2,8 @@
 ;;;
 
 (ns code-maat.app.grouper
-  (:require [instaparse.core :as insta]))
+  (:require [instaparse.core :as insta])
+  (:require [clojure.string :as string]))
 
 ;;; Code Maat supports analysis according to pre-defined architectual groups.
 ;;; These groups are typically architectural boundaries. All data
@@ -12,16 +13,18 @@
 ;; ===============================
 
 (def ^:const group-grammar
-  "Here's the instaparse grammar for a grouping/layering.
-   We expect the groups to be specified as:
-     some/path => some_name
-   That is, everything on some/path will be grouped
+  "Here's the instaparse grammar for a regex-based grouping/layering.
+   We expect the groups to be specified as text:
+      some-path => some_name
+  or with a regex:
+     ^some-regexp$ => some_name
+   That is, everything matching some-path or some-regexp will be grouped
    under some_name."
   "
     <S>       = groups
     <groups>  = (group <nl*>)* | group
     group     = path <ws+> <separator> <ws+> name
-    path      = #'^[\\w/\\\\\\.\\-]+'
+    path      = #'((^[\\w/\\\\\\.\\-]+)|(\\^.+\\$))'
     separator = '=>'
     name      = #'[^\\n]+'
     ws        =  #'\\s'
@@ -57,14 +60,28 @@
 
 (defn- as-group-specification
   [v]
-  {:path (as-path v)
-   :name (as-name v)})
+  (let [p (as-path v)]
+    {:path (if (string/starts-with? p "^")
+              (re-pattern (str p))
+              (re-pattern (str "^" p "/")))
+    :name (as-name v)}))
+
+(defn- group-specification
+  [input grammar group-map]
+  (let [parser (insta/parser grammar)]
+    (->>
+     input
+     (as-grammar-map parser)
+     (map group-map))))
 
 (defn text->group-specification
-  "Transforms the given text into a
+  "Transforms the given text or regular expression into a
    seq of maps specifying the grouping.
-   Each map will have the following content:
-    {:path 'some/path' :name 'some_name'}" 
+   Each map will have a path key corresponding to a regex pattern
+   and a name key corresponding to the grouping logical name:
+    {:path #'^some/path/' :name 'some_name'}
+    or
+    {:path #'^some-regexp$' :name 'some_name'}"
   [input]
   (let [parser (insta/parser group-grammar)]
     (->>
@@ -84,7 +101,7 @@
 
 (defn- commit->commit-by-group
   [commit group-exprs]
-  (update-in commit [:entity] #(entity->logical-name % group-exprs))) 
+  (update-in commit [:entity] #(entity->logical-name % group-exprs)))
 
 (defn- within-group?
   [group-exprs entity]
@@ -94,8 +111,7 @@
 
 (defn- as-group-expr
   [{:keys [path name]}]
-  {:path-match (re-pattern (str "^" path "/"))
-   :logical-name name})
+  {:path-match path :logical-name name})
 
 (defn- as-group-exprs
   [group-spec]

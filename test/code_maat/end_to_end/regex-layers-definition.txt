@@ -1,0 +1,2 @@
+^src\/((?!.*Test.*).).*$ => Code
+^src\/.*Test.*$          => Unit Tests
