@@ -6,6 +6,9 @@
             [incanter.core :as incanter])
   (:use clojure.test))
 
+(def ^:const single-group-spec
+"/some/path => G1")
+
 (def ^:const multi-group-spec
 "/some/path => G1
 /another/path => G2")
@@ -18,51 +21,65 @@
 "/some/path => G1
 ^/another/path/\\.*$ => G2")
 
+(defn- comparable-group-spec
+  "Normalize the string (regex or text) that
+   make up the path expression"
+  [s]
+  (map #(update % :path str) s))
+
+(defn- comparable-group-spec-for
+  "Compare the hash maps that are generated
+   by the group specification"
+  [text]
+  (-> text
+      g/text->group-specification
+      comparable-group-spec))
+
 (deftest parses-specification
   (testing "Single group"
-    (let [result (g/text->group-specification "/some/path => G1")]
-     (is (= (print-str (get (nth result 0) :path)) "#\"^/some/path/\""))
-     (is (= (get (nth result 0) :name) "G1"))))
+    (is (= (comparable-group-spec-for single-group-spec)
+           (comparable-group-spec [{:path "^/some/path/"
+                                    :name "G1"}]))))
 
   (testing "Multiple text groups"
-    (let [result (g/text->group-specification multi-group-spec)]
-     (is (= (print-str (get (nth result 0) :path)) "#\"^/some/path/\""))
-     (is (= (get (nth result 0) :name) "G1"))
-     (is (= (print-str (get (nth result 1) :path)) "#\"^/another/path/\""))
-     (is (= (get (nth result 1) :name) "G2"))))
+    (is (= (comparable-group-spec-for multi-group-spec)
+           (comparable-group-spec [{:path "^/some/path/"
+                                    :name "G1"}
+                                   {:path "^/another/path/"
+                                    :name "G2"}]))))
 
   (testing "Multiple regexp groups"
-    (let [result (g/text->group-specification multi-regexp-group-spec)]
-      (is (= (print-str (get (nth result 0) :path)) "#\"^/some/path_\\w+_group1$\""))
-      (is (= (get (nth result 0) :name) "G1"))
-      (is (= (print-str (get (nth result 1) :path)) "#\"^/another/path_\\w+_group2$\""))
-      (is (= (get (nth result 1) :name) "G2"))))
+    (is (= (comparable-group-spec-for multi-regexp-group-spec)
+           (comparable-group-spec [{:path "^/some/path_\\w+_group1$"
+                                    :name "G1"}
+                                   {:path "^/another/path_\\w+_group2$"
+                                    :name "G2"}]))))
 
   (testing "Multiple text and regexp groups"
-    (let [result (g/text->group-specification multi-mixed-group-spec)]
-      (is (= (print-str (get (nth result 0) :path)) "#\"^/some/path/\""))
-      (is (= (get (nth result 0) :name) "G1"))
-      (is (= (print-str (get (nth result 1) :path)) "#\"^/another/path/\\.*$\""))
-      (is (= (get (nth result 1) :name) "G2"))))
+    (is (= (comparable-group-spec-for multi-mixed-group-spec)
+           (comparable-group-spec [{:path "^/some/path/"
+                                    :name "G1"}
+                                   {:path "^/another/path/\\.*$"
+                                    :name "G2"}]))))
 
   (testing "No groups"
     (is (= (g/text->group-specification "")
            [])))
 
   (testing "With backslash"
-    (let [result (g/text->group-specification "/some\\\\path => G1")]
-     (is (= (print-str (get (nth result 0) :path)) "#\"^/some\\\\path/\""))
-     (is (= (get (nth result 0) :name) "G1"))))
+    (is (= (comparable-group-spec-for "/some\\\\path => G1")
+           (comparable-group-spec [{:path "^/some\\\\path/"
+                                    :name "G1"}]))))
 
    (testing "With dot in filename"
-    (let [result (g/text->group-specification "/some/path/with.dot => G1")]
-      (is (= (print-str (get (nth result 0) :path)) "#\"^/some/path/with.dot/\""))
-      (is (= (get (nth result 0) :name) "G1"))))
+    (is (= (comparable-group-spec-for "/some/path/with.dot => G1")
+           (comparable-group-spec [{:path "^/some/path/with.dot/"
+                                    :name "G1"}]))))
 
    (testing "With dash in filename"
-    (let [result (g/text->group-specification "/some/path/with-dash/x => G1")]
-      (is (= (print-str (get (nth result 0) :path)) "#\"^/some/path/with-dash/x/\""))
-      (is (= (get (nth result 0) :name) "G1")))))
+    (is (= (comparable-group-spec-for "/some/path/with-dash/x => G1")
+           (comparable-group-spec [{:path "^/some/path/with-dash/x/"
+                                    :name "G1"}])))))
 
 (def ^:const entities-in-same-layer [{:entity "Top/A" :rev 1}
                                      {:entity "Top/B" :rev 2}])

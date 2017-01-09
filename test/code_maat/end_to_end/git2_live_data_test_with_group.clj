@@ -12,6 +12,10 @@
 (def ^:const regex-group-file "./test/code_maat/end_to_end/regex-layers-definition.txt")
 (def ^:const regex-and-text-group-file "./test/code_maat/end_to_end/regex-and-text-layers-definition.txt")
 
+(defn- join-lines
+  [lines]
+  (clojure.string/join "\n" (conj lines "")))
+
 (deftest parses-live-data-with-text-groups
   (is (= (with-out-str
            (app/run git-log-file
@@ -19,10 +23,10 @@
                      :analysis "revisions"
                      :group text-group-file
                      }))
-         (clojure.string/join "\n"
-          ["entity,n-revs"
-           "Interactive Layer,3"
-           "Editor Layer,3\n"
+         (join-lines
+           ["entity,n-revs"
+            "Interactive Layer,3"
+            "Editor Layer,3"
            ]))))
 
 (deftest parses-live-data-with-regex-groups
@@ -32,10 +36,10 @@
                      :analysis "revisions"
                      :group regex-group-file
                      }))
-         (clojure.string/join "\n"
-          ["entity,n-revs"
-           "Code,7"
-           "Unit Tests,4\n"
+         (join-lines
+           ["entity,n-revs"
+            "Code,7"
+            "Unit Tests,4"
            ]))))
 
 (deftest parses-live-data-with-regex-and-text-groups
@@ -45,10 +49,10 @@
                      :analysis "revisions"
                      :group regex-and-text-group-file
                      }))
-         (clojure.string/join "\n"
-          ["entity,n-revs"
-           "Core,4"
-           "CS Tests,2"
-           "Images,1"
-           "VB Tests,1\n"
+         (join-lines
+           ["entity,n-revs"
+            "Core,4"
+            "CS Tests,2"
+            "Images,1"
+            "VB Tests,1"
            ]))))
