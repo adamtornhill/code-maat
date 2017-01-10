@@ -1,0 +1,4 @@
+src/Features/Core      => Core
+^src\/.*\/.*Tests\.cs$ => CS Tests
+^src\/.*\/.*Tests\.vb$ => VB Tests
+^src\/.*\.png$         => Images
