@@ -18,7 +18,7 @@ Maat was a goddess in ancient Egyptian myth. She was the one who gave us order o
 
 ## License
 
-Copyright © 2013-2016 Adam Tornhill
+Copyright © 2013 Adam Tornhill
 
 Distributed under the [GNU General Public License v3.0](http://www.gnu.org/licenses/gpl.html).
 

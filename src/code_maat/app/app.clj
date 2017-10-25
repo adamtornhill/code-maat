@@ -1,4 +1,4 @@
-;;; Copyright (C) 2013-2015 Adam Tornhill
+;;; Copyright (C) 2013 Adam Tornhill
 ;;;
 ;;; Distributed under the GNU General Public License v3.0,
 ;;; see http://www.gnu.org/licenses/gpl.html
@@ -23,6 +23,7 @@
             [code-maat.analysis.effort :as effort]
             [code-maat.app.grouper :as grouper]
             [code-maat.app.time-based-grouper :as time-grouper]
+            [code-maat.app.team-mapper :as team-mapper]
             [code-maat.analysis.communication :as communication]
             [code-maat.analysis.commit-messages :as commits]
             [code-maat.analysis.code-age :as age]))
@@ -180,6 +181,14 @@
     (time-grouper/run commits time-period)
     commits))
 
+(defn- aggregate-authors-in-teams
+  "Maps individual authors to teams in order to calculate social
+   metrics on an organizational level."
+  [options commits]
+  (if-let [team-map-file (:team-map-file options)]
+    (team-mapper/run commits (team-mapper/file->author-team-lookup team-map-file))
+    commits))
+
 (defn- make-stdout-output [options]
   (if-let [n-out-rows (:rows options)]
     #(csv-output/write-to :stream % n-out-rows)
@@ -210,6 +219,7 @@
    (vcs-parser logfile-name options)
    (aggregate-on-boundaries options)
    (aggregate-on-temporal-period options)
+   (aggregate-authors-in-teams options)
    incanter/to-dataset))
 
 (defn run
