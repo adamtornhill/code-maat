@@ -19,6 +19,7 @@
    ["-r" "--rows ROWS" "Max rows in output" :parse-fn #(Integer/parseInt %)]
    ["-o" "--outfile OUTFILE" "Write the result to the given file name"]
    ["-g" "--group GROUP" "A file with a pre-defined set of layers. The data will be aggregated according to the group of layers."]
+   ["-p" "--team-map-file TEAM-MAP-FILE" "A CSV file with author,team that translates individuals into teams."]
    ["-n" "--min-revs MIN-REVS" "Minimum number of revisions to include an entity in the analysis"
     :default 5 :parse-fn #(Integer/parseInt %)]
    ["-m" "--min-shared-revs MIN-SHARED-REVS" "Minimum number of shared revisions to include an entity in the analysis"
