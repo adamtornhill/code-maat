@@ -66,7 +66,7 @@ This is the original log format used in the book. Use the `-c git` parse option 
 
 There's a second supported Git format as well. It's more tolerant and faster to parse, so please prefer it over the plain `git` format described above. Use the `-c git2` parse option when [Running Code Maat](#running-code-maat).
 
-          git log --all --numstat --date=short --pretty=format:'--%h--%ad--%aN' --no-renames
+          git log --all --numstat --date=short --pretty=format:'--%h--%ad--%aN' --no-renames --after=YYYY-MM-DD
 
 #### Generate a Mercurial log file using the following command:
 
