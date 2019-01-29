@@ -7,7 +7,7 @@ Code Maat is a command line tool used to mine and analyze data from version-cont
 Code Maat was developed to accompany the discussions in my books [Your Code as a Crime Scene](https://pragprog.com/book/atcrime/your-code-as-a-crime-scene) and
 [Software Design X-Rays](https://pragprog.com/book/atevol/software-design-x-rays).
 
-Note that the analyses have evolved into [codescene.io](https://codescene.io/), which automates all the analyses found in Code Maat and several new ones.
+Note that the analyses have evolved into [CodeScene](https://codescene.io/), which automates all the analyses found in Code Maat and several new ones.
 
 [![](https://codescene.io/projects/87/status.svg) Get more details at **codescene.io**.](https://codescene.io/projects/87/jobs/latest-successful/results)
 
@@ -60,13 +60,23 @@ To analyze our VCS data we need to define a temporal period of interest. Over ti
 
 #### Generate a git log file using the following command:
 
-This is the original log format used in the book. Use the `-c git` parse option when [Running Code Maat](#running-code-maat).
+The first options is the legacy format used in Your Code As A Crime Scene. Use the `-c git` parse option when [Running Code Maat](#running-code-maat).
 
           git log --pretty=format:'[%h] %aN %ad %s' --date=short --numstat --after=YYYY-MM-DD
 
 There's a second supported Git format as well. It's more tolerant and faster to parse, so please prefer it over the plain `git` format described above. Use the `-c git2` parse option when [Running Code Maat](#running-code-maat).
 
           git log --all --numstat --date=short --pretty=format:'--%h--%ad--%aN' --no-renames --after=YYYY-MM-DD
+
+Many codebases include third-party content or non-code artefacts,  which might generate noise in the analyses.
+You can exclude such content via git's pathspecs that limit paths on the command line.
+For example, let's say you want to exclude everything in a `vendor/ folder`. You would then append the following pattern to the `git log` commands above:
+
+           -- . ":(exclude)vendor/*"
+
+To exclude multiple folders, you just append more pathspecs:
+
+           -- . ":(exclude)vendor/" ":(exclude)test/"
 
 #### Generate a Mercurial log file using the following command:
 
