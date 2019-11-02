@@ -49,7 +49,7 @@ Code Maat operates on log files from version-control systems. The supported vers
 
 To analyze our VCS data we need to define a temporal period of interest. Over time, many design issues do get fixed and we don't want old data to interfere with our current analysis of the code. To limit the data Code Maat will consider, use one of the following flags depending on your version-control system:
 + *git:* Use the `--after=<date>` to specify the last date of interest. The `<date>` is given as `YYYY-MM-DD`.
-+ *hg:* Ue the `--date` swith to specify the last date of interest. The value is given as `">YYYY-MM-DD"`.
++ *hg:* Use the `--date` switch to specify the last date of interest. The value is given as `">YYYY-MM-DD"`.
 + *svn:* Use the `-r` option to specify a range of interest, for example `-r {20130820}:HEAD`.
 + *p4:* Use the `-m` option to specify the last specified number of changelists, for example `-m 1000`.
 + *tfs:* Use the `/stopafter` option to specify the number of changesets, for example `/stopafter:1000`
@@ -243,7 +243,7 @@ Visualizing the result allows us to spot general trends over time:
 
 ### Churn by author
 
-The idea behind this analysis is to get an idea of the overal contributions by each individual. The analysis is invoked with the `-a author-churn` option. The result will be given as CSV:
+The idea behind this analysis is to get an idea of the overall contributions by each individual. The analysis is invoked with the `-a author-churn` option. The result will be given as CSV:
 
              author,        added, deleted
              Adam Tornhill, 13826,    1670
@@ -261,7 +261,7 @@ Note: Some research suggests that relative churn measures are better, while othe
 
 ## Ownership patterns
 
-Once we have mined the organizational metrics descibed above, we may find we have multiple developers working on the same modules. How is their effort distributed? Does a particular module have a major developer or is everyone contributing a small piece? Let's find out by running the `-a entity-ownership` analysis. This analysis gives us the following output:
+Once we have mined the organizational metrics described above, we may find we have multiple developers working on the same modules. How is their effort distributed? Does a particular module have a major developer or is everyone contributing a small piece? Let's find out by running the `-a entity-ownership` analysis. This analysis gives us the following output:
 
              entity,               author,  added, deleted
              analysis/authors.clj,    apt,    164,      98
@@ -279,7 +279,7 @@ Another ownership view is to consider the effort spent by individual authors on 
              analysis/authors.clj,     apt,           1,         10
              ...
 
-This information may be a useful guide to find the right author to discuss functionality and potential refactoringswith. Just note that the ownership metrics are sensitive to the same biases as the churn metrics; they're both heuristics and no absolute truths.
+This information may be a useful guide to find the right author to discuss functionality and potential refactorings with. Just note that the ownership metrics are sensitive to the same biases as the churn metrics; they're both heuristics and no absolute truths.
 
 ## Temporal periods
 
@@ -291,7 +291,7 @@ Code Maat supports an `identity` analysis. By using this switch, Code Maat will 
 
 ### JVM options
 
-Code Maat uses the Incanter library. By default, Incanter will create an `awt frame`. You can surpress the frame by providing the following option to your `java` command: `-Djava.awt.headless=true`.
+Code Maat uses the Incanter library. By default, Incanter will create an `awt frame`. You can suppress the frame by providing the following option to your `java` command: `-Djava.awt.headless=true`.
 Code Maat is quite memory hungry, particularly when working with larger change sets. Thus, I recommend specifying a larger heap size than the `JVM` defaults: `-Xmx4g`.
 Note that when running Code Maat through [leiningen](https://github.com/technomancy/leiningen), those options are already configured in the `project.clj` file.
 
