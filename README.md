@@ -9,7 +9,7 @@ Code Maat was developed to accompany the discussions in my books [Your Code as a
 
 Note that the analyses have evolved into [CodeScene](https://codescene.io/), which automates all the analyses found in Code Maat and several new ones.
 
-[![](https://codescene.io/projects/87/status.svg) Get more details at **codescene.io**.](https://codescene.io/projects/87/jobs/latest-successful/results)
+[![](https://codescene.io/projects/6410/status.svg) Get more details at **codescene.io**.](https://codescene.io/projects/6410/jobs/latest-successful/results)
 
 ## The ideas behind Code Maat
 
