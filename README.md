@@ -11,11 +11,11 @@ Note that the analyses have evolved into [CodeScene](https://codescene.io/), whi
 
 ## Code Maat Badges
 
-[![CodeScene general](https://codescene.io/images/analyzed-by-codescene-badge.svg)](https://codescene.io/projects/87)
+[![CodeScene general](https://codescene.io/images/analyzed-by-codescene-badge.svg)](https://codescene.io/projects/6410/jobs/latest-successful/results)
 
-[![CodeScene Code Health](https://codescene.io/projects/87/status-badges/code-health)](https://codescene.io/projects/87)
+[![CodeScene Code Health](https://codescene.io/projects/87/status-badges/code-health)](https://codescene.io/projects/6410/jobs/latest-successful/results)
 
-[![CodeScene System Mastery](https://codescene.io/projects/87/status-badges/system-mastery)](https://codescene.io/projects/87)
+[![CodeScene System Mastery](https://codescene.io/projects/87/status-badges/system-mastery)](https://codescene.io/projects/6410/jobs/latest-successful/results)
 
 ## The ideas behind Code Maat
 
