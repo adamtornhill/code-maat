@@ -291,6 +291,24 @@ This information may be a useful guide to find the right author to discuss funct
 
 Sometimes we'd like to find patterns that manifests themselves over multiple commits. Code Maat provides the `--temporal-period` switch that let you consider all commits within a day as a logical change. Just provide the switch and add a digit - in the future that digit may even mean something; Right now the aggregation is limited to commits within a single day.
 
+## Architectural level analyses
+
+Using the `-g` flag lets you specify a mapping from individual files to logical components. This feature makes it possible to
+scale the analyses to an architectural level and get hotspots, knowledge metrics, etc. on the level of sub-systems.
+
+There are some sample mapping files in the `end_to_end` test folder, for
+example [this one](https://github.com/adamtornhill/code-maat/blob/ebd2b757ae31510b5cf52d0e11fafa82a7e062d1/test/code_maat/end_to_end/regex-and-text-layers-definition.txt)
+
+The format is `regex_pattern => logical_group_name`:
+
+```
+src/Features/Core      => Core
+^src\/.*\/.*Tests\.cs$ => CS Tests
+```
+
+Code Maat takes everything that matches a regex and analyses it as a
+holistic whole by aggregating all file contributions for the matches.
+
 ### Intermediate results
 
 Code Maat supports an `identity` analysis. By using this switch, Code Maat will output the intermediate parse result of the raw VCS file. This can be useful either as a debug aid or as input to other tools.
