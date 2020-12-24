@@ -25,7 +25,7 @@
     `(do
        ~@(for [i (range (count values))]
            (let [value (nth values i)
-                 name (symbol (str name "-" value))] 
+                 name (symbol (str name "-" value))]
              `(deftest ~name
                 (let [~param ~value]
                   ~@body)))))))

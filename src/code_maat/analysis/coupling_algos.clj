@@ -34,7 +34,7 @@
   (->
    (combo/selections entities 2)
    drop-mirrored-modules))
-   
+
 (defn as-entities-by-revision
   "Extracts the change set per revision
    from an Incanter dataset."
@@ -68,7 +68,7 @@
    its number of revisions as value.
    This is used when calculating the degree
    of coupling later."
-  [all-co-changing] 
+  [all-co-changing]
   (->
    (mapcat modules-in-one-rev all-co-changing)
    frequencies))

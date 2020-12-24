@@ -44,4 +44,4 @@
                            parse-options
                            entity-date-extractor-fn)
                   make-entries-limited-seq)]
-  (limitter parse-options s)))
+    (limitter parse-options s)))

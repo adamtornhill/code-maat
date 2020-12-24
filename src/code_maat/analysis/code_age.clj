@@ -70,4 +70,3 @@
    (entities-by-latest-modification (time-now options))
    (ds/-dataset [:entity :age-months])
    (ds/-order-by [:age-months] :asc)))
-  

@@ -10,7 +10,7 @@
 ;;; This module is responsible for parsing a git log file.
 ;;;
 ;;; Input: a log file generated with the following command:
-;;;         
+;;;
 ;;;    git log --pretty=format:'[%h] %an %ad %s' --date=short --numstat
 ;;;
 ;;; Ouput: A sequence of maps where each map represents a change entry
@@ -59,7 +59,7 @@
 
 (defn parse-log
   "Transforms the given input git log into an
-   Incanter dataset suitable for the analysis modules." 
+   Incanter dataset suitable for the analysis modules."
   [input-file-name options]
   (hbp/parse-log input-file-name
                  options

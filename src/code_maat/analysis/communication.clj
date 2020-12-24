@@ -33,7 +33,7 @@
 ;;; give us a fast way to look-up the total number of
 ;;; commits for an author.
 
-(defn- authorship-combos 
+(defn- authorship-combos
   [authors]
   (combo/selections authors 2))
 
@@ -88,7 +88,7 @@
    shared work by the authors on different entities.
    Returns a dataset containing pairs of all permutations
    of authors with a (heuristic) communication strength
-   value for each pair." 
+   value for each pair."
   [ds options]
   (->>
    (effort/as-revisions-per-author ds options)
@@ -98,4 +98,3 @@
    with-commit-stats
    (ds/-dataset [:author :peer :shared :average :strength])
    (ds/-order-by [:strength :author] :desc)))
-
