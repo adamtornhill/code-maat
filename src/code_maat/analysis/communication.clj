@@ -8,8 +8,7 @@
             [code-maat.analysis.effort :as effort]
             [clojure.math.combinatorics :as combo]
             [code-maat.analysis.math :as m]
-            [clojure.math.numeric-tower :as math]
-            [incanter.core :as incanter]))
+            [clojure.math.numeric-tower :as math]))
 
 ;;; This module attempts to give some heuristics on
 ;;; the communication needs of a project.

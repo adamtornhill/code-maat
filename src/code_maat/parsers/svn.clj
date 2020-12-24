@@ -5,9 +5,7 @@
 
 (ns code-maat.parsers.svn
   (:use [clojure.data.zip.xml :only (attr text xml-> xml1->)]) ; dep: see below
-  (:require [clojure.xml :as xml]
-            [clojure.zip :as zip]
-            [code-maat.parsers.time-parser :as tp]
+  (:require [code-maat.parsers.time-parser :as tp]
             [clojure.string :as s]))
 
 ;;; This module contains functionality for parsing a generated SVN log

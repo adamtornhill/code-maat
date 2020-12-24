@@ -4,8 +4,7 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.parsers.perforce
-  (:require [instaparse.core :as insta]
-            [code-maat.parsers.time-parser :as tp]
+  (:require [code-maat.parsers.time-parser :as tp]
             [code-maat.parsers.hiccup-based-parser :as hbp]))
 
 ;;; This module is responsible for parsing a perforce log file.

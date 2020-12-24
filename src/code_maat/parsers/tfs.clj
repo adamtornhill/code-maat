@@ -4,8 +4,7 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.parsers.tfs
-  (:require [instaparse.core :as insta]
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
             [code-maat.parsers.time-parser :as tp]
             [code-maat.parsers.hiccup-based-parser :as hbp]))
 

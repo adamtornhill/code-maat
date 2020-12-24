@@ -6,9 +6,7 @@
 (ns code-maat.analysis.code-age
   (:require [code-maat.dataset.dataset :as ds]
             [code-maat.parsers.time-parser :as tp]
-            [clj-time.core :as tc]
-            [clojure.string :as str]
-            [code-maat.analysis.math :as math]))
+            [clj-time.core :as tc]))
 
 ;;; The following analysis is inspired by Dan North's presentation
 ;;; on keeping a short software half-life.

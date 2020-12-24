@@ -3,8 +3,7 @@
 ;;; Distributed under the GNU General Public License v3.0,
 ;;; see http://www.gnu.org/licenses/gpl.html
 
-(ns code-maat.analysis.math
-  (:require [clojure.math.numeric-tower :as m]))
+(ns code-maat.analysis.math)
 
 (defn average [& vals]
   (/

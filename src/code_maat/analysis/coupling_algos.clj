@@ -6,7 +6,6 @@
 (ns code-maat.analysis.coupling-algos
   (:require [clojure.math.combinatorics :as combo]
             [code-maat.dataset.dataset :as ds]
-            [code-maat.analysis.math :as m]
             [clojure.math.numeric-tower :as math])
   (:use incanter.core))
 

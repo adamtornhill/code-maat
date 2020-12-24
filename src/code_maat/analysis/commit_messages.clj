@@ -5,8 +5,7 @@
 
 (ns code-maat.analysis.commit-messages
   (:require [code-maat.dataset.dataset :as dataset]
-            [incanter.core :as incanter]
-            [code-maat.analysis.math :as math]))
+            [incanter.core :as incanter]))
 
 ;;; This module helps you analyze version-control data
 ;;; based on commit messages.

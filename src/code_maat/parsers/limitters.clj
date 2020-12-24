@@ -4,8 +4,7 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.parsers.limitters
-  (:require [clj-time.core :as clj-time]
-            [clj-time.format :as time-format]))
+  (:require [clj-time.core :as clj-time]))
 
 ;;; The input from a VCS log is filtered (optionally) on both
 ;;; the total number of entries considered as well as a specified
