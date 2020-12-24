@@ -7,6 +7,7 @@
   (:import [java.io BufferedReader StringReader])
   (:require [instaparse.core :as insta]
             [clojure.core.reducers :as r]
+            [clojure.java.io :as io]
             [clojure.string :as s]))
 
 ;;; This module encapsulates the common functionality of parsing a
@@ -153,7 +154,7 @@
   "Transforms the given input git log into a
    seq of maps suitable for the analysis modules."
   [input-file-name options grammar field-extractors]
-  (with-open [rdr (clojure.java.io/reader
+  (with-open [rdr (io/reader
                    input-file-name
                    :encoding (encoding-from options))]
     (parse-from rdr grammar field-extractors)))
