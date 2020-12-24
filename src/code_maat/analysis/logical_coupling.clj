@@ -7,8 +7,8 @@
   (:require [code-maat.analysis.coupling-algos :as c]
             [code-maat.dataset.dataset :as ds]
             [code-maat.analysis.math :as m]
-            [clojure.math.numeric-tower :as math])
-  (:use incanter.core))
+            [clojure.math.numeric-tower :as math]
+            [incanter.core :as incanter]))
 
 ;;; This module calculates the logical coupling of all modules.
 ;;;
@@ -48,11 +48,10 @@
    the number of shared commits between coupled entities divided
    by the average number of total commits for the coupled entities."
   ([ds options]
-     (by-degree ds options :desc))
+   (by-degree ds options :desc))
   ([ds options order-fn]
-     (->>
-      (partial c/within-threshold? options)
-      (as-logical-coupling-measure ds options)
-      (ds/-dataset [:entity :coupled :degree :average-revs])
-      ($order [:degree :average-revs] order-fn))))
-
+   (->>
+    (partial c/within-threshold? options)
+    (as-logical-coupling-measure ds options)
+    (ds/-dataset [:entity :coupled :degree :average-revs])
+    (incanter/$order [:degree :average-revs] order-fn))))

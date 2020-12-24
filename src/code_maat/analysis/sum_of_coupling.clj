@@ -5,8 +5,8 @@
 
 (ns code-maat.analysis.sum-of-coupling
   (:require [code-maat.dataset.dataset :as ds]
-            [code-maat.analysis.coupling-algos :as c])
-  (:use incanter.core))
+            [code-maat.analysis.coupling-algos :as c]
+            [incanter.core :as incanter]))
 
 ;;; This module calculates the sum of the temporal coupling for each module.
 ;;;
@@ -58,7 +58,7 @@
   ([ds options]
      (by-degree ds options :desc))
   ([ds options order-fn]
-     (->>
-      (as-soc ds options)
-      (ds/-dataset [:entity :soc])
-      ($order [:soc :entity] order-fn))))
+   (->>
+    (as-soc ds options)
+    (ds/-dataset [:entity :soc])
+    (incanter/$order [:soc :entity] order-fn))))

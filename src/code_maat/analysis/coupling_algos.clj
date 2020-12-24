@@ -6,8 +6,8 @@
 (ns code-maat.analysis.coupling-algos
   (:require [clojure.math.combinatorics :as combo]
             [code-maat.dataset.dataset :as ds]
-            [clojure.math.numeric-tower :as math])
-  (:use incanter.core))
+            [clojure.math.numeric-tower :as math]
+            [incanter.core :as incanter]))
 
 ;;; This module contains the shared algorithms for the
 ;;; different coupling measures.
@@ -40,7 +40,7 @@
    from an Incanter dataset."
   [ds]
   (->>
-   ($ [:rev :entity] ds) ; minimal
+   (incanter/$ [:rev :entity] ds) ; minimal
    (ds/-group-by :rev)
    (map second)))
 
