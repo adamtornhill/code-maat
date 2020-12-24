@@ -83,12 +83,13 @@
 (defn- churn-stats? [c]
   (= :change (get-in c [0])))
 
-(defn- file-stats [change]
+(defn- file-stats
   "The file statistics are at least the name of the file.
    Some VCS (git) allows me to easily include churn stats.
    If they're available, I parse them too.
    Example:
     [[:change [:added 10] [:deleted 9] [:file src/code_maat/parsers/git.clj]]"
+  [change]
   (if (churn-stats? change)
     {:name (get-in change [3 1])
      :added (get-in change [1 1])

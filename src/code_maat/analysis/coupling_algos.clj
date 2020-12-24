@@ -88,10 +88,10 @@
    (map as-co-changing-modules)))
 
 (defn coupling-frequencies
-  [co-changing]
   "Returns a map with pairs of coupled
    modules (pairs) as keyes and their
    number of shared revisions as value."
+  [co-changing]
   (->
    (apply concat co-changing)
    drop-duplicates ; remember: included to get the right total revisions

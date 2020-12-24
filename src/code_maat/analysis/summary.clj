@@ -12,11 +12,11 @@
 ;;; The intent is to provide an overview of the data under analysis.
 
 (defn calculate-summary
-  [ds]
   "Calculates a summary for the data we'll analyze.
    Note that the results may differ from the ones in
    the VCS log since empty change sets (such as merges) are
-   ignored in the mining." 
+   ignored in the mining."
+  [ds]
   [["number-of-commits" (count (entities/all-revisions ds))]
    ["number-of-entities" (count (entities/all ds))]
    ["number-of-entities-changed" (ds/-nrows ds)]
