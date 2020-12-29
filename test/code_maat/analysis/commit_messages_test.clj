@@ -6,7 +6,8 @@
 (ns code-maat.analysis.commit-messages-test
   (:require [code-maat.analysis.commit-messages :as c]
             [code-maat.analysis.test-data :as td]
-             [code-maat.dataset.dataset :as ds])
+            [code-maat.dataset.dataset :as ds]
+            [incanter.core :as incanter])
   (:use clojure.test))
 
 (defn- as-option
@@ -23,4 +24,26 @@
   (is (= (c/by-word-frequency td/vcsd (as-option "no match for this"))
          (ds/-dataset [:entity :matches]
                       []))))
+
+(defn- run-messages-analysis
+  [commits]
+  (-> commits
+      incanter/to-dataset
+      (c/by-word-frequency (as-option "change"))))
+
+(deftest detects-absent-message-fields ; not all supported version-control formats include a commit message
+  (testing "No commit messages triggers exception"
+    (is (thrown? IllegalArgumentException
+                 (run-messages-analysis [{:author "apt" :entity "A" :rev 1 :message "-"}
+                                         {:author "apt" :entity "B" :rev 2 :message "-"}]))))
+  (testing "Empy dataset is valid"
+    (is (= (run-messages-analysis [])
+           (ds/-dataset [:entity :matches]
+                        []))))
+  (testing "Valid, if any commit has a message"
+    (is (= (run-messages-analysis [{:author "apt" :entity "A" :rev 1 :message "-"}
+                                   {:author "apt" :entity "B" :rev 2 :message "some change message"}])
+           (ds/-dataset [:entity :matches]
+                        [["B" 1]])))))
+
   
