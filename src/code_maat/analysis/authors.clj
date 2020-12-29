@@ -26,12 +26,6 @@
   [ds]
   (distinct (ds/-select-by :author ds)))
 
-(defn entity-with-author-count
-  "Calculates the number of different authors for the given module, m.
-   Returns a tuple of [entity-name number-of-distinct-authors]."
-  [m ds]
-  [m (ds/-nrows (of-module m ds))])
-
 (defn- authors-of-entity
   [entity-group]
   (->>
@@ -59,16 +53,9 @@
    Returns a dataset with the columns :entity :n-authors."
   ([ds options]
      (by-count ds options :desc))
-  ([ds options order-fn]
+  ([ds _options order-fn]
    (->> ds
         (ds/-group-by :entity)
         (map make-entity-with-author-count)
         (ds/-dataset [:entity :n-authors :n-revs])
         (ds/-order-by [:n-authors :n-revs] order-fn))))
-
-(defn all-authors
-  [ds]
-  (->> ds
-       all
-       (ds/-dataset [:author])
-       (ds/-order-by [:author] :asc)))
