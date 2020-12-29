@@ -67,7 +67,7 @@
         (ds/-order-by [:n-authors :n-revs] order-fn))))
 
 (defn all-authors
-  [ds options]
+  [ds]
   (->> ds
        all
        (ds/-dataset [:author])

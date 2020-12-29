@@ -6,9 +6,8 @@
 (ns code-maat.analysis.coupling-algos
   (:require [clojure.math.combinatorics :as combo]
             [code-maat.dataset.dataset :as ds]
-            [code-maat.analysis.math :as m]
-            [clojure.math.numeric-tower :as math])
-  (:use incanter.core))
+            [clojure.math.numeric-tower :as math]
+            [incanter.core :as incanter]))
 
 ;;; This module contains the shared algorithms for the
 ;;; different coupling measures.
@@ -35,13 +34,13 @@
   (->
    (combo/selections entities 2)
    drop-mirrored-modules))
-   
+
 (defn as-entities-by-revision
   "Extracts the change set per revision
    from an Incanter dataset."
   [ds]
   (->>
-   ($ [:rev :entity] ds) ; minimal
+   (incanter/$ [:rev :entity] ds) ; minimal
    (ds/-group-by :rev)
    (map second)))
 
@@ -69,7 +68,7 @@
    its number of revisions as value.
    This is used when calculating the degree
    of coupling later."
-  [all-co-changing] 
+  [all-co-changing]
   (->
    (mapcat modules-in-one-rev all-co-changing)
    frequencies))
@@ -89,10 +88,10 @@
    (map as-co-changing-modules)))
 
 (defn coupling-frequencies
-  [co-changing]
   "Returns a map with pairs of coupled
    modules (pairs) as keyes and their
    number of shared revisions as value."
+  [co-changing]
   (->
    (apply concat co-changing)
    drop-duplicates ; remember: included to get the right total revisions

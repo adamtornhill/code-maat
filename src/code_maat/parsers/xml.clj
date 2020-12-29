@@ -7,11 +7,13 @@
   (:require [clojure.xml :as xml]
             [clojure.zip :as zip]))
 
-(defn file->zip [xml-file]
+(defn file->zip
   "Parses the given xml-file into a zipper data structure."
+  [xml-file]
   (zip/xml-zip (xml/parse xml-file)))
 
-(defn string->zip [s]
+(defn string->zip
   "Parses the given string into a zipper data structure."
+  [s]
   (zip/xml-zip (xml/parse (new org.xml.sax.InputSource
                                (new java.io.StringReader s)))))

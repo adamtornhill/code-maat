@@ -8,8 +8,7 @@
             [code-maat.analysis.effort :as effort]
             [clojure.math.combinatorics :as combo]
             [code-maat.analysis.math :as m]
-            [clojure.math.numeric-tower :as math]
-            [incanter.core :as incanter]))
+            [clojure.math.numeric-tower :as math]))
 
 ;;; This module attempts to give some heuristics on
 ;;; the communication needs of a project.
@@ -34,7 +33,7 @@
 ;;; give us a fast way to look-up the total number of
 ;;; commits for an author.
 
-(defn- authorship-combos 
+(defn- authorship-combos
   [authors]
   (combo/selections authors 2))
 
@@ -89,7 +88,7 @@
    shared work by the authors on different entities.
    Returns a dataset containing pairs of all permutations
    of authors with a (heuristic) communication strength
-   value for each pair." 
+   value for each pair."
   [ds options]
   (->>
    (effort/as-revisions-per-author ds options)
@@ -99,4 +98,3 @@
    with-commit-stats
    (ds/-dataset [:author :peer :shared :average :strength])
    (ds/-order-by [:strength :author] :desc)))
-

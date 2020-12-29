@@ -5,7 +5,6 @@
 
 (ns code-maat.analysis.effort
   (:require [code-maat.dataset.dataset :as ds]
-            [incanter.core :as incanter]
             [clojure.math.numeric-tower :as m]
             [code-maat.analysis.math :as math]))
 

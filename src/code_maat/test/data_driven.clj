@@ -4,7 +4,7 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.test.data-driven
-  (:use clojure.test))
+  (:require [clojure.test :refer [deftest]]))
 
 (defmacro def-dd-test
   "Defines a data-driven test based on clojure.test/deftest.
@@ -25,7 +25,7 @@
     `(do
        ~@(for [i (range (count values))]
            (let [value (nth values i)
-                 name (symbol (str name "-" value))] 
+                 name (symbol (str name "-" value))]
              `(deftest ~name
                 (let [~param ~value]
                   ~@body)))))))

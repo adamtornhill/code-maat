@@ -68,11 +68,11 @@ To analyze our VCS data we need to define a temporal period of interest. Over ti
 
 The first options is the legacy format used in Your Code As A Crime Scene. Use the `-c git` parse option when [Running Code Maat](#running-code-maat).
 
-          git log --pretty=format:'[%h] %aN %ad %s' --date=short --numstat --after=YYYY-MM-DD
+          git log --pretty=format:'[%h] %aN %ad %s' --date=short --numstat --after=YYYY-MM-DD > logfile.log
 
 There's a second supported Git format as well. It's more tolerant and faster to parse, so please prefer it over the plain `git` format described above. Use the `-c git2` parse option when [Running Code Maat](#running-code-maat).
 
-          git log --all --numstat --date=short --pretty=format:'--%h--%ad--%aN' --no-renames --after=YYYY-MM-DD
+          git log --all --numstat --date=short --pretty=format:'--%h--%ad--%aN' --no-renames --after=YYYY-MM-DD > logfile.log
 
 Many codebases include third-party content or non-code artefacts,  which might generate noise in the analyses.
 You can exclude such content via git's pathspecs that limit paths on the command line.
@@ -91,7 +91,7 @@ To exclude multiple folders, you just append more pathspecs:
 #### Generate a Perforce log file using the following command:
 
           p4 changes -s submitted -m 5000 //depot/project/... | cut -d ' ' -f 2 | xargs -I commitid -n1 sh -c 'p4 describe -s commitid | grep -v "^\s*$" && echo ""'
-          
+
 #### Generate a TFS log file using the following command from a Developer command-prompt:
 ###### Note:  The TFS CLI tool does not support custom date formatting.  The parser currently only supports the en-us default:  Friday, January 1, 2016 1:12:35 PM - you may need to adjust your system locale settings before using the following command.
 
@@ -118,9 +118,9 @@ When invoked with `-h`, Code Maat prints its usage:
              adam$ java -jar code-maat-0.9.0.jar
              This is Code Maat, a program used to collect statistics from a VCS.
              Version: 0.9.0-SNAPSHOT
-             
+
              Usage: program-name -l log-file [options]
-             
+
              Options:
                -l, --log LOG                                         Log file with input data
                -c, --version-control VCS                             Input vcs module type: supports svn, git, git2, hg, p4, or tfs

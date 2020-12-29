@@ -4,10 +4,8 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.parsers.svn
-  (:use [clojure.data.zip.xml :only (attr text xml-> xml1->)]) ; dep: see below
-  (:require [clojure.xml :as xml]
-            [clojure.zip :as zip]
-            [code-maat.parsers.time-parser :as tp]
+  (:require [code-maat.parsers.time-parser :as tp]
+            [clojure.data.zip.xml :as zip-xml]
             [clojure.string :as s]))
 
 ;;; This module contains functionality for parsing a generated SVN log
@@ -19,20 +17,20 @@
 ;;;   :entity :action :date :author :rev
 
 (defn zip->log-entries [zipped]
-  (xml-> zipped :logentry))
+  (zip-xml/xml-> zipped :logentry))
 
 (defn- make-extractor [logentry]
-  (partial xml1-> logentry))
+  (partial zip-xml/xml1-> logentry))
 
 (defn- group-file-with-action [entry]
-  (let [entity-name (s/trimr (text entry))
-        svn-action (attr entry :action)]
+  (let [entity-name (s/trimr (zip-xml/text entry))
+        svn-action (zip-xml/attr entry :action)]
     [entity-name svn-action]))
 
 (defn- extract-modified-files
   "Extracts all modified files from the given logentry."
   [logentry]
-  (let [paths (xml-> logentry :paths :path)]
+  (let [paths (zip-xml/xml-> logentry :paths :path)]
     (map group-file-with-action paths)))
 
 (def as-common-time-format (tp/time-string-converter-from "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"))
@@ -43,9 +41,9 @@
   [svn-logentry]
   (let [extractor (make-extractor svn-logentry)
         entities (extract-modified-files svn-logentry)
-        date (extractor :date text)
-        author (extractor :author text)
-        revision (extractor (attr :revision))]
+        date (extractor :date zip-xml/text)
+        author (extractor :author zip-xml/text)
+        revision (extractor (zip-xml/attr :revision))]
     (map (fn [[entity action]]
            {:entity entity
             :date (as-common-time-format date)

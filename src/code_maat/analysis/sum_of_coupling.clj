@@ -5,8 +5,8 @@
 
 (ns code-maat.analysis.sum-of-coupling
   (:require [code-maat.dataset.dataset :as ds]
-            [code-maat.analysis.coupling-algos :as c])
-  (:use incanter.core))
+            [code-maat.analysis.coupling-algos :as c]
+            [incanter.core :as incanter]))
 
 ;;; This module calculates the sum of the temporal coupling for each module.
 ;;;
@@ -38,8 +38,8 @@
    (mapcat counted-entities)))
 
 (defn as-soc
-  "Calculates a Sum of Coupling for each entity in 
-   the dataset that passes the threshold for minimum 
+  "Calculates a Sum of Coupling for each entity in
+   the dataset that passes the threshold for minimum
    number of revisions."
   [ds {:keys [min-revs]}]
   (->> ds
@@ -48,7 +48,7 @@
                  (update-in acc [e] (fnil + 0) n))
                {})
        (into [])
-       (filter (fn [[e n]] 
+       (filter (fn [[e n]]
                  (> n min-revs)))))
 
 (defn by-degree
@@ -56,9 +56,9 @@
    sorted in descending order (default) or an optional,
    custom sorting criterion."
   ([ds options]
-     (by-degree ds options :desc))
+   (by-degree ds options :desc))
   ([ds options order-fn]
-     (->>
-      (as-soc ds options)
-      (ds/-dataset [:entity :soc])
-      ($order [:soc :entity] order-fn))))
+   (->>
+    (as-soc ds options)
+    (ds/-dataset [:entity :soc])
+    (incanter/$order [:soc :entity] order-fn))))

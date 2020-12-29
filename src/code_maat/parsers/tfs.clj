@@ -4,15 +4,14 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.parsers.tfs
-  (:require [instaparse.core :as insta]
-            [clojure.string :as str]
+  (:require [clojure.string :as str]
             [code-maat.parsers.time-parser :as tp]
             [code-maat.parsers.hiccup-based-parser :as hbp]))
 
 ;;; This module is responsible for parsing a TFS log file.
 ;;;
 ;;; Input: a log file generated with the following command:
-;;; 
+;;;
 ;;; 	tf hist {path} /noprompt /format:detailed /recursive
 ;;;
 ;;; Output: A sequence of maps where each map represents a change entry
@@ -93,7 +92,7 @@
                           (str/join "\n" (rest message))))})
 
 (defn parse-log
-	"Transforms the given input TFS log into an 
+	"Transforms the given input TFS log into an
 	 Incanter dataset suitable for the analysis modules."
 	 [input-file-name options]
 	 (hbp/parse-log (tfs-preparse (slurp input-file-name))
@@ -102,8 +101,8 @@
                   positional-extractors))
 
 (defn parse-read-log
-	[input-text options]
-	(hbp/parse-read-log (clojure.string/join (tfs-preparse input-text))
+  [input-text options]
+  (hbp/parse-read-log (clojure.string/join (tfs-preparse input-text))
                       options
                       tfs-grammar
                       positional-extractors))

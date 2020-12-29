@@ -7,6 +7,7 @@
   (:import [java.io BufferedReader StringReader])
   (:require [instaparse.core :as insta]
             [clojure.core.reducers :as r]
+            [clojure.java.io :as io]
             [clojure.string :as s]))
 
 ;;; This module encapsulates the common functionality of parsing a
@@ -83,12 +84,13 @@
 (defn- churn-stats? [c]
   (= :change (get-in c [0])))
 
-(defn- file-stats [change]
+(defn- file-stats
   "The file statistics are at least the name of the file.
    Some VCS (git) allows me to easily include churn stats.
    If they're available, I parse them too.
    Example:
     [[:change [:added 10] [:deleted 9] [:file src/code_maat/parsers/git.clj]]"
+  [change]
   (if (churn-stats? change)
     {:name (get-in change [3 1])
      :added (get-in change [1 1])
@@ -152,7 +154,7 @@
   "Transforms the given input git log into a
    seq of maps suitable for the analysis modules."
   [input-file-name options grammar field-extractors]
-  (with-open [rdr (clojure.java.io/reader
+  (with-open [rdr (io/reader
                    input-file-name
                    :encoding (encoding-from options))]
     (parse-from rdr grammar field-extractors)))

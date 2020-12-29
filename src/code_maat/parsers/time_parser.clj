@@ -4,8 +4,7 @@
 ;;; see http://www.gnu.org/licenses/gpl.html
 
 (ns code-maat.parsers.time-parser
-  (:require [clj-time.core :as tc]
-            [clj-time.format :as tf]))
+  (:require [clj-time.format :as tf]))
 
 (def internal-time-format (tf/formatter "YYYY-MM-dd"))
 

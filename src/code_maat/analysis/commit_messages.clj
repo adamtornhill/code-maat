@@ -5,15 +5,14 @@
 
 (ns code-maat.analysis.commit-messages
   (:require [code-maat.dataset.dataset :as dataset]
-            [incanter.core :as incanter]
-            [code-maat.analysis.math :as math]))
+            [incanter.core :as incanter]))
 
 ;;; This module helps you analyze version-control data
 ;;; based on commit messages.
 ;;; Our commit messages contain information about our process and
 ;;; the kind of work we do.
 ;;; For example, we can use that information to extract
-;;; statistics on bug distributions. Note that this data is 
+;;; statistics on bug distributions. Note that this data is
 ;;; heuristics, not absolute truths (for that you need to mine
 ;;; your bug tracking system).
 ;;;
