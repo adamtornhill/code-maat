@@ -28,9 +28,9 @@
 ;;;  :rev -> the hash used by git to identify the commit
 
 ;;; Sample input where each commit is separated by a whitespace:
-(comment
-  --586b4eb--2015-06-15--Adam Tornhill
-  35      0       src/code_maat/mining/vcs.clj)
+;;;
+;;;  --586b4eb--2015-06-15--Adam Tornhill
+;;:  35      0       src/code_maat/mining/vcs.clj
 
 (def ^:const git-grammar
   "Here's the instaparse grammar for a git entry.
