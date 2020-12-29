@@ -32,11 +32,6 @@
      (IllegalArgumentException.
       "Commit messages: you need to provide an expression to match against."))))
 
-(defn- columns-of-interest
-  "Filter away all the data we won't need (less GC overhead)."
-  [ds]
-  (dataset/-select-by [:entity :message] ds))
-
 (defn- commit-matches
   "Performs a match for the expression provided by the
    user against a single commit message."
