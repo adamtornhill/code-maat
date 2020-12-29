@@ -210,6 +210,8 @@
     (output-fn! (analysis-fn changes))
     (catch AssertionError e ; typically a pre- or post-condition
       (throw-internal-error e))
+    (catch IllegalArgumentException e
+      (throw e))
     (catch Exception e
       (throw-internal-error e))))
 

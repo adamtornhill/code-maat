@@ -32,11 +32,6 @@
      (IllegalArgumentException.
       "Commit messages: you need to provide an expression to match against."))))
 
-(defn- columns-of-interest
-  "Filter away all the data we won't need (less GC overhead)."
-  [ds]
-  (dataset/-select-by [:entity :message] ds))
-
 (defn- commit-matches
   "Performs a match for the expression provided by the
    user against a single commit message."
@@ -55,6 +50,22 @@
    frequencies
    (into [])))
 
+(defn- commit-log-without-messages?
+  [ds]
+  (let [ncommits-with-message (->> ds (dataset/-where {:message  {:$fn (fn [m] (not= m "-"))}}) dataset/-nrows)
+        nrows (dataset/-nrows ds)]
+    (and (pos? nrows)
+         (= 0 ncommits-with-message))))
+
+(defn- ensure-supported-vcs
+  "The git2 format doesn't support this analysis since the commit messages aren't included. Here we make a more
+   general check."
+  [ds]
+  (if (commit-log-without-messages? ds)
+    (throw (IllegalArgumentException. (str "Wrong version-control format. Cannot do a messages analysis without commit messages. "
+                                           "Look at the difference between the git and git2 formats in the docs.")))
+    ds))
+
 (defn by-word-frequency
   "Returns the frequencies of the given word matches
    across all entities.
@@ -65,7 +76,9 @@
    this function counts the occourences."
   [ds options]
   (->>
-   (rows-matching-given-expr (match-expr-from options) ds)
-   as-matching-entity-freqs
-   (incanter/dataset [:entity :matches])
-   (dataset/-order-by [:matches :entity] :desc)))
+    ds
+    ensure-supported-vcs
+    (rows-matching-given-expr (match-expr-from options))
+    as-matching-entity-freqs
+    (incanter/dataset [:entity :matches])
+    (dataset/-order-by [:matches :entity] :desc)))
