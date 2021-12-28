@@ -11,5 +11,5 @@ RUN lein deps
 COPY . $dest
 RUN mv "$(lein uberjar | sed -n 's/^Created \(.*standalone\.jar\)/\1/p')" app-standalone.jar
 
-ENTRYPOINT ["java", "-jar", "app-standalone.jar"]
+ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=85.0", "-XX:+UnlockExperimentalVMOptions", "-jar", "app-standalone.jar"]
 CMD []
