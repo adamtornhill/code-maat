@@ -75,7 +75,7 @@ The first options is the legacy format used in Your Code As A Crime Scene. Use t
 
 There's a second supported Git format as well. It's more tolerant and faster to parse, so please prefer it over the plain `git` format described above. Use the `-c git2` parse option when [Running Code Maat](#running-code-maat).
 
-          git log --all --numstat --date=short --pretty=format:'--%h--%ad--%aN' --no-renames --after=YYYY-MM-DD > logfile.log
+          git log --all --numstat --date=short --pretty=format:--%h--%ad--%aN --no-renames --after=YYYY-MM-DD > logfile.log
 
 Many codebases include third-party content or non-code artefacts,  which might generate noise in the analyses.
 You can exclude such content via git's pathspecs that limit paths on the command line.
