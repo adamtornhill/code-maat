@@ -1,7 +1,7 @@
 ;;; Copyright (C) 2014 Adam Tornhill
 ;;;
 
-(ns code-maat.app.time-based-grouper-test
+(ns code-maat.app.time-based-end-to-end-test
   (:require [code-maat.app.app :as app])
   (:use [clojure.test]
         [code-maat.tools.test-tools]))
