@@ -176,9 +176,10 @@
    the given temporal period. Allows the user to treat
    all commits during one day as a single, logical change set.
    NOTE: will probably not work with author's analyses!!!"
-  [options commits]
-  (if-let [time-period (:temporal-period options)]
-    (time-grouper/run commits time-period)
+  [{:keys [temporal-period] :as options}
+   commits]
+  (if temporal-period
+    (time-grouper/by-time-period commits options)
     commits))
 
 (defn- aggregate-authors-in-teams
