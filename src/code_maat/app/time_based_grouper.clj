@@ -98,13 +98,18 @@
        remove-empty-windows
        combine-commits-to-logical-changesets))
 
+(defn- partition-commits-into-sliding-periods-of
+  [time-period padded-cs]
+  (->> padded-cs
+       (sort-by first)
+       drop-date-key
+       (partition time-period 1)))
+
 (defn- commits->sliding-window-seq
   [time-period cs]
   (->> cs
        pad-commits-to-complete-time-series
-       (sort-by first)
-       drop-date-key
-       (partition time-period 1)
+       (partition-commits-into-sliding-periods-of time-period)
        combine-sliding-commits))
 
 (defn- validated-time-period-from
