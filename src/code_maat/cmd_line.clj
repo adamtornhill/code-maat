@@ -33,7 +33,7 @@
     :default 30 :parse-fn #(Integer/parseInt %)]
    ["-e" "--expression-to-match MATCH-EXPRESSION" "A regex to match against commit messages. Used with -messages analyses"]
    ["-t" "--temporal-period TEMPORAL-PERIOD"
-    "Instructs Code Maat to consider all commits during the same day as a single, logical commit"]
+    "Used for coupling analyses. Instructs Code Maat to consider all commits during the rolling temporal period as a single, logical commit set"]
    ["-d" "--age-time-now AGE-TIME_NOW" "Specify a date as YYYY-MM-dd that counts as time zero when doing a code age analysis"]
    ["-h" "--help"]])
 

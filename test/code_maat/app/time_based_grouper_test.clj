@@ -1,44 +1,49 @@
-;;; Copyright (C) 2014 Adam Tornhill
-;;;
-
 (ns code-maat.app.time-based-grouper-test
-  (:require [code-maat.app.app :as app])
-  (:use [clojure.test]
-        [code-maat.tools.test-tools]))
+  (:require [code-maat.app.time-based-grouper :as grouper])
+  (:use [clojure.test]))
 
-;;; End-to-end tests to simulate a time-based analysis.
-;;;
-;;; The test data contains two commits done the same day.
-;;; With the default options we'll treat them as separate.
-;;; In a time-base analysis we consider them as a logical
-;;; part of the same work.
+(deftest commits-by-day
+  (testing "Expect a non-modifying operation"
+    (let [input-commits [{:entity "A" :rev 1 :date "2022-10-20"}
+                         {:entity "B" :rev 2 :date "2022-10-20"}]]
+      (is (= [{:date   "2022-10-20"  :entity "A" :rev    "2022-10-20"}
+               {:date   "2022-10-20" :entity "B" :rev    "2022-10-20"}]
+             (grouper/by-time-period input-commits {:temporal-period "1"}))))))
 
-(def ^:const log-file "./test/code_maat/app/day_coupled_entities_git.txt")
+(deftest multiple-days-give-a-rolling-dataset
+  (let [input-commits [{:entity "A" :rev 1 :date "2022-10-20"}
+                       {:entity "B" :rev 2 :date "2022-10-20"}
 
-(def ^:const csv-options
-  {:version-control "git"
-   :analysis "coupling"
-   :min-revs 1
-   :min-shared-revs 1
-   :min-coupling 10
-   :max-coupling 100
-   :max-changeset-size 10})
+                       {:entity "B" :rev 3 :date "2022-10-19"} ; double entry, two B's when looking at last two days
+                       {:entity "D" :rev 3 :date "2022-10-19"}
 
-(def ^:const csv-options-for-time-based
-  (merge csv-options {:temporal-period "1"}))
+                       {:entity "C" :rev 4 :date "2022-10-18"}
+                       {:entity "D" :rev 4 :date "2022-10-18"}
 
-(deftest only-calculates-coupling-within-same-commit-by-default
-  (is (= (run-with-str-output log-file csv-options)
-         "entity,coupled,degree,average-revs\n/Infrastrucure/Network/Connection.cs,/Presentation/Status/ClientPresenter.cs,100,1\n")))
+                       {:entity "D" :rev 5 :date "2022-10-15"}]] ; a gap in days between the commits
+    (is (= [
+            ; Only commits on 2022-10-15, not on subsequent day:
+            {:date   "2022-10-15" :entity "D" :rev    "2022-10-15"}
 
-(deftest calculates-coupling-within-same-day
-  (is (= (run-with-str-output log-file csv-options-for-time-based)
-         "entity,coupled,degree,average-revs\n/Infrastrucure/Network/Connection.cs,/Presentation/Status/ClientPresenter.cs,100,1\n/Infrastrucure/Network/Connection.cs,/Infrastrucure/Network/TcpConnection.cs,100,1\n/Infrastrucure/Network/TcpConnection.cs,/Presentation/Status/ClientPresenter.cs,100,1\n")))
+            ; 17-18th
+            {:date   "2022-10-18" :entity "C" :rev    "2022-10-18"}
+            {:date   "2022-10-18" :entity "D" :rev    "2022-10-18"}
 
-(def ^:const options-with-invalid-time-period
-  (merge csv-options {:temporal-period "2"}))
+            ; 18-19th
+            {:date   "2022-10-18" :entity "C" :rev    "2022-10-19"}
+            {:date   "2022-10-18" :entity "D" :rev    "2022-10-19"}
+            {:date   "2022-10-19" :entity "B" :rev    "2022-10-19"}
 
-(deftest throws-on-unsupported-time-periods
-  "We hope to support more options in the future."
-  (is (thrown? IllegalArgumentException
-               (run-with-str-output log-file options-with-invalid-time-period))))
+            ; 19-20th
+            {:date   "2022-10-19" :entity "B" :rev    "2022-10-20"}
+            {:date   "2022-10-19" :entity "D" :rev    "2022-10-20"}
+            {:date   "2022-10-20" :entity "A" :rev    "2022-10-20"}]
+           (grouper/by-time-period input-commits {:temporal-period "2"})))))
+
+(deftest edge-cases
+  (testing "Works on an empty input sequence, ie. no commits"
+    (is (= []
+           (grouper/by-time-period [] {:temporal-period "2"}))))
+  (testing "Works on a single commit"
+    (is (= [{:date   "2022-10-19" :entity "B" :rev    "2022-10-19"}]
+           (grouper/by-time-period [{:entity "B" :rev 3 :date "2022-10-19"}] {:temporal-period "1"})))))

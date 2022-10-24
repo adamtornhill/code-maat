@@ -15,6 +15,7 @@
                  [clj-time "0.9.0"]
                  [org.clojure/math.numeric-tower "0.0.4"]
                  [org.clojure/math.combinatorics "0.1.1"]
+                 [medley "1.4.0"]
                  [semantic-csv "0.2.1-alpha1"]
                  [instaparse "1.4.1"]]
   :main code-maat.cmd-line
