@@ -25,6 +25,14 @@
          [name author revs total-revs])
        effort))
 
+(defn- entity-name-from
+  [[name _]]
+  name)
+
+(defn- revs-from
+  [[_name _author revs _]]
+  revs)
+
 (defn- sum-revs-by-author
   "Sums the given dataset by a given group and churn.
    The given dataset, grouped-ds, is grouped by the column
@@ -49,13 +57,16 @@
     [entity author-revs]))
 
 (defn as-revisions-per-author
-  [ds options]
+  [ds _options]
   (->>
    (ds/-group-by :entity ds)
    sum-effort-by-author
    (mapcat normalize-effort)
-   (ds/-dataset [:entity :author :author-revs :total-revs])
-   (ds/-order-by :entity :asc)))
+   ; note: Clojure implements stable sort which is why this works
+   (sort-by revs-from >)
+   (sort-by entity-name-from)
+   (ds/-dataset [:entity :author :author-revs :total-revs])))
+   ;(ds/-order-by :entity :asc)))
 
 (defn- contributed-revs
   [author-changes]
@@ -73,13 +84,13 @@
 (defn as-main-developer-by-revisions
   "Identifies the main developers, together with their
    ownership percentage, of each module."
-  [ds options]
+  [ds _options]
   (->>
-   (ds/-group-by :entity ds)
-   sum-effort-by-author
-   (map pick-main-dev-by-rev)
-   (ds/-dataset [:entity :main-dev :added :total-added :ownership])
-   (ds/-order-by :entity :asc)))
+    (ds/-group-by :entity ds)
+    sum-effort-by-author
+    (map pick-main-dev-by-rev)
+    (ds/-dataset [:entity :main-dev :added :total-added :ownership])
+    (ds/-order-by :entity :asc)))
 
 (defn- as-author-fractals
   [[_ ai nc]]

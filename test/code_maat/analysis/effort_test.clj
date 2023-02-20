@@ -16,9 +16,19 @@
    {:entity "B" :rev 3 :author "at" :date "2013-11-15"}])
 
 (ds/def-ds multi-effort
-  [{:entity "A" :rev 1 :author "at" :date "2013-11-10"}
+  [{:entity "Z" :rev 4 :author "zt" :date "2013-11-15"}
+   {:entity "Z" :rev 5 :author "xy" :date "2013-11-15"}
+   {:entity "Z" :rev 6 :author "xy" :date "2013-11-16"}
+
+   {:entity "C" :rev 4 :author "zt" :date "2013-11-15"}
+   {:entity "C" :rev 5 :author "zt" :date "2013-11-15"}
+
+   {:entity "A" :rev 1 :author "at" :date "2013-11-10"}
    {:entity "A" :rev 2 :author "xy" :date "2013-11-11"}
-   {:entity "A" :rev 3 :author "zt" :date "2013-11-15"}])
+   {:entity "A" :rev 3 :author "zt" :date "2013-11-15"}
+   {:entity "A" :rev 4 :author "zt" :date "2013-11-15"}
+   {:entity "A" :rev 5 :author "xy" :date "2013-11-15"}
+   {:entity "A" :rev 6 :author "xy" :date "2013-11-16"}])
 
 (deftest calculates-effort-for-single-author
   (is (= (effort/as-revisions-per-author single-effort options)
@@ -27,11 +37,15 @@
                        ["B" "at" 2 2]]))))
 
 (deftest calculates-effort-for-multiple-authors
-  (is (= (effort/as-revisions-per-author multi-effort options)
-         (ds/-dataset [:entity :author :author-revs :total-revs]
-                      [["A" "at" 1 3]
-                       ["A" "xy" 1 3]
-                       ["A" "zt" 1 3]]))))
+  (testing "With multiple authors, the effort is sorted in descending order (main author first)"
+    (is (= (effort/as-revisions-per-author multi-effort options)
+           (ds/-dataset [:entity :author :author-revs :total-revs]
+                        [["A" "xy" 3 6]
+                         ["A" "zt" 2 6]
+                         ["A" "at" 1 6]
+                         ["C" "zt" 2 2]
+                         ["Z" "xy" 2 3]
+                         ["Z" "zt" 1 3]])))))
 
 (deftest calculates-entity-fragmentation-for-single-author
   "The fractal value is a measurement of how
@@ -44,7 +58,9 @@
 (deftest calculates-entity-fragmentation-for-multiple-authors
   (is (= (effort/as-entity-fragmentation multi-effort options)
          (ds/-dataset [:entity :fractal-value :total-revs]
-                      [["A" 0.67 3]]))))
+                      [["A" 0.61 6]
+                       ["Z" 0.44 3]
+                       ["C" 0.0 2]]))))
 
 (ds/def-ds shared-effort
   [{:entity "A" :rev 1 :author "zt" :date "2013-11-10"}
