@@ -1,9 +1,9 @@
-;;; Copyright (C) 2013 Adam Tornhill
+;;; Copyright (C) 2013-2023 Adam Tornhill
 ;;;
 ;;; Distributed under the GNU General Public License v3.0,
 ;;; see http://www.gnu.org/licenses/gpl.html
 
-(defproject code-maat "1.0.4"
+(defproject code-maat "1.0.5-SNAPSHOT"
   :description "A toolset to mine and analyze version control data"
   :url "http://www.adamtornhill.com/code/codemaat.htm"
   :license {:name "GNU General Public License v3.0" :url "http://www.gnu.org/licenses/gpl.html"}
