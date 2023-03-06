@@ -35,11 +35,12 @@
    ["-t" "--temporal-period TEMPORAL-PERIOD"
     "Used for coupling analyses. Instructs Code Maat to consider all commits during the rolling temporal period as a single, logical commit set"]
    ["-d" "--age-time-now AGE-TIME_NOW" "Specify a date as YYYY-MM-dd that counts as time zero when doing a code age analysis"]
+   [nil  "--verbose-results" "Includes additional analysis details together with the results. Only implemented for change coupling."]
    ["-h" "--help"]])
 
 (defn- usage [options-summary]
   (->> ["This is Code Maat, a program used to collect statistics from a VCS."
-        "Version: 1.0-SNAPSHOT"
+        "Version: 1.0.5-SNAPSHOT"
         ""
         "Usage: program-name -l log-file [options]"
         ""
