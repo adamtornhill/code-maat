@@ -192,7 +192,16 @@ The resulting output is on CSV format:
               InfoUtils.java,  BarChart.java,  62,      45
               ...
 
-In the example above, the first column (`entity`) gives us the name of the module, the second (`coupled`) gives us the name of a logically coupled module, the third column (`degree`) gives us the coupling as a percentage (0-100), and finally `average-revs` gives us the average number of revisions of the two modules. To interpret the data, consider the `InfoUtils.java` module in the example output above. The coupling tells us that each time it's modified, it's a 78% risk/chance that we'll have to change our `Page.java` module too. Since there's probably no reason they should change together, the analysis points to a part of the code worth investigating as a potential target for a future refactoring.
+In the example above, the first column (`entity`) gives us the name of the module, the second (`coupled`) gives us the name of a logically
+coupled module, the third column (`degree`) gives us the coupling as a percentage (0-100), and finally `average-revs` gives us the average number of revisions
+of the two modules.
+
+To interpret the data, consider the `InfoUtils.java` module in the example output above.
+The coupling tells us that each time it's modified, it's a 78% risk/chance that we'll have to change our `Page.java` module too.
+Since there's probably no reason they should change together, the analysis points to a part of the code worth investigating as a potential target for a future refactoring.
+
+*Advanced*: the coupling analysis also supports `--verbose-results`. In verbose mode, the coupling analysis also includes the number of revisions for each coupled entity together
+with the number of shared revisions. The main use cases for this option are a) build custom filters to reduce noise, or b) research studies.
 
 ### Calculate code age
 
