@@ -30,14 +30,25 @@
 
 (def ^:const revd (incanter/to-dataset one-revision))
 
+(def ^:private default-options test-data/options-with-low-thresholds)
+
 (deftest calculates-coupling-by-degree
   (is (= (incanter/to-list (coupling/by-degree
                             coupledd
-                            test-data/options-with-low-thresholds))
+                            default-options))
          ;; :entity :coupled :degree :average-revs
          [["A"      "B"       100   2]
           ["A"      "C"       66    2]
           ["B"      "C"       66    2]])))
+
+(deftest outputs-verbose-details-when-prompted-to
+  (is (= (incanter/to-list (coupling/by-degree
+                             coupledd
+                             (assoc default-options :verbose-results true)))
+         ;; :entity :coupled :degree :average-revs revs1 revs2 shared-revs
+         [["A"      "B"       100     2            2     2     2]
+          ["A"      "C"       66      2            2     1     1]
+          ["B"      "C"       66      2            2     1     1]])))
 
 (deftest gives-empty-result-for-single-change-set-with-single-entity
   "A single change set with a single entity (boundary case)"

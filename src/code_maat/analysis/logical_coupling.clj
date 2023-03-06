@@ -34,11 +34,29 @@
         module-revs (c/module-by-revs co-changing)
         coupling (c/coupling-frequencies co-changing)]
     (for [[[first-entity second-entity] shared-revs] coupling
-          :let [average-revs (m/average (module-revs first-entity) (module-revs second-entity))
+          :let [first-entity-revisions (module-revs first-entity)
+                second-entity-revisions (module-revs second-entity)
+                average-revs (m/average first-entity-revisions
+                                        second-entity-revisions)
                 coupling (m/as-percentage (/ shared-revs average-revs))]
           :when (within-threshold-fn? average-revs shared-revs coupling)]
-      [first-entity second-entity
-       (int coupling) (math/ceil average-revs)])))
+      {:entity first-entity
+       :coupled second-entity
+       :degree (int coupling)
+       :average-revs  (math/ceil average-revs)
+       ; verbose options:
+       :first-entity-revisions first-entity-revisions
+       :second-entity-revisions second-entity-revisions
+       :shared-revisions shared-revs})))
+
+(defn- results-depending-on
+  [{:keys [verbose-results] :as _options}
+   results]
+  (let [coupling-results [:entity :coupled :degree :average-revs]
+        verbose-details  [:first-entity-revisions :second-entity-revisions :shared-revisions]]
+    (if verbose-results
+      (ds/-dataset (into coupling-results verbose-details) results)
+      (ds/-dataset coupling-results results))))
 
 (defn by-degree
   "Calculates the degree of logical coupling. Returns a seq
@@ -53,5 +71,5 @@
    (->>
     (partial c/within-threshold? options)
     (as-logical-coupling-measure ds options)
-    (ds/-dataset [:entity :coupled :degree :average-revs])
+    (results-depending-on options)
     (incanter/$order [:degree :average-revs] order-fn))))
