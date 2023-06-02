@@ -106,7 +106,7 @@ You can run Code Maat directly from leiningen:
 
 If you've downloaded or built the standalone jar, then run it via java. Please note that you need at least Java 8 installed:
 
-     	  java -jar code-maat-1.0.2-standalone.jar -l logfile.log -c <vcs>
+     	  java -jar code-maat-1.0.4-standalone.jar -l logfile.log -c <vcs>
 
 If you've built a docker container, then you can run it as
 
@@ -116,7 +116,7 @@ where the /home/xx/src/code-maat is the host's directory containing the file log
 
 When invoked with `-h`, Code Maat prints its usage:
 
-             adam$ java -jar code-maat-1.0.2-standalone.jar
+             adam$ java -jar code-maat-1.0.4-standalone.jar
              This is Code Maat, a program used to collect statistics from a VCS.
              Version: 1.0-SNAPSHOT
 
@@ -147,7 +147,7 @@ By default, Code Maat expects your log files to be UTF-8. If you use another enc
 
 When starting out, I find it useful to get an overview of the mined data. With the `summary` analysis, Code Maat produces such an overview:
 
-   	   java -jar code-maat-1.0.2-standalone.jar -l logfile.log -c git -a summary
+   	   java -jar code-maat-1.0.4-standalone.jar -l logfile.log -c git -a summary
 
 The resulting output is on csv format:
 
@@ -159,13 +159,13 @@ The resulting output is on csv format:
 
 If you use the second Git format, just specify `git2` instead:
 
-   	   java -jar code-maat-1.0.2-standalone.jar -l logfile2.log -c git2 -a summary
+   	   java -jar code-maat-1.0.4-standalone.jar -l logfile2.log -c git2 -a summary
 
 #### Mining organizational metrics
 
 By default, Code Maat runs an analysis on the number of authors per module. The authors analysis is based on the idea that the more developers working on a module, the larger the communication challenges. The analysis is invoked with the following command:
 
-   	   java -jar code-maat-1.0.2-standalone.jar -l logfile.log -c git
+   	   java -jar code-maat-1.0.4-standalone.jar -l logfile.log -c git
 
 The resulting output is on CSV format:
 
@@ -181,7 +181,7 @@ In example above, the first column gives us the name of module, the second the t
 
 Logical coupling refers to modules that tend to change together. Modules that are logically coupled have a hidden, implicit dependency between them such that a change to one of them leads to a predictable change in the coupled module. To analyze the logical coupling in a system, invoke Code Maat with the following arguments:
 
-              java -jar code-maat-1.0.2-standalone.jar -l logfile.log -c git -a coupling
+              java -jar code-maat-1.0.4-standalone.jar -l logfile.log -c git -a coupling
 
 The resulting output is on CSV format:
 
@@ -207,7 +207,7 @@ The change frequency of code is a factor that should (but rarely do) drive the e
 
 One way to measure the stability of a software architecture is by a code age analysis:
 
-              java -jar code-maat-1.0.2-standalone.jar -l logfile.log -c git -a age
+              java -jar code-maat-1.0.4-standalone.jar -l logfile.log -c git -a age
 
 The `age` analysis grades each module based on the date of last change. The measurement unit is age in months. Here's how the result may look:
 
