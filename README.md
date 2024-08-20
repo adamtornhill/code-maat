@@ -44,6 +44,8 @@ You can also build code-maat as a Docker image:
 
       docker build -t code-maat-app .
 
+If this fails on your Apple Silicon change "clojure:alpine" to "clojure:latest" in the first line of the Dockerfile.
+
 Finally, if you want to use Code Maat as a library, then add the following line to your leiningen dependencies:
 
 	   [code-maat "1.0.1"]
