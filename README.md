@@ -4,8 +4,8 @@
 
 Code Maat is a command line tool used to mine and analyze data from version-control systems (VCS).
 
-Code Maat was developed to accompany the discussions in my books [Your Code as a Crime Scene](https://pragprog.com/book/atcrime/your-code-as-a-crime-scene) and
-[Software Design X-Rays](https://pragprog.com/book/atevol/software-design-x-rays).
+Code Maat was developed to accompany the discussions in my books [Your Code as a Crime Scene](https://pragprog.com/titles/atcrime/your-code-as-a-crime-scene) and
+[Software Design X-Rays](https://pragprog.com/titles/atevol/software-design-x-rays).
 
 Note that the analyses have evolved into [CodeScene](https://codescene.io/), which automates all the analyses found in Code Maat and several new ones.
 
