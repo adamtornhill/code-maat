@@ -229,7 +229,7 @@ By using the techniques from [Your Code as a Crime Scene](https://pragprog.com/b
 
 Code Maat doesn't include any visualizations itself. However, you do have a bunch of options.
 
-One option is [CodeScene](http://www.empear.com/#empear-products) which is [free for open source](https://codescene.io/) and delivers all these analyses as a service. CodeScene is also available in an [on-premise version](http://www.empear.com/products/codescene-on-premise/). CodeScene is a complete application with automated repository mining, visualizations, and is built around the ideas prototyped in Code Maat.
+One option is [CodeScene](http://www.empear.com/#empear-products) which is [free for open source](https://codescene.io/) and delivers all these analyses as a service. CodeScene is also available in an [on-premise version](https://codescene.com/pricing). CodeScene is a complete application with automated repository mining, visualizations, and is built around the ideas prototyped in Code Maat.
 
 I also present a whole suite of different visualization techniques and options in [Your Code as a Crime Scene](https://pragprog.com/book/atcrime/your-code-as-a-crime-scene), so do check out the book if you want to dive deeper. You can also look at some of the basic tools I've open sourced such as [Metrics Tree Map](https://github.com/adamtornhill/MetricsTreeMap):
 
